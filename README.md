@@ -1,1 +1,1 @@
-# 2023-4e-voplakal-DockerAdmin
+## Readme na PC ve škole
