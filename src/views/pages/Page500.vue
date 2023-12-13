@@ -10,13 +10,11 @@
               The page you are looking for is temporarily unavailable.
             </p>
           </span>
-          <CInputGroup class="input-prepend">
-            <CInputGroupText>
-              <CIcon icon="cil-magnifying-glass" />
-            </CInputGroupText>
-            <CFormInput type="text" placeholder="What are you looking for?" />
-            <CButton color="info">Search</CButton>
-          </CInputGroup>
+          <br>
+          <RouterLink to="/dashboard">
+            <CButton color="primary" size="lg">Back to dashboard</CButton>
+          </RouterLink>
+
         </CCol>
       </CRow>
     </CContainer>
