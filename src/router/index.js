@@ -34,6 +34,11 @@ const routes = [
     },
     children: [
       {
+        path: 'apps',
+        name: 'Apps',
+        component: () => import('@/views/apps/Apps.vue'),
+      },
+      {
         path: '404',
         name: 'Page404',
         component: () => import('@/views/pages/Page404'),
