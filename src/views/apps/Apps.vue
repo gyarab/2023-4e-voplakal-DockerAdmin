@@ -6,20 +6,41 @@
           <CCardBody>
             <CRow>
               <CCol :sm="5">
-                <h4 id="traffic" class="card-title mb-0">Traffic</h4>
-                <div class="small text-body-secondary">January 2021</div>
+                <h4 id="traffic" class="card-title mb-0">Apps</h4>
+
+                <div class="small text-body-secondary" style="margin-top: 7px;">All your Docker containers managed by this administration system.</div>
               </CCol>
               <CCol :sm="7" class="d-none d-md-block">
-                <CButton color="primary" class="float-end">
-                  <CIcon icon="cil-cloud-download" />
-                </CButton>
+                <router-link to="/app-edit">
+                  <CButton size="lg" color="primary" class="float-end">
+                    <CIcon size="xl" :icon="icon.cilPlus" />
+                    Přidat
+                  </CButton>
+                </router-link>
               </CCol>
             </CRow>
             <br>
             <CRow>
               <CCol>
-                <p>ahhoj</p>
-                <CIcon :icon="icon.cilList" size="xxl" />
+                <CCol :md="12">
+
+                  <CTable striped howered>
+                    <CTableHead>
+                      <CTableRow color="dark">
+                        <CTableHeaderCell scope="col">Repository</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">tag</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">created</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">size</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">image id</CTableHeaderCell>
+                        <CTableHeaderCell scope="col"></CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      <AppLi :data="appsData"></AppLi>
+                    </CTableBody>
+                  </CTable>
+
+                </CCol>
               </CCol>
             </CRow>
           </CCardBody>
@@ -35,30 +56,37 @@
         </CCard>
       </CCol>
     </CRow>
-    <CRow>
-      <CCol :md="12">
-        <CCard class="mb-4">
-          <CCardHeader> Traffic &amp; Sales </CCardHeader>
-          <CCardBody>
-            Body
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
   </div>
 </template>
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
 import * as icon from '@coreui/icons';
+import AppLi from './AppLi.vue';
+import { reactive } from 'vue';
+
 export default {
   name: "Apps",
   components: {
-    CIcon
+    CIcon,
+    AppLi
   },
   setup() {
+    //     REPOSITORY     TAG         IMAGE ID       CREATED        SIZE
+    // role_mgr3      latest      08af2227f359   6 weeks ago    239MB
+
+    let appsData = [
+      {
+        id: "12345678",
+        repository: 'biobrejn-1',
+        tag: 'latest',
+        image_id: '08af2227f359',
+        created: '7 weeks ago',
+        size: '340 MB',
+      }
+    ]
     return {
-      icon,
+      icon, appsData
     }
   }
 }

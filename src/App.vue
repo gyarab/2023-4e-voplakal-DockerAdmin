@@ -2,7 +2,7 @@
   <router-view />
 </template>
 <script>
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useColorModes } from '@coreui/vue'
 

@@ -1,39 +1,22 @@
 <template>
-  <CSidebar
-    class="border-end"
-    colorScheme="dark"
-    position="fixed"
-    :unfoldable="sidebarUnfoldable"
-    :visible="sidebarVisible"
-    @visible-change="
-      (event) =>
-        $store.commit({
-          type: 'updateSidebarVisible',
-          value: event,
-        })
-    "
-  >
+  <CSidebar class="border-end" colorScheme="dark" position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="(event) =>
+      $store.commit({
+        type: 'updateSidebarVisible',
+        value: event,
+      })
+    ">
     <CSidebarHeader class="border-bottom">
       <CSidebarBrand>
-        <CIcon
-          custom-class-name="sidebar-brand-full"
-          :icon="logo"
-          :height="32"
-        />
-        <CIcon
-          custom-class-name="sidebar-brand-narrow"
-          :icon="sygnet"
-          :height="32"
-        />
+
+        <img src="@/assets/images/blue.png" width="210px">
+        <!-- logo from https://www.brandcrowd.com/maker/logo/9ac932ad-44a7-4e65-9a35-1386fd1f048e/draft/66e15945-c95d-4844-a267-6acf0175c24c?savedDraft=True -->
+
       </CSidebarBrand>
       <CCloseButton class="d-lg-none" dark @click="$store.commit('toggleSidebar')" />
     </CSidebarHeader>
     <AppSidebarNav />
     <CSidebarFooter class="border-top">
-      <CSidebarToggler
-        class="d-none d-lg-flex"
-        @click="$store.commit('toggleUnfoldable')"
-      />
+      <CSidebarToggler class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
     </CSidebarFooter>
   </CSidebar>
 </template>
@@ -42,8 +25,8 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
-import { logo } from '@/assets/brand/logo'
-import { sygnet } from '@/assets/brand/sygnet'
+import { CIcon } from '@coreui/icons-vue';
+import * as icon from '@coreui/icons';
 export default {
   name: 'AppSidebar',
   components: {
@@ -52,8 +35,7 @@ export default {
   setup() {
     const store = useStore()
     return {
-      logo,
-      sygnet,
+
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
     }

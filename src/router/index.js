@@ -21,6 +21,17 @@ const routes = [
             /* webpackChunkName: "dashboard" */ '@/views/dashboard/Dashboard.vue'
           ),
       },
+      {
+        path: 'app-edit/:id?',
+        props: true,
+        name: 'AppEdit',
+        component: () => import('@/views/apps/AppEdit.vue'),
+      },
+      {
+        path: 'apps',
+        name: 'Apps',
+        component: () => import('@/views/apps/Apps.vue'),
+      },
     ],
   },
   {
@@ -33,11 +44,6 @@ const routes = [
       },
     },
     children: [
-      {
-        path: 'apps',
-        name: 'Apps',
-        component: () => import('@/views/apps/Apps.vue'),
-      },
       {
         path: '404',
         name: 'Page404',
@@ -58,6 +64,10 @@ const routes = [
         name: 'Register',
         component: () => import('@/views/pages/Register'),
       },
+      {
+        path: "/:pathMatch(.*)*",
+        redirect: "/404"
+    },
     ],
   },
 ]
