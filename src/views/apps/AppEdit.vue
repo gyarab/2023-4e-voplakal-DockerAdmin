@@ -73,7 +73,20 @@
                     footer
                   </CCardFooter>
                 </CCard>
-                druhy
+                <br>
+                <CCard>
+                  <CCardHeader>
+                    <h4 class="card-title">Start script</h4>
+                    <div class="small text-body-secondary">This script run every time container starts.</div>
+                  </CCardHeader>
+                  <CCardBody>
+                    body
+                  </CCardBody>
+                  <CCardFooter>
+                    footer
+                  </CCardFooter>
+                </CCard>
+                
               </CCol>
             </CRow>
           </CCardBody>
@@ -94,25 +107,11 @@
       <CButton color="danger" type="submit">Smazat</CButton>
     </template>
   </Modal>
-
-  <CToaster placement="top-end" visible>
-    <CToast>
-      <CToastHeader closeButton>
-        <span class="me-auto fw-bold">Ahoj</span>
-        <small>7 min ago</small>
-      </CToastHeader>
-      <CToastBody>
-        nen
-      </CToastBody>
-    </CToast>
-  </CToaster>
 </template>
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
-import * as icon from '@coreui/icons';
-import AppLi from './AppLi.vue';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import Modal from '../../components/Modal.vue';
 
 export default {
@@ -144,14 +143,22 @@ export default {
 
     const deleteApp = () => {
       console.log("deleted");
+      window.showToast({
+        content: 'Deleted',
+        color: 'success'
+      })
     }
     const saveChanges = () => {
       console.log("save");
+      window.showToast({
+        content: 'Saved',
+        color: 'success'
+      })
     }
-
     return {
       isNew, data, deleteApp, saveChanges
     }
-  }
+  },
+
 }
 </script>
