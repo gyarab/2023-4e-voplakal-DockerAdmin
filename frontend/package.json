@@ -29,6 +29,7 @@
     "chart.js": "^4.4.0",
     "vue": "^3.3.9",
     "vue-router": "^4.2.5",
+    "vue3-ace-editor": "^2.2.4",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
