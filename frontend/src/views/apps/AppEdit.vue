@@ -218,8 +218,9 @@ export default {
   },
   setup(props) {
     const isNew = !!props.id;
-    console.log(isNew);
 
+    //todo load item data app_id: props.id
+    console.log(props.id);
     const data = reactive(
       {
         name: "Moje pojmenovaní",

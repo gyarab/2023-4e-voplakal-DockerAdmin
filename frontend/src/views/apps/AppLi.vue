@@ -7,7 +7,9 @@
         <CTableDataCell>{{ item.image_id }}</CTableDataCell>
         <CTableDataCell>
             <CButtonGroup role="group">
-                <CButton color="primary" variant="outline">Details</CButton>
+                <router-link :to="'/app-edit/' + item.id">
+                    <CButton color="primary" variant="outline">Details</CButton>
+                </router-link>
             </CButtonGroup>
 
         </CTableDataCell>
