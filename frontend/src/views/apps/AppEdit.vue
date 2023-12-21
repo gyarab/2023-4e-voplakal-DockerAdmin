@@ -115,18 +115,28 @@
                 <div v-show="nav === 'form'">
                   <CCard><!-- Init form -->
                     <CCardHeader>
-                      <h4 class="card-title">User init form</h4>
-                      <div class="small text-body-secondary">This form is to be filled by user whe inicializing this App.</div>
+                      <CRow>
+                        <CCol :sm="8">
+                          <h4 class="card-title">User init form</h4>
+                          <div class="small text-body-secondary">This form is to be filled by user when inicializing this App.</div>
+                        </CCol>
+                        <CCol :sm="4" class="d-md-block">
+                          <CButton color="primary" class="float-end" @click="() => editFormModal.show = true">
+                            <!-- @click="() => this.$refs.deleteModal.data.show = true" -->
+                            <CIcon icon="cil-pencil" />
+                            Edit
+                          </CButton>
+                        </CCol>
+                      </CRow>
                     </CCardHeader>
                     <CCardBody>
-                      Zatím use default.
+                      <InitForm :htmlForm="htmlForm" dataPreview></InitForm>
                     </CCardBody>
                     <CCardFooter>
-                      Potom kdyžtak upravit
+                      Filled values from the form will be passed to Init script.
                     </CCardFooter>
                   </CCard>
                 </div>
-
               </CCol>
             </CRow>
           </CCardBody>
@@ -147,11 +157,23 @@
       <CButton color="danger" type="submit">Smazat</CButton>
     </template>
   </Modal>
+  <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">
+    <CModalHeader>
+      <CModalTitle>User init form Customization</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <InitForm :htmlForm="htmlForm" edit editFull dataPreview></InitForm>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="primary" type="submit" @click="() => { editFormModal.show = false }">Close & continue</CButton>
+    </CModalFooter>
+  </CModal>
 </template>
+
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
-import { reactive, ref } from 'vue';
+import { reactive, ref, computed } from 'vue';
 import Modal from '../../components/Modal.vue';
 import { VAceEditor } from "vue3-ace-editor";
 // import 'ace-builds/src-noconflict/mode-sh';
@@ -164,6 +186,7 @@ ace.config.setModuleUrl('ace/mode/sh', modeJsonUrl);
 import themeChromeUrl from 'ace-builds/src-noconflict/theme-chrome?url';
 ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl);
 
+import InitForm from './forms/InitForm.vue';
 
 let codeExample = `#!/bin/bash
 
@@ -209,7 +232,8 @@ export default {
   components: {
     CIcon,
     Modal,
-    VAceEditor
+    VAceEditor,
+    InitForm
   },
   props: {
     id: {
@@ -272,11 +296,99 @@ export default {
         color: 'success'
       })
     }
-    const nav = ref('init');
+    const nav = ref('form');
+    const htmlForm = reactive({ value: formHtmlPlaceholderData })
+
+    const editFormModal = reactive({
+      show: false
+    })
+
+    setInterval(() => {
+      console.log(htmlForm.value);
+    }, 2000)
     return {
-      isNew, data, deleteApp, saveChanges, nav
+      isNew, data, deleteApp, saveChanges, nav, htmlForm, editFormModal,
     }
   },
 
 }
+
+
+
+let formHtmlPlaceholderData = `<div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="enputEmail">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" name="pass">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type='hidden' id="exampleCheck1" value='0' name='checkbs'> <!--set unchecked value-->
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1" name="checkbs" value="1" checked>
+                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                        </div>
+
+                        <label for="pet-select">Choose a pet:</label>
+                        <select class="form-select" name="pet" id="pet-select" aria-label="asdfasdf">
+                            <option value="">--Please choose an option--</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="hamster">Hamster</option>
+                            <option value="parrot">Parrot</option>
+                            <option value="spider">Spider</option>
+                            <option value="goldfish">Goldfish</option>
+                        </select>
+                        <div>
+
+                            <label for="exampleColorInput" class="form-label">Color picker</label>
+                            <input type="color" class="form-control form-control-color" id="exampleColorInput" value="#563d7c" title="Choose your color" name="color">
+                        </div>
+
+                        <div class="form-check">
+                            <!--set unchecked value-->
+                            <input class="form-check-input" type='hidden' value='0' name='checkbox1'>
+                            <input class="form-check-input" type='checkbox' value='1' name='checkbox1' id="selfdestruct">
+                            <label class="form-check-label" for="selfdestruct">
+                                Default ujncehcked checkbox
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type='hidden' value='0' name='checkbox2'> <!--set unchecked value-->
+                            <input class="form-check-input" type='checkbox' value='1' name='checkbox2' id="selfdestruct1" checked>
+                            <label class="form-check-label" for="selfdestruct1">
+                                Default checked checkbox
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="jedna">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Default radio
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="dva">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Default checked radio
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input" type='hidden' value='off' name='flexSwitchCheckDefault'> <!--set unchecked value-->
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+                        </div>
+
+                        <label for="customRange1" class="form-label">Example range</label>
+                        <input type="range" class="form-range" id="customRange1" name="formRange">
+
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
+                            <label for="floatingTextarea2">Comments</label>
+                        </div>
+                        <button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
+
 </script>

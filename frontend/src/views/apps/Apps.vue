@@ -14,7 +14,7 @@
                 <router-link to="/app-edit">
                   <CButton size="lg" color="primary" class="float-end">
                     <CIcon size="xl" :icon="icon.cilPlus" />
-                    Přidat
+                    Create
                   </CButton>
                 </router-link>
               </CCol>
