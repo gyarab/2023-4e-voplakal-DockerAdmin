@@ -19,6 +19,12 @@ export default [
     to: '/apps',
     icon: 'cil-apps',
   },
+  {
+    component: 'CNavItem',
+    name: 'Instances',
+    to: '/instances',
+    icon: 'cil-bolt',
+  },
 
   {
     component: 'CNavTitle',
