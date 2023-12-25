@@ -1,9 +1,7 @@
 <template>
-    <CTableHeaderCell scope="row">{{ rowData.repository }}</CTableHeaderCell>
-    <CTableDataCell>{{ rowData.tag }}</CTableDataCell>
-    <CTableDataCell>{{ rowData.created }}</CTableDataCell>
-    <CTableDataCell>{{ rowData.size }}</CTableDataCell>
-    <CTableDataCell>{{ rowData.image_id }}</CTableDataCell>
+    <CTableHeaderCell scope="row">{{ rowData.name }}</CTableHeaderCell>
+    <CTableDataCell>{{ rowData.repository }}</CTableDataCell>
+    <CTableDataCell>{{ rowData.images.length }}</CTableDataCell>
     <CTableDataCell>
         <CButtonGroup role="group">
             <router-link :to="'/app-edit/' + rowData.id">

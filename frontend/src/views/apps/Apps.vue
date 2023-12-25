@@ -26,11 +26,10 @@
                   <CTable striped hover>
                     <CTableHead>
                       <CTableRow color="dark">
-                        <CTableHeaderCell scope="col">Repository</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">tag</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">created</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">size</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">image id</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">repository</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">images</CTableHeaderCell>
+                        
                         <CTableHeaderCell scope="col"></CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>

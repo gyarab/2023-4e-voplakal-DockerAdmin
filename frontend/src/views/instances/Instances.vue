@@ -38,7 +38,9 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <AppLi :dataRow="app.instances"></AppLi>
+                      <CTableRow v-for="instance in app.instances" :key="app.id">
+                        <AppLi :dataRow="instance"></AppLi>
+                      </CTableRow>
                     </CTableBody>
                   </CTable>
 
@@ -49,11 +51,14 @@
           <CCardFooter class="flex-container">
             <div class="flex-container">
               <div style="text-wrap: nowrap;">Bulk edit &nbsp;</div>
-              <CFormSelect v-model="actionSelect" size="sm" class="mb-3" aria-label="Large select example">
+              <CFormSelect v-model="actionSelect" size="sm" class="mb-3">
                 <option value="">Choose action</option>
-                <option value="update">Change app version (update)</option>
+                <option value="upgrade">Change app version (upgrade)</option>
                 <option value="delete">Delete</option>
                 <option value="stop">Stop</option>
+              </CFormSelect>
+              <CFormSelect v-if="actionSelect === 'upgrade'" v-model="actionUpgradeTag" size="sm" class="mb-3">
+                <option v-for="image in app.images" :value="image.tag">{{ image.tag }}</option>
               </CFormSelect>
               <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="(actionSelect && app.instances.some(i => i.selected)) ? null : true">OK</CButton>
             </div>
@@ -88,7 +93,6 @@ export default {
      * @param {Array} instances 
      */
     const transformData = (instances) => {
-      console.log(store.state.apps);
       const groupedArray = [];
       for (const curr of instances) {
         const appId = curr.app_id;
@@ -98,8 +102,7 @@ export default {
           groupedArray.push({
             id: appId,
             instances: [],
-            name: store.state.apps.find(app => app.id === appId).name
-
+            ...store.state.apps.find(app => app.id === appId)
             //...props of app (appID)
           })
           app = groupedArray[groupedArray.length - 1];
@@ -110,29 +113,32 @@ export default {
       return groupedArray;
     }
 
-    const apps = computed(() => {
-      console.log(transformData(store.state.instances));
-      return transformData(store.state.instances)
-    })
-
+    const apps = computed(() => transformData(store.state.instances))
+    const actionUpgradeTag = ref("");
     const editAction = (action, selected) => {
       if (selected.length === 0) return;
-      console.log(action, selected);
       switch (action) {
-        case "update":
-
+        case "upgrade":
+          store.dispatch("instancesUpgrade", {
+            ids: selected.map(s => s.id),
+            tag: actionUpgradeTag.value
+          })
           break;
         case "delete":
-
+          store.dispatch("instancesDelete", {
+            ids: selected.map(s => s.id),
+          })
           break;
         case "stop":
-
+          store.dispatch("instancesStop", {
+            ids: selected.map(s => s.id),
+          })
           break;
       }
     }
 
     return {
-      icon, apps, actionSelect: ref(""), editAction
+      icon, apps, actionSelect: ref(""), actionUpgradeTag, editAction
     }
   }
 }

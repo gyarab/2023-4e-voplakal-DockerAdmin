@@ -8,7 +8,7 @@
                             <h4>Html form content</h4>Between FORM tag
                         </CCardHeader>
                         <CCardBody>
-                            <v-ace-editor wrap v-model:value="htmlForm.value" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;"/>
+                            <v-ace-editor wrap v-model:value="data.htmlForm" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;" @input="loadData"/>
                         </CCardBody>
                     </CCard>
                 </CCol>
@@ -18,7 +18,7 @@
                             <CCard>
                                 <CCardHeader>Preview</CCardHeader>
                                 <CCardBody>
-                                    <form :onsubmit="() => false" ref="form" @change="loadData" v-html="htmlForm.value"> </form>
+                                    <form :onsubmit="() => false" ref="form" @change="loadData" v-html="data.htmlForm"> </form>
                                 </CCardBody>
                             </CCard>
                         </CCol>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { ref, onUpdated, onMounted, reactive, computed } from 'vue'
+import { ref, onUpdated, onMounted, reactive, computed, watch } from 'vue'
 import { VAceEditor } from "vue3-ace-editor";
 // import 'ace-builds/src-noconflict/mode-sh';
 // import 'ace-builds/src-noconflict/theme-chrome';
@@ -55,7 +55,7 @@ export default {
         VAceEditor,
     },
     props: {
-        htmlForm: {
+        data: {
             type: Object, //reactive
             // default: 'nene'
         },
@@ -73,7 +73,7 @@ export default {
         },
     },
     setup(props) {
-        const htmlForm = props.htmlForm;
+        const data = props.data;
         console.log(props);
         const form = ref();
 
@@ -96,9 +96,8 @@ export default {
         // onUpdated(() => loadData())
         onMounted(() => loadData())
 
-
         return {
-            form, loadData, formFilledValuesString, htmlForm
+            form, loadData, formFilledValuesString, data
         }
     }
 }
