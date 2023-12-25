@@ -13,7 +13,7 @@
                 <CButton color="secondary" @click="() => { data.show = false }">
                     Storno
                 </CButton>
-                <CButton color="primary" type="submit">Uložit</CButton>
+                <CButton color="primary" type="submit">OK</CButton>
 
             </CModalFooter>
             <CModalFooter v-else>

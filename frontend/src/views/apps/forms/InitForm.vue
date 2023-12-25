@@ -79,7 +79,6 @@ export default {
 
         const formFilledValues = ref({});
         let loadData = () => {
-            console.log("loadData");
             // const submitter = document.getElementById("submiter")
             // console.log(submitter);
             const formData = new FormData(form.value)//, submitter);
@@ -92,7 +91,6 @@ export default {
         }
 
         const formFilledValuesString = computed(() => {
-            console.log("ahoj");
             return syntaxHighlight(JSON.stringify(formFilledValues.value, null, 2))
         });
         // onUpdated(() => loadData())

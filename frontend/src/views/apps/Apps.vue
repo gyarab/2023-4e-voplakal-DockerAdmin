@@ -7,8 +7,7 @@
             <CRow>
               <CCol :sm="5">
                 <h4 id="traffic" class="card-title mb-0">Apps</h4>
-
-                <div class="small text-body-secondary" style="margin-top: 7px;">All your Docker containers managed by this administration system.</div>
+                <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker images</b> managed by this administration system.</div>
               </CCol>
               <CCol :sm="7" class="d-none d-md-block">
                 <router-link to="/app-edit">
@@ -24,7 +23,7 @@
               <CCol>
                 <CCol :md="12">
 
-                  <CTable striped howered>
+                  <CTable striped hover>
                     <CTableHead>
                       <CTableRow color="dark">
                         <CTableHeaderCell scope="col">Repository</CTableHeaderCell>
@@ -36,7 +35,9 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <AppLi :data="appsData"></AppLi>
+                      <CTableRow v-for="app in appsData" :key="app.id">
+                        <AppLi :rowData="app"></AppLi>
+                      </CTableRow>
                     </CTableBody>
                   </CTable>
 
@@ -63,7 +64,8 @@
 import { CIcon } from '@coreui/icons-vue';
 import * as icon from '@coreui/icons';
 import AppLi from './AppLi.vue';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   name: "Apps",
@@ -74,17 +76,8 @@ export default {
   setup() {
     //     REPOSITORY     TAG         IMAGE ID       CREATED        SIZE
     // role_mgr3      latest      08af2227f359   6 weeks ago    239MB
-
-    let appsData = [
-      {
-        id: "12345678",
-        repository: 'biobrejn-1',
-        tag: 'latest',
-        image_id: '08af2227f359',
-        created: '7 weeks ago',
-        size: '340 MB',
-      }
-    ]
+    const store = useStore()
+    const appsData = computed(() => store.state.apps)
     return {
       icon, appsData
     }

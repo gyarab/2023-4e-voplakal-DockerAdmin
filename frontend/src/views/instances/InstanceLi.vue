@@ -1,10 +1,14 @@
 <template>
-    <CTableRow v-for="item in data" :key="item.id">
-        <CTableHeaderCell scope="row">{{ item.repository }}</CTableHeaderCell>
+    <CTableRow v-for="item in dataRow" :key="item.id">
+        <!-- <CTableHeaderCell scope="row"><CFormCheck/></CTableHeaderCell> -->
+        <CTableDataCell scope="row" active>
+            <CFormCheck v-model="item.selected" />
+        </CTableDataCell>
+        <CTableDataCell>{{ item.name }}</CTableDataCell>
         <CTableDataCell>{{ item.tag }}</CTableDataCell>
-        <CTableDataCell>{{ item.created }}</CTableDataCell>
-        <CTableDataCell>{{ item.size }}</CTableDataCell>
-        <CTableDataCell>{{ item.image_id }}</CTableDataCell>
+        <CTableDataCell>{{ item.client }}</CTableDataCell>
+        <CTableDataCell>{{ item.status }}</CTableDataCell>
+        <CTableDataCell>{{ item.expiry_date }}</CTableDataCell>
         <CTableDataCell>
             <CButtonGroup role="group">
                 <router-link :to="'/app-edit/' + item.id">
@@ -18,27 +22,21 @@
 </template>
   
 <script>
+import { CFormCheck } from '@coreui/vue';
+
 
 export default {
     name: "AppLi",
     props: {
-        data: {
+        dataRow: {
             type: Array,
             default: []
         },
     },
     components: {
+        CFormCheck
     },
-    setup(context) {
-
-        context.data.push({
-            id: "12345677",
-            repository: 'biobrejn-2',
-            tag: 'latest',
-            image_id: '08af2227f359',
-            created: '7 weeks ago',
-            size: '340 MB',
-        })
+    setup(props, context) {
         return {
 
         }

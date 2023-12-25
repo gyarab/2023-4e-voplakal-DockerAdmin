@@ -72,8 +72,8 @@
                     </CNavLink>
                   </CNavItem>
                   <CNavItem>
-                    <CNavLink :active="nav === 'start' ? '' : null" @click="nav = 'start'">
-                      Start script
+                    <CNavLink :active="nav === 'run' ? '' : null" @click="nav = 'run'">
+                      Run script
                     </CNavLink>
                   </CNavItem>
                   <CNavItem>
@@ -98,17 +98,17 @@
                   </CCard>
                 </div>
 
-                <div v-show="nav === 'start'">
-                  <CCard><!-- Start script -->
+                <div v-show="nav === 'run'">
+                  <CCard><!-- Run script -->
                     <CCardHeader>
-                      <h4 class="card-title">Start script</h4>
-                      <div class="small text-body-secondary">This script run every time container starts.</div>
+                      <h4 class="card-title">Run script</h4>
+                      <div class="small text-body-secondary">This script run every time container runs.</div>
                     </CCardHeader>
                     <CCardBody>
-                      <v-ace-editor v-model:value="data.start_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
+                      <v-ace-editor v-model:value="data.run_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
                     </CCardBody>
                     <CCardFooter>
-                      script is located in ./Apps/{{ data.folder }}/start.sh
+                      script is located in ./Apps/{{ data.folder }}/run.sh
                     </CCardFooter>
                   </CCard>
                 </div>
@@ -241,7 +241,7 @@ export default {
         //   size: '340 MB',
         // },
         init_code: codeExample,
-        start_code: codeExample,
+        run_code: codeExample,
       });
 
 
@@ -266,9 +266,7 @@ export default {
       show: false
     })
 
-    setInterval(() => {
-      console.log(htmlForm.value);
-    }, 2000)
+
     return {
       isNew, data, deleteApp, saveChanges, nav, htmlForm, editFormModal,
     }

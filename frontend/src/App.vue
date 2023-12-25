@@ -18,6 +18,24 @@
       </div>
     </CToast>
   </CToaster>
+  <CModal :visible="!!apiErrors.length" @close="() => { apiErrors.length = 0 }">
+    <CModalHeader>
+      <CModalTitle>
+        {{ title }}
+      </CModalTitle>
+    </CModalHeader>
+      <CModalBody>
+        <div v-for="err in apiErrors">
+          <b> {{ err.name }} </b> {{ err.message }}
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="() => { apiErrors.length = 0 }">
+          Close
+        </CButton>
+        <CButton color="primary" type="submit" @click="location.reload()">Reload</CButton>
+      </CModalFooter>
+  </CModal>
 </template>
 <script>
 import { onBeforeMount, ref } from 'vue'
@@ -25,12 +43,16 @@ import { useStore } from 'vuex'
 import { useColorModes } from '@coreui/vue'
 
 let toasts = ref([]);
+window.apiErrors = ref([]);
 export default {
+  components: {
+  },
   setup() {
     const { isColorModeSet, setColorMode } = useColorModes(
       'coreui-free-vue-admin-template-theme',
     )
     const store = useStore()
+    store.dispatch("getApps")
 
     onBeforeMount(() => {
       const urlParams = new URLSearchParams(window.location.href.split('?')[1])
@@ -48,7 +70,7 @@ export default {
 
       setColorMode(store.state.theme)
     })
-    return { toasts }
+    return { toasts, apiErrors }
   },
 }
 window.showToast = (p) => {
