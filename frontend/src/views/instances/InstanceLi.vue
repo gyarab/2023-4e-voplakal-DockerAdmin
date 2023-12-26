@@ -10,7 +10,7 @@
     <CTableDataCell>{{ dataRow.expiry_date }}</CTableDataCell>
     <CTableDataCell>
         <CButtonGroup role="group">
-            <router-link :to="'/app-edit/' + dataRow.id">
+            <router-link :to="'/instance-edit/' + dataRow.id">
                 <CButton color="primary" variant="outline">Details</CButton>
             </router-link>
         </CButtonGroup>

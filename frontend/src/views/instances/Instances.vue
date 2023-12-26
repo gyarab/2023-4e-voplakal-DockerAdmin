@@ -13,7 +13,7 @@
                 <div class="small text-body-secondary" style="margin-top: 7px;">id: {{ app.id }}</div>
               </CCol>
               <CCol :sm="7" class="d-none d-md-block">
-                <router-link to="/app-edit">
+                <router-link :to="'/instance-create/' + app.id">
                   <CButton size="lg" color="primary" class="float-end">
                     <CIcon size="xl" :icon="icon.cilPlus" />
                     Add

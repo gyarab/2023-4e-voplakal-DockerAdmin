@@ -148,7 +148,7 @@
 
 
   <!-- MODALS -->
-  <Modal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
+  <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
     This will not remove your docker image.
     <template #footer>
       <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
@@ -156,7 +156,7 @@
       </CButton>
       <CButton color="danger" type="submit">Smazat</CButton>
     </template>
-  </Modal>
+  </MyModal>
   <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">
     <CModalHeader>
       <CModalTitle>User init form Customization</CModalTitle>
@@ -174,7 +174,7 @@
 <script>
 import { CIcon } from '@coreui/icons-vue';
 import { reactive, ref, computed } from 'vue';
-import Modal from '../../components/Modal.vue';
+import MyModal from '../../components/MyModal.vue';
 import { VAceEditor } from "vue3-ace-editor";
 // import 'ace-builds/src-noconflict/mode-sh';
 // import 'ace-builds/src-noconflict/theme-chrome';
@@ -195,7 +195,7 @@ export default {
   name: "AppEdit",
   components: {
     CIcon,
-    Modal,
+    MyModal,
     VAceEditor,
     InitForm
   },

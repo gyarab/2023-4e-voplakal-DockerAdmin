@@ -10,12 +10,10 @@
                 <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker images</b> managed by this administration system.</div>
               </CCol>
               <CCol :sm="7" class="d-none d-md-block">
-                <router-link to="/app-edit">
-                  <CButton size="lg" color="primary" class="float-end">
-                    <CIcon size="xl" :icon="icon.cilPlus" />
-                    Create
-                  </CButton>
-                </router-link>
+                <CButton size="lg" color="primary" class="float-end" @click="createAppDialogOpen">
+                  <CIcon size="xl" :icon="icon.cilPlus" />
+                  Create
+                </CButton>
               </CCol>
             </CRow>
             <br>
@@ -29,7 +27,7 @@
                         <CTableHeaderCell scope="col">Name</CTableHeaderCell>
                         <CTableHeaderCell scope="col">repository</CTableHeaderCell>
                         <CTableHeaderCell scope="col">images</CTableHeaderCell>
-                        
+
                         <CTableHeaderCell scope="col"></CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
@@ -57,28 +55,59 @@
       </CCol>
     </CRow>
   </div>
+
+  <MyModal ref="createModal" title="Select docker image repository" :on_submit="() => createApp(selectedImage)">
+    <CSpinner v-if="!dockerImages.length" />
+
+    <CFormSelect v-model="selectedImage">
+      <option>Choose a docker image repository</option>
+      <option v-for="image in dockerImages" :value="image">{{ image }}</option>
+    </CFormSelect>
+    <div class="small text-body-secondary">
+      To use some app in this system you have to dockerize the app firstly.
+    </div>
+
+  </MyModal>
 </template>
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
 import * as icon from '@coreui/icons';
+import { computed, reactive, ref } from 'vue';
 import AppLi from './AppLi.vue';
-import { computed, reactive } from 'vue';
 import { useStore } from 'vuex';
+import MyModal from '../../components/MyModal.vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "Apps",
   components: {
     CIcon,
-    AppLi
+    AppLi,
+    MyModal
   },
   setup() {
     //     REPOSITORY     TAG         IMAGE ID       CREATED        SIZE
     // role_mgr3      latest      08af2227f359   6 weeks ago    239MB
     const store = useStore()
+    const router = useRouter()
     const appsData = computed(() => store.state.apps)
+
+    const dockerImages = ref([]);
+    const createModal = ref();
+    const createAppDialogOpen = () => {
+      createModal.value.data.show = true;
+      setTimeout(() => dockerImages.value = ["Bio-brein", "DEH", "WordPress"], 1500)
+      //dockerImages = api call
+    }
+    const createApp = async (imageRepo) => {
+      let id = await store.dispatch("createApp", imageRepo)
+      router.push("/app-edit/" + id)
+
+    }
+
     return {
-      icon, appsData
+      icon, appsData, selectedImage: ref(), createApp, createAppDialogOpen, dockerImages, createModal
     }
   }
 }

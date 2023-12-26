@@ -22,7 +22,7 @@ const routes = [
           ),
       },
       {
-        path: 'app-edit/:id?',
+        path: 'app-edit/:id',
         props: true,
         name: 'AppEdit',
         component: () => import('@/views/apps/AppEdit.vue'),
@@ -36,6 +36,18 @@ const routes = [
         path: 'instances',
         name: 'Instances',
         component: () => import('@/views/instances/Instances.vue'),
+      },
+      {
+        path: 'instance-edit/:id',
+        props: true,
+        name: 'instanceEdit',
+        component: () => import('@/views/instances/InstanceEdit.vue'),
+      },
+      {
+        path: 'instance-create/:appId',
+        props: true,
+        name: 'Create Instance',
+        component: () => import('@/views/instances/InstanceCreate.vue'),
       },
     ],
   },
@@ -70,9 +82,15 @@ const routes = [
         component: () => import('@/views/pages/Register'),
       },
       {
+        path: 'public/instance-create/:appId',
+        props: true,
+        name: 'Public Create Instance',
+        component: () => import('@/views/instances/InstanceCreate.vue'),
+      },
+      {
         path: "/:pathMatch(.*)*",
         redirect: "/404"
-    },
+      },
     ],
   },
 ]

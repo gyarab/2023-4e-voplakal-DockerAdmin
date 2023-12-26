@@ -29,7 +29,7 @@ import * as icon from '@coreui/icons';
 import { reactive } from 'vue';
 
 export default {
-    name: "Modal",
+    name: "MyModal",
     components: {
     },
     props: {

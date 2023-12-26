@@ -36,6 +36,18 @@ export default createStore({
         window.apiErrors.value.push(error)
       }
     },
+    async createApp(context, imageRepo) {
+      try {
+        let appID = "22222222" //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
+        console.log("create app", imageRepo);
+        return appID;
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
+
+
+
     async getInstances(context) {
       try {
         const response = instances; //await REST.GET(`instances`);
@@ -44,27 +56,38 @@ export default createStore({
         window.apiErrors.value.push(error)
       }
     },
-    async instancesUpgrade(context, { ids, tag }) {
+    async instancesUpgrade(ctx, { ids, tag }) {
       try {
         console.log("upgrade", ids, tag);
+        ctx.dispatch("getInstances")
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
-    async instancesDelete(context, { ids }) {
+    async instancesDelete(ctx, { ids }) {
       try {
         console.log("delete", ids);
+        ctx.dispatch("getInstances")
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
-    async instancesStop(context, { ids }) {
+    async instancesStop(ctx, { ids }) {
       try {
         console.log("stop", ids);
+        ctx.dispatch("getInstances")
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
+    async instanceCreate(ctx, instance) {
+      try {
+        console.log("create instance", instance);
+        ctx.dispatch("getInstances")
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    }
 
   },
   modules: {},
@@ -75,80 +98,77 @@ export default createStore({
 
 
 let formHtmlPlaceholderData = `<div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="enputEmail">
-                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" name="pass">
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input class="form-check-input" type='hidden' id="exampleCheck1" value='0' name='checkbs'> <!--set unchecked value-->
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1" name="checkbs" value="1" checked>
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div>
+<label for="exampleInputEmail1" class="form-label">Email address</label>
+<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="inputEmail" required>
+<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+</div>
 
-                        <label for="pet-select">Choose a pet:</label>
-                        <select class="form-select" name="pet" id="pet-select" aria-label="asdfasdf">
-                            <option value="">--Please choose an option--</option>
-                            <option value="dog">Dog</option>
-                            <option value="cat">Cat</option>
-                            <option value="hamster">Hamster</option>
-                            <option value="parrot">Parrot</option>
-                            <option value="spider">Spider</option>
-                            <option value="goldfish">Goldfish</option>
-                        </select>
-                        <div>
+<div class="mb-3 form-check">
+<input class="form-check-input" type='hidden' id="exampleCheck1" value='0' name='checkbs'> <!--set unchecked value-->
+<input type="checkbox" class="form-check-input" id="exampleCheck1" name="checkbs" value="1" checked>
+<label class="form-check-label" for="exampleCheck1">Check me out</label>
+</div>
 
-                            <label for="exampleColorInput" class="form-label">Color picker</label>
-                            <input type="color" class="form-control form-control-color" id="exampleColorInput" value="#563d7c" title="Choose your color" name="color">
-                        </div>
+<label for="pet-select">Choose a pet:</label>
+<select class="form-select" name="pet" id="pet-select" aria-label="asdfasdf">
+<option value="">--Please choose an option--</option>
+<option value="dog">Dog</option>
+<option value="cat">Cat</option>
+<option value="hamster">Hamster</option>
+<option value="parrot">Parrot</option>
+<option value="spider">Spider</option>
+<option value="goldfish">Goldfish</option>
+</select>
+<div>
 
-                        <div class="form-check">
-                            <!--set unchecked value-->
-                            <input class="form-check-input" type='hidden' value='0' name='checkbox1'>
-                            <input class="form-check-input" type='checkbox' value='1' name='checkbox1' id="selfdestruct">
-                            <label class="form-check-label" for="selfdestruct">
-                                Default ujncehcked checkbox
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type='hidden' value='0' name='checkbox2'> <!--set unchecked value-->
-                            <input class="form-check-input" type='checkbox' value='1' name='checkbox2' id="selfdestruct1" checked>
-                            <label class="form-check-label" for="selfdestruct1">
-                                Default checked checkbox
-                            </label>
-                        </div>
+<label for="exampleColorInput" class="form-label">Color picker</label>
+<input type="color" class="form-control form-control-color" id="exampleColorInput" value="#563d7c" title="Choose your color" name="color">
+</div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="jedna">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                Default radio
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="dva">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                Default checked radio
-                            </label>
-                        </div>
+<div class="form-check">
+<!--set unchecked value-->
+<input class="form-check-input" type='hidden' value='0' name='checkbox1'>
+<input class="form-check-input" type='checkbox' value='1' name='checkbox1' id="selfdestruct">
+<label class="form-check-label" for="selfdestruct">
+    Default ujncehcked checkbox
+</label>
+</div>
+<div class="form-check">
+<input class="form-check-input" type='hidden' value='0' name='checkbox2'> <!--set unchecked value-->
+<input class="form-check-input" type='checkbox' value='1' name='checkbox2' id="selfdestruct1" checked>
+<label class="form-check-label" for="selfdestruct1">
+    Default checked checkbox
+</label>
+</div>
 
-                        <div class="form-check form-switch">
+<div class="form-check">
+<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="jedna">
+<label class="form-check-label" for="flexRadioDefault1">
+    Default radio
+</label>
+</div>
+<div class="form-check">
+<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="dva">
+<label class="form-check-label" for="flexRadioDefault2">
+    Default checked radio
+</label>
+</div>
 
-                            <input class="form-check-input" type='hidden' value='off' name='flexSwitchCheckDefault'> <!--set unchecked value-->
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
-                        </div>
+<div class="form-check form-switch">
 
-                        <label for="customRange1" class="form-label">Example range</label>
-                        <input type="range" class="form-range" id="customRange1" name="formRange">
+<input class="form-check-input" type='hidden' value='off' name='flexSwitchCheckDefault'> <!--set unchecked value-->
+<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="flexSwitchCheckDefault">
+<label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+</div>
 
-                        <div class="form-floating">
-                            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
-                            <label for="floatingTextarea2">Comments</label>
-                        </div>
-                        <button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
+<label for="customRange1" class="form-label">Example range</label>
+<input type="range" class="form-range" id="customRange1" name="formRange">
+
+<div class="form-floating">
+<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
+<label for="floatingTextarea2">Comments</label>
+</div>
+<button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
 
 let codeExample = `#!/bin/bash
 

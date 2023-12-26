@@ -1,14 +1,16 @@
 <template>
     <div>
-        <CContainer>
+        <CContainer v-if="!inUse">
             <CRow class="align-items-start" style="height: 100%;">
                 <CCol v-if="edit" :xs="8">
                     <CCard class="mb-4">
                         <CCardHeader>
-                            <h4>Html form content</h4>Between FORM tag
+                            <h4>Html form content</h4>Between {{ '<form></form>' }} tags<br><br>
+                            <b>you have to include:<br> <code>{{ '<input name="inputEmail" required>' }}</code></b>
                         </CCardHeader>
                         <CCardBody>
-                            <v-ace-editor wrap v-model:value="data.htmlForm" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;" @input="loadData"/>
+                            <v-ace-editor wrap v-model:value="data.htmlForm" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;" @input="loadData" />
+                            <div v-if="!htmlFormValid" style="font-size: larger; background-color: red;">You are missing input with <b>name="inputEmail"</b> in the form!</div>
                         </CCardBody>
                     </CCard>
                 </CCol>
@@ -34,6 +36,9 @@
                 </CCol>
             </CRow>
         </CContainer>
+        <CContainer v-if="inUse">
+            <form :onsubmit="(e) => { e.preventDefault(); formSubmit() }" ref="form" @change="loadData" v-html="data.htmlForm"> </form>
+        </CContainer>
     </div>
 </template>
 
@@ -54,12 +59,17 @@ export default {
     components: {
         VAceEditor,
     },
+    emits: ['createInstance'],
     props: {
         data: {
             type: Object, //reactive
             // default: 'nene'
         },
         edit: {
+            type: Boolean,
+            default: false
+        },
+        inUse: {
             type: Boolean,
             default: false
         },
@@ -72,9 +82,8 @@ export default {
             default: false
         },
     },
-    setup(props) {
+    setup(props, { emit }) {
         const data = props.data;
-        console.log(props);
         const form = ref();
 
         const formFilledValues = ref({});
@@ -96,8 +105,12 @@ export default {
         // onUpdated(() => loadData())
         onMounted(() => loadData())
 
+        const formSubmit = () => {
+            emit('createInstance', formFilledValues.value)
+        }
+        const htmlFormValid = computed(() => data.htmlForm?.includes('name="inputEmail"') || data.htmlForm?.includes("name='inputEmail'"))
         return {
-            form, loadData, formFilledValuesString, data
+            form, loadData, formFilledValuesString, data, formSubmit, htmlFormValid
         }
     }
 }
