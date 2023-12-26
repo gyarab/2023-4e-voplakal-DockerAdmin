@@ -9,7 +9,7 @@
                 <h4 id="traffic" class="card-title mb-0">Apps</h4>
                 <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker images</b> managed by this administration system.</div>
               </CCol>
-              <CCol :sm="7" class="d-none d-md-block">
+              <CCol :sm="7" class="  d-md-block">
                 <CButton size="lg" color="primary" class="float-end" @click="createAppDialogOpen">
                   <CIcon size="xl" :icon="icon.cilPlus" />
                   Create

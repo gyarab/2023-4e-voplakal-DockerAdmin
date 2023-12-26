@@ -12,7 +12,7 @@
                 <h4 id="traffic" class="card-title mb-0">{{ app.name }}</h4>
                 <div class="small text-body-secondary" style="margin-top: 7px;">id: {{ app.id }}</div>
               </CCol>
-              <CCol :sm="7" class="d-none d-md-block">
+              <CCol :sm="7" class="  d-md-block">
                 <router-link :to="'/instance-create/' + app.id">
                   <CButton size="lg" color="primary" class="float-end">
                     <CIcon size="xl" :icon="icon.cilPlus" />

@@ -5,7 +5,7 @@
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
       
-      <CHeaderNav class="d-none d-md-flex">
+      <CHeaderNav class="  d-md-flex">
         <CNavItem>
           <CNavLink href="/dashboard"> Dashboard </CNavLink>
         </CNavItem>

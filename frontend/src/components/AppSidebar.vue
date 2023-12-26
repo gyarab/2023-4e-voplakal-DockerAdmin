@@ -16,7 +16,7 @@
     </CSidebarHeader>
     <AppSidebarNav />
     <CSidebarFooter class="border-top">
-      <CSidebarToggler class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
+      <CSidebarToggler class="  d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
     </CSidebarFooter>
   </CSidebar>
 </template>

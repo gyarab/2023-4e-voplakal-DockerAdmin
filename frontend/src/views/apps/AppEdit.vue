@@ -5,11 +5,11 @@
         <CCard class="mb-4">
           <CCardBody>
             <CRow>
-              <CCol :sm="5">
-                <h4 class="card-title mb-0"> {{ isNew ? "Add app" : "" }}{{ data.name }}</h4>
+              <CCol :sm="9">
+                <h4 class="card-title mb-0">  {{ data.name }}</h4>
                 <div class="small text-body-secondary" style="margin-top: 7px;">Editing app belonging to a docker image.</div>
               </CCol>
-              <CCol :sm="7" class="d-none d-md-block">
+              <CCol :sm="3" class="d-md-block">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                   <CButton class="float-end" color="danger" variant="ghost" @click="() => this.$refs.deleteModal.data.show = true">Delete</CButton>
                   <CButton class="float-end" color="success" size="lg" @click="saveChanges">Save</CButton>
@@ -205,7 +205,6 @@ export default {
     },
   },
   setup(props) {
-    const isNew = !!props.id;
     const store = useStore();
 
     //todo load item data app_id: props.id
@@ -235,7 +234,7 @@ export default {
 
 
     return {
-      isNew, data, deleteApp, saveChanges, nav, editFormModal,
+      data, deleteApp, saveChanges, nav, editFormModal,
     }
   },
 

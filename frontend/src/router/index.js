@@ -40,7 +40,7 @@ const routes = [
       {
         path: 'instance-edit/:id',
         props: true,
-        name: 'instanceEdit',
+        name: 'Edit Instance',
         component: () => import('@/views/instances/InstanceEdit.vue'),
       },
       {

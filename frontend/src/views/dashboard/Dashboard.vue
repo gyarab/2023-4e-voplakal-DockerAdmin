@@ -9,7 +9,7 @@
                 <h4 id="traffic" class="card-title mb-0">Traffic</h4>
                 <div class="small text-body-secondary">January 2021</div>
               </CCol>
-              <CCol :sm="7" class="d-none d-md-block">
+              <CCol :sm="7" class="  d-md-block">
                 <CButton color="primary" class="float-end">
                   <CIcon icon="cil-cloud-download" />
                 </CButton>
