@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div v-if="!data">
+    <CSpinner />Loading instance data
+  </div>
+  <div v-else-if="!app">Can not find app</div>
+  <div v-else>
     <CRow>
       <CCol :md="12">
         <CCard class="mb-4">
@@ -10,6 +14,8 @@
                   <CCol :sm="9">
                     <h4 class="card-title mb-0">{{ data.name }}</h4>
                     <div class="small text-body-secondary" style="margin-top: 7px;">Editing app instance belonging to a client.</div>
+                    <div class="small text-body-secondary">id: {{ data.id }}</div>
+
                   </CCol>
                   <CCol :sm="3" class="d-md-block">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -49,13 +55,22 @@
 
                     <CCard style="margin-bottom: 25px;">
                       <CCardBody>
-                        <CCardTitle>Image</CCardTitle>
+                        <CCardTitle>App</CCardTitle>
                         <CTable>
                           <CTableBody>
                             <CTableRow>
-                              <CTableHeaderCell scope="row">Repository</CTableHeaderCell>
-                              <CTableDataCell>{{ image.repository }}</CTableDataCell>
+                              <CTableHeaderCell scope="row">Name</CTableHeaderCell>
+                              <CTableDataCell>{{ app.name }}</CTableDataCell>
                             </CTableRow>
+                            <CTableRow>
+                              <CTableHeaderCell scope="row">Repository</CTableHeaderCell>
+                              <CTableDataCell>{{ app.repository }}</CTableDataCell>
+                            </CTableRow>
+                          </CTableBody>
+                        </CTable>
+                        <CCardTitle>Image</CCardTitle>
+                        <CTable>
+                          <CTableBody>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
                               <CTableDataCell>{{ image.tag }}</CTableDataCell>
@@ -74,16 +89,25 @@
                             </CTableRow>
                           </CTableBody>
                         </CTable>
-
                       </CCardBody>
+                      <CCardFooter>
+                        <CCardTitle>Change version (tag)</CCardTitle>
+                        <div class="flex-container">
+                          <CFormSelect v-model="actionUpgradeTag" size="sm" class="mb-3">
+                            <option>Select</option>
+                            <option v-for="image in app.images" :value="image.tag">{{ image.tag }}</option>
+                          </CFormSelect>
+                          <CButton color="primary" size="sm" @click="upgradeTag(actionUpgradeTag)">OK</CButton>
+                        </div>
+                      </CcardFooter>
                       <!-- <CCardFooter>                        <CRow>                          <CCol> </CCol>                        </CRow>                      </CCardFooter> -->
                     </CCard>
 
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
-                        <h4 class="card-title">Resources limits</h4>
+                        <h4 class="card-title mb-0">Resources limits</h4>
                       </CCardHeader>
-                      <CCardBody>
+                      <CCardBody v-if="data.limits">
                         <CTable>
                           <CTableBody>
                             <CTableRow>
@@ -124,13 +148,14 @@
                       <CCardBody>
                         <CTable>
                           <CTableBody>
-                            <CTableRow v-for="(val, key ) in stats">
-                              <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
-                              <CTableDataCell>{{ val }}</CTableDataCell>
-                            </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Status</CTableHeaderCell>
                               <CTableDataCell>{{ data.status }}</CTableDataCell>
+                            </CTableRow>
+                            <CSpinner v-if="!stats" />
+                            <CTableRow v-for="(val, key ) in stats">
+                              <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
+                              <CTableDataCell>{{ val }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                         </CTable>
@@ -144,12 +169,15 @@
                       <CCardHeader>
                         <CRow>
                           <h4 class="card-title">Dates</h4>
-
                         </CRow>
                       </CCardHeader>
                       <CCardBody>
                         <CTable>
                           <CTableBody>
+                            <CTableRow>
+                              <CTableHeaderCell scope="row">Created</CTableHeaderCell>
+                              <CTableDataCell>{{ data.created_on }} </CTableDataCell>
+                            </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Expiry date</CTableHeaderCell>
                               <CTableDataCell>
@@ -175,13 +203,13 @@
 
 
   <!-- MODALS -->
-  <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
-    This will not remove your docker image.
+  <MyModal ref="deleteModal" :title="'Delete instance ' + data.name + '?'" :on_submit="deleteInstance">
+    All data belonging to this instance will be deleted. Are you sure you want to delete this instance? It is no t rewersible.
     <template #footer>
       <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
         Storno
       </CButton>
-      <CButton color="danger" type="submit">Smazat</CButton>
+      <CButton color="danger" type="submit">Delete</CButton>
     </template>
   </MyModal>
 </template>
@@ -190,6 +218,7 @@
 <script>
 import { reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from "vue-router";
 import MyModal from '../../components/MyModal.vue';
 
 
@@ -205,59 +234,55 @@ export default {
     },
   },
   setup(props) {
-    const isNew = !!props.id;
     const store = useStore();
+    const router = useRouter();
 
     //todo load item data app_id: props.id
     store.dispatch("getInstances")
-    const data = computed(() => store.state.instances[0]);
+    const data = computed(() => store.state.instances.find(i => i.id === props.id));
+    const app = computed(() => store.state.apps.find(a => a.id === data.value.app_id))
+    const image = computed(() => app.value.images.find(i => i.image_id === data.value.image_id))
+
+    // {
+    //   repository: "biobrein",
+    //   tag: 'latest',
+    //   image_id: '08af2227f359',
+    //   created: '7 weeks ago',
+    //   size: '340 MB',
+    // }
 
 
-    const deleteApp = () => {
-      console.log("deleted");
-      window.showToast({
-        content: 'Deleted',
-        color: 'success'
-      })
+    const deleteInstance = async () => {
+      store.dispatch("instancesDelete", [data.value.id])
+      router.push("/instances")
     }
-    const saveChanges = () => {
-      console.log("save");
-      window.showToast({
-        content: 'Saved',
-        color: 'success'
-      })
+    const saveChanges = async () => {
+      store.dispatch("instanceSave", data.value)
     }
-    const nav = ref('init');
-
     const startInstance = () => {
-      console.log("star");
+      store.dispatch("instanceStart", data.value.id)
     }
     const stopInstance = () => {
-      console.log("stop");
+      store.dispatch("instancesStop", [data.value.id])
     }
 
-    const editFormModal = reactive({
-      show: false
-    })
+    const upgradeTag = (tag) => {
+      store.dispatch("instancesUpgrade", {
+        ids: [data.value.id],
+        tag
+      })
+    }
 
-    const stats = ref({ BlockIO: "108MB / 59.4MB", CPUPerc: "0.00%", Container: "a85f49b55397", ID: "a85f49b55397", MemPerc: "4.43%", MemUsage: "87.75MiB / 1.936GiB", Name: "m-test1", NetIO: "2.44GB / 510MB", PIDs: "24", })
+    const stats = ref(null);
+    const loadStats = async () => {
+      setTimeout(() => stats.value = { BlockIO: "108MB / 59.4MB", CPUPerc: "0.00%", Container: "a85f49b55397", ID: "a85f49b55397", MemPerc: "4.43%", MemUsage: "87.75MiB / 1.936GiB", Name: "m-test1", NetIO: "2.44GB / 510MB", PIDs: "24", }
+        , 1500)
+    }
+    loadStats();
 
-    setTimeout(() => {
-      for (const p in stats.value) {
-        console.log(`${p}: ${stats.value[p]}`);
-      }
-      console.log();
-    }, 1000)
 
     return {
-      isNew, data, deleteApp, saveChanges, stats, nav, editFormModal, image: {
-        repository: "biobrein",
-        tag: 'latest',
-        image_id: '08af2227f359',
-        created: '7 weeks ago',
-        size: '340 MB',
-      },
-      stopInstance, startInstance
+      data, deleteInstance, saveChanges, stats, image, stopInstance, startInstance, app, actionUpgradeTag: ref(), upgradeTag,
     }
   },
 

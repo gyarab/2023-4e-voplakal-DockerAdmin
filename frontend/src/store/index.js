@@ -60,22 +60,44 @@ export default createStore({
       try {
         console.log("upgrade", ids, tag);
         ctx.dispatch("getInstances")
+        window.showToast('Upgraded')
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
-    async instancesDelete(ctx, { ids }) {
+    async instancesDelete(ctx, ids) {
       try {
         console.log("delete", ids);
         ctx.dispatch("getInstances")
+        window.showToast('Deleted')
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
-    async instancesStop(ctx, { ids }) {
+    async instanceSave(ctx, data) {
       try {
-        console.log("stop", ids);
+        console.log("save", data.id);
+        console.log(data);
         ctx.dispatch("getInstances")
+        window.showToast('Saved')
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
+    async instanceStart(ctx, id) {
+      try {
+        console.log("start", id);
+        ctx.dispatch("getInstances")
+        window.showToast('Started')
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
+    async instancesStop(ctx, id) {
+      try {
+        console.log("stop", id);
+        ctx.dispatch("getInstances")
+        window.showToast('Stopped')
       } catch (error) {
         window.apiErrors.value.push(error)
       }
@@ -84,6 +106,7 @@ export default createStore({
       try {
         console.log("create instance", instance);
         ctx.dispatch("getInstances")
+        window.showToast('Created')
       } catch (error) {
         window.apiErrors.value.push(error)
       }
@@ -221,7 +244,7 @@ let appsData = [
       size: '340 MB',
     }, {
       tag: 'recent',
-      image_id: '18af2227f359',
+      image_id: '23452345',
       created: '8 weeks ago',
       size: '540 MB',
     },
@@ -286,10 +309,10 @@ let instances = [
   {
     id: "62234444",
     app_id: "123432341ščř",
-    image: "biobrein1",
     status: "Up 3 days",
     image_id: "23452345",
     expiry_date: "2023-11-22",
+    created_on: "2023-01-16",
     name: "deh-martin.air345",
     client: "pepa.novak@seznam.cz",
     limits: {
@@ -304,6 +327,7 @@ let instances = [
     app_id: "123432341ščř",
     client: "pepa.novak@seznam.cz",
     expiry_date: "2023-11-22",
+    created_on: "2023-01-16",
     container_id: "2cea44557dcb",
     tag: "latest",
     image_id: "23452345",
@@ -314,6 +338,7 @@ let instances = [
     id: "12234445",
     app_id: "123432čř",
     client: "pepa.novak@seznam.cz",
+    created_on: "2023-01-16",
     expiry_date: "2023-11-22",
     container_id: "2cea44557dcb",
     tag: "latest",
@@ -329,6 +354,7 @@ let instances = [
     expiry_date: "2023-11-22",
     tag: "latest",
     image_id: "23452345",
+    created_on: "2023-01-16",
     status: "Up 3 days",
     name: "deh-martin.air345"
   },

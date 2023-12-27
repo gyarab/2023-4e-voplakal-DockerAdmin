@@ -125,14 +125,10 @@ export default {
           })
           break;
         case "delete":
-          store.dispatch("instancesDelete", {
-            ids: selected.map(s => s.id),
-          })
+          store.dispatch("instancesDelete", selected.map(s => s.id))
           break;
         case "stop":
-          store.dispatch("instancesStop", {
-            ids: selected.map(s => s.id),
-          })
+          store.dispatch("instancesStop", selected.map(s => s.id))
           break;
       }
     }

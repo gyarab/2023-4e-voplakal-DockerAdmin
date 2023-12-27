@@ -46,14 +46,10 @@ export default {
         const store = useStore()
         return {
             del: () => {
-                store.dispatch("instancesDelete", {
-                    ids: [props.dataRow.id],
-                })
+                store.dispatch("instancesDelete", [props.dataRow.id])
             },
             stop: () => {
-                store.dispatch("instancesStop", {
-                    ids: [props.dataRow.id],
-                })
+                store.dispatch("instancesStop", [props.dataRow.id])
             }
         }
     }

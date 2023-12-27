@@ -154,7 +154,7 @@
       <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
         Storno
       </CButton>
-      <CButton color="danger" type="submit">Smazat</CButton>
+      <CButton color="danger" type="submit">Delete</CButton>
     </template>
   </MyModal>
   <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">

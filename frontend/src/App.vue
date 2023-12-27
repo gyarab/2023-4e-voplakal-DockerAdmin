@@ -24,17 +24,17 @@
         {{ title }}
       </CModalTitle>
     </CModalHeader>
-      <CModalBody>
-        <div v-for="err in apiErrors">
-          <b> {{ err.name }} </b> {{ err.message }}
-        </div>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" @click="() => { apiErrors.length = 0 }">
-          Close
-        </CButton>
-        <CButton color="primary" type="submit" @click="reload">Reload</CButton>
-      </CModalFooter>
+    <CModalBody>
+      <div v-for="err in apiErrors">
+        <b> {{ err.name }} </b> {{ err.message }}
+      </div>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="secondary" @click="() => { apiErrors.length = 0 }">
+        Close
+      </CButton>
+      <CButton color="primary" type="submit" @click="reload">Reload</CButton>
+    </CModalFooter>
   </CModal>
 </template>
 <script>
@@ -78,6 +78,10 @@ window.showToast = (p) => {
   //   content: 'Lorem ipsum dolor cet emit',
   //     color: 'success'
   // }
+  if (typeof p === 'string') p = {
+    content: p,
+    color: 'success'
+  }
   toasts.value.push(
     p
   )
