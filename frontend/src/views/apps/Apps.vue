@@ -103,7 +103,6 @@ export default {
     const createApp = async (imageRepo) => {
       let id = await store.dispatch("createApp", imageRepo)
       router.push("/app-edit/" + id)
-
     }
 
     return {

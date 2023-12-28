@@ -6,7 +6,7 @@
           <CCardBody>
             <CRow>
               <CCol :sm="9">
-                <h4 class="card-title mb-0">  {{ data.name }}</h4>
+                <h4 class="card-title mb-0"> {{ data.name }}</h4>
                 <div class="small text-body-secondary" style="margin-top: 7px;">Editing app belonging to a docker image.</div>
                 <div class="small text-body-secondary">id: {{ data.id }}</div>
               </CCol>
@@ -211,9 +211,7 @@ export default {
     const router = useRouter()
 
     //todo load item data app_id: props.id
-    console.log(props.id);
-    const data = computed(() => store.state.apps[0]);
-
+    const data = computed(() => store.state.apps.find(a => a.id === props.id));
 
     const deleteApp = () => {
       store.dispatch("deleteApp", data.value.id)

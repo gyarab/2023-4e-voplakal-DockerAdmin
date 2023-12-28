@@ -264,6 +264,7 @@ export default {
     }
     const stopInstance = () => {
       store.dispatch("instancesStop", [data.value.id])
+      data.value.status = "Exited"
     }
 
     const upgradeTag = (tag) => {
