@@ -107,7 +107,7 @@
                       <CCardHeader>
                         <h4 class="card-title mb-0">Resources limits</h4>
                       </CCardHeader>
-                      <CCardBody v-if="data.limits">
+                      <CCardBody>
                         <CTable>
                           <CTableBody>
                             <CTableRow>
@@ -176,7 +176,7 @@
                           <CTableBody>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell>{{ data.created_on }} </CTableDataCell>
+                              <CTableDataCell><CFormInput type="date" :value="data.created_on" disabled/></CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Expiry date</CTableHeaderCell>

@@ -8,6 +8,7 @@
               <CCol :sm="9">
                 <h4 class="card-title mb-0">  {{ data.name }}</h4>
                 <div class="small text-body-secondary" style="margin-top: 7px;">Editing app belonging to a docker image.</div>
+                <div class="small text-body-secondary">id: {{ data.id }}</div>
               </CCol>
               <CCol :sm="3" class="d-md-block">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -188,6 +189,7 @@ ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl);
 
 import InitForm from './forms/InitForm.vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 
 
@@ -206,6 +208,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const router = useRouter()
 
     //todo load item data app_id: props.id
     console.log(props.id);
@@ -213,21 +216,14 @@ export default {
 
 
     const deleteApp = () => {
-      console.log("deleted");
-      window.showToast({
-        content: 'Deleted',
-        color: 'success'
-      })
+      store.dispatch("deleteApp", data.value.id)
+      router.push("/apps")
     }
     const saveChanges = () => {
-      console.log("save");
-      window.showToast({
-        content: 'Saved',
-        color: 'success'
-      })
+      store.dispatch("saveApp", data.value)
     }
-    const nav = ref('init');
 
+    const nav = ref('init');
     const editFormModal = reactive({
       show: false
     })

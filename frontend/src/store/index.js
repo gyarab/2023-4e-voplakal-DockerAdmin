@@ -39,8 +39,28 @@ export default createStore({
     async createApp(context, imageRepo) {
       try {
         let appID = "22222222" //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
-        console.log("create app", imageRepo);
+        await console.log("create app", imageRepo);
+        context.dispatch("getApps")
+        window.showToast('Created')
         return appID;
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
+    async deleteApp(context, id) {
+      try {
+        await console.log("appDelete", id);
+        context.dispatch("getApps")
+        window.showToast('Deleted')
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
+    async saveApp(context, data) {
+      try {
+        await console.log("saveApp", data);
+        context.dispatch("getApps")
+        window.showToast('Saved')
       } catch (error) {
         window.apiErrors.value.push(error)
       }

@@ -5,17 +5,7 @@
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
       
-      <CHeaderNav class="  d-md-flex">
-        <CNavItem>
-          <CNavLink href="/dashboard"> Dashboard </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Users</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Settings</CNavLink>
-        </CNavItem>
-      </CHeaderNav>
+      <AppBreadcrumb />
 
       <CHeaderNav class="ms-auto">
  
@@ -61,9 +51,7 @@
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
     </CContainer>
-    <CContainer class="px-4" fluid>
-      <AppBreadcrumb />
-    </CContainer>
+  
   </CHeader>
 </template>
 
