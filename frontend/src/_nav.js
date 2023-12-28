@@ -12,18 +12,21 @@ export default [
   {
     component: 'CNavTitle',
     name: 'Theme',
+    role: "ADMIN"
   },
   {
     component: 'CNavItem',
     name: 'Apps',
     to: '/apps',
     icon: 'cil-apps',
+    role: "ADMIN"
   },
   {
     component: 'CNavItem',
     name: 'Instances',
     to: '/instances',
     icon: 'cil-bolt',
+    role: "ADMIN"
   },
 
   {

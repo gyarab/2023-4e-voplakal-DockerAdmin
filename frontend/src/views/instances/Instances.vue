@@ -86,7 +86,6 @@ export default {
     //     app tag client status expiry
 
     const store = useStore();
-    store.dispatch("getInstances")
 
     /**
      * 

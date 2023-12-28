@@ -1,14 +1,9 @@
-import { defineComponent, h, onMounted, ref, resolveComponent } from 'vue'
+import { defineComponent, h, onMounted, ref, resolveComponent, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
-import {
-  CBadge,
-  CSidebarNav,
-  CNavItem,
-  CNavGroup,
-  CNavTitle,
-} from '@coreui/vue'
+import { CBadge, CSidebarNav, CNavItem, CNavGroup, CNavTitle } from '@coreui/vue'
 import nav from '@/_nav.js'
+import { useStore } from 'vuex'
 
 const normalizePath = (path) =>
   decodeURI(path)
@@ -42,6 +37,17 @@ const isActiveItem = (route, item) => {
   return false
 }
 
+const hasAtLeastRole = (sessionRole, role) => {
+  const roles = {
+    ADMIN: 2,
+    WORKER: 1,
+    STUDENT: 0,
+    undefined: 0,
+  }
+
+  return roles[sessionRole] >= roles[role]
+}
+
 const AppSidebarNav = defineComponent({
   name: 'AppSidebarNav',
   components: {
@@ -49,9 +55,12 @@ const AppSidebarNav = defineComponent({
     CNavGroup,
     CNavTitle,
   },
-  setup() {
+  props: ['session'],
+  setup(props) {
     const route = useRoute()
+    const store = useStore()
     const firstRender = ref(true)
+    const session = computed(() => store.state.session)
 
     onMounted(() => {
       firstRender.value = false
@@ -103,11 +112,7 @@ const AppSidebarNav = defineComponent({
                             customClassName: 'nav-icon',
                             icon: item.icon,
                           })
-                        : h(
-                            'span',
-                            { class: 'nav-icon' },
-                            h('span', { class: 'nav-icon-bullet' }),
-                          ),
+                        : h('span', { class: 'nav-icon' }, h('span', { class: 'nav-icon-bullet' })),
                       item.name,
                       item.badge &&
                         h(
@@ -134,12 +139,18 @@ const AppSidebarNav = defineComponent({
           )
     }
 
+
+    console.log(props.session)
+
     return () =>
       h(
         CSidebarNav,
         {},
         {
-          default: () => nav.map((item) => renderItem(item)),
+          default: () =>
+            nav
+              .filter((i) => hasAtLeastRole(props.session.role, i.role))
+              .map((item) => renderItem(item)),
         },
       )
   },

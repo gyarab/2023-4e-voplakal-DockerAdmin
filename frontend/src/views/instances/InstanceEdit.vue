@@ -21,7 +21,10 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                       <CButton class="float-end" color="danger" variant="ghost" @click="() => this.$refs.deleteModal.data.show = true">Delete</CButton>
 
-                      <CButton v-if="data.status.substring(0, 2) === 'Up'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
+                      <CButton v-if="!data.status" class="float-end" color="primary" variant="ghost" size="lg">
+                        <CSpinner />
+                      </CButton>
+                      <CButton v-else-if="data.status.substring(0, 2) === 'Up'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
                       <CButton v-else class="float-end" color="primary" variant="ghost" size="lg" @click="startInstance">Start</CButton>
 
                       <CButton class="float-end" color="success" size="lg" @click="saveChanges">Save</CButton>
@@ -176,7 +179,9 @@
                           <CTableBody>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell><CFormInput type="date" :value="data.created_on" disabled/></CTableDataCell>
+                              <CTableDataCell>
+                                <CFormInput type="date" :value="data.created_on" disabled />
+                              </CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Expiry date</CTableHeaderCell>
@@ -198,20 +203,21 @@
         </CCard>
       </CCol>
     </CRow>
+
+
+
+    <!-- MODALS -->
+    <MyModal ref="deleteModal" :title="'Delete instance ' + data.name + '?'" :on_submit="deleteInstance">
+      All data belonging to this instance will be deleted. Are you sure you want to delete this instance? It is no t rewersible.
+      <template #footer>
+        <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
+          Storno
+        </CButton>
+        <CButton color="danger" type="submit">Delete</CButton>
+      </template>
+    </MyModal>
+
   </div>
-
-
-
-  <!-- MODALS -->
-  <MyModal ref="deleteModal" :title="'Delete instance ' + data.name + '?'" :on_submit="deleteInstance">
-    All data belonging to this instance will be deleted. Are you sure you want to delete this instance? It is no t rewersible.
-    <template #footer>
-      <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
-        Storno
-      </CButton>
-      <CButton color="danger" type="submit">Delete</CButton>
-    </template>
-  </MyModal>
 </template>
 
 
@@ -220,13 +226,15 @@ import { reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import MyModal from '../../components/MyModal.vue';
+import { CSpinner } from '@coreui/vue';
 
 
 
 export default {
   name: "AppEdit",
   components: {
-    MyModal
+    MyModal,
+    CSpinner
   },
   props: {
     id: {
@@ -260,11 +268,12 @@ export default {
       store.dispatch("instanceSave", data.value)
     }
     const startInstance = () => {
+      data.value.status = undefined
       store.dispatch("instanceStart", data.value.id)
     }
     const stopInstance = () => {
+      data.value.status = undefined
       store.dispatch("instancesStop", [data.value.id])
-      data.value.status = "Exited"
     }
 
     const upgradeTag = (tag) => {

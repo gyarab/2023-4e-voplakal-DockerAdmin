@@ -8,7 +8,9 @@ export default createStore({
     theme: 'light',
 
     apps: [],
-    instances: []
+    instances: [],
+    session: null,
+    error: null,
   },
   mutations: {
     toggleSidebar(state) {
@@ -26,10 +28,51 @@ export default createStore({
     updateInstances(state, instances) {
       state.instances = instances;
     },
+
+    setSession(state, data) {
+      state.session = data;
+    },
+    logout(state, data) {
+      state.session = null;
+      state.error = true;
+    },
+    setSessionError(state, data) {
+      state.error = data;
+    },
   },
   actions: {
-    async getApps(context) {
+
+    /*
+    * SESSION
+    */
+    async getSession(context) {
       try {
+        const response = {
+          role: "ADMIN"
+        } //await REST.GET('session');
+        console.log("get session");
+        context.commit('setSession', response);
+      } catch (error) {
+        context.commit('setSessionError', error);
+      }
+    },
+    
+    async logout(context) {
+      try {
+        // await REST.DELETE('session');
+        console.log("delete session");
+        context.commit('logout');
+      } catch (error) {
+        context.commit('setSessionError', error);
+      }
+    },
+
+    /*
+    * APPS
+    */
+   async getApps(context) {
+     try {
+        await new Promise(resolve => setTimeout(resolve, 700));
         const response = appsData; //await REST.GET(`apps`);
         context.commit('updateApps', response);
       } catch (error) {
@@ -38,7 +81,7 @@ export default createStore({
     },
     async createApp(context, imageRepo) {
       try {
-        let appID = "22222222" //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
+        let appID = "123432341ščř" //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
         await console.log("create app", imageRepo);
         context.dispatch("getApps")
         window.showToast('Created')
@@ -66,10 +109,15 @@ export default createStore({
       }
     },
 
+    /*
+    *  INSTANCES
+    */
 
 
     async getInstances(context) {
       try {
+        await new Promise(resolve => setTimeout(resolve, 700));
+        console.log("go");
         const response = instances; //await REST.GET(`instances`);
         context.commit('updateInstances', response);
       } catch (error) {

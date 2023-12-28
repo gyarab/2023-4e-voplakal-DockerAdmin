@@ -1,9 +1,9 @@
 <template>
   <CSidebar class="border-end" colorScheme="dark" position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="(event) =>
-      $store.commit({
-        type: 'updateSidebarVisible',
-        value: event,
-      })
+    $store.commit({
+      type: 'updateSidebarVisible',
+      value: event,
+    })
     ">
     <CSidebarHeader class="border-bottom">
       <CSidebarBrand>
@@ -14,9 +14,9 @@
       </CSidebarBrand>
       <CCloseButton class="d-lg-none" dark @click="$store.commit('toggleSidebar')" />
     </CSidebarHeader>
-    <AppSidebarNav />
+    <AppSidebarNav :session="session" />
     <CSidebarFooter class="border-top">
-      <CSidebarToggler class="  d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
+      <CSidebarToggler class="d-none  d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
     </CSidebarFooter>
   </CSidebar>
 </template>
@@ -38,6 +38,7 @@ export default {
 
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
+      session: computed(() => store.state.session)
     }
   },
 }

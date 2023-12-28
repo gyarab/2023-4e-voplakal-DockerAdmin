@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div v-if="!data">
+    <CSpinner />
+  </div>
+  <div v-else>
     <CRow>
       <CCol :md="12">
         <CCard class="mb-4">
@@ -144,31 +147,30 @@
         </CCard>
       </CCol>
     </CRow>
+
+
+    <!-- MODALS -->
+    <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
+      This will not remove your docker image.
+      <template #footer>
+        <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
+          Storno
+        </CButton>
+        <CButton color="danger" type="submit">Delete</CButton>
+      </template>
+    </MyModal>
+    <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">
+      <CModalHeader>
+        <CModalTitle>User init form Customization</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <InitForm :data="data" edit editFull dataPreview></InitForm>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="primary" type="submit" @click="() => { editFormModal.show = false }">Close & continue</CButton>
+      </CModalFooter>
+    </CModal>
   </div>
-
-
-
-  <!-- MODALS -->
-  <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
-    This will not remove your docker image.
-    <template #footer>
-      <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
-        Storno
-      </CButton>
-      <CButton color="danger" type="submit">Delete</CButton>
-    </template>
-  </MyModal>
-  <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">
-    <CModalHeader>
-      <CModalTitle>User init form Customization</CModalTitle>
-    </CModalHeader>
-    <CModalBody>
-      <InitForm :data="data" edit editFull dataPreview></InitForm>
-    </CModalBody>
-    <CModalFooter>
-      <CButton color="primary" type="submit" @click="() => { editFormModal.show = false }">Close & continue</CButton>
-    </CModalFooter>
-  </CModal>
 </template>
 
 

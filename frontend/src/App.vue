@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <div v-if="!error && !session">Loading</div>
+  <div v-if="error && !session">LOGIN</div>
+  <router-view v-if="!error && session" />
 
   <CToaster placement="top-end" visible style="margin: 20px;">
     <!-- <CToast v-for="(toast, index) in toasts" visible :delay='3000'>
@@ -38,7 +40,7 @@
   </CModal>
 </template>
 <script>
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useColorModes } from '@coreui/vue'
 
@@ -53,6 +55,11 @@ export default {
     )
     const store = useStore()
     store.dispatch("getApps")
+    store.dispatch("getInstances")
+    store.dispatch('getSession');
+
+    const error = computed(() => store.state.error)
+    const session = computed(() => store.state.session)
 
     onBeforeMount(() => {
       const urlParams = new URLSearchParams(window.location.href.split('?')[1])
@@ -70,7 +77,7 @@ export default {
 
       setColorMode(store.state.theme)
     })
-    return { toasts, apiErrors, reload: () => location.reload() }
+    return { toasts, apiErrors, reload: () => location.reload(), error, session }
   },
 }
 window.showToast = (p) => {
