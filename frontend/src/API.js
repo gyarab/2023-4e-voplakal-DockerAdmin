@@ -1,153 +1,168 @@
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router'
 
 if (!window.AbortError) {
-	window.AbortError = class extends Error {
-		constructor() {
-			super('Aborted');
-		}
-	}
+  window.AbortError = class extends Error {
+    constructor() {
+      super('Aborted')
+    }
+  }
 }
 
-export class RESTError extends Error { }
+export class RESTError extends Error {}
 
 export let REST = {
-	prefix: '/api/',
+  prefix: '/api/',
 
-	getURL(path) {
-		return REST.prefix + path;
-	},
+  getURL(path) {
+    return REST.prefix + path
+  },
 
-	getExtraHeaders(method, path) {
-		return {};
-	},
+  getExtraHeaders(method, path) {
+    let header = {}
+    Object.assign(header, authHeader())
+    return header
 
-	/**
-	 * 
-	 * @param {Number} code 
-	 * @returns {Boolean} if the error should be caught
-	 */
-	errorAction(status) {
-		if (status >= 500) {
-			useRouter().push("500");
-			return true;
-		}
-	},
+    function authHeader() {
+      let user = JSON.parse(localStorage.getItem('user'))
 
-	async request({ path, body, method, headers, nonJsonOk, signal }) {
-		try {
-			let res = await fetch(REST.getURL(path), {
-				method,
-				mode: 'same-origin',
-				headers: {
-					Accept: 'application/json',
-					'X-Anti-CSRF': '1',
-					...this.getExtraHeaders(method, path),
-					...headers,
-				},
-				body,
-				cache: 'default',
-				signal,
-			});
+      if (user && user.accessToken) {
+        // for Node.js Express back-end
+        return { 'x-access-token': user.accessToken }
+      } else {
+        return {}
+      }
+    }
+  },
 
-			if (res.ok) {
-				try {
-					return await res.json();
-				} catch (ex) {
-					if (!nonJsonOk) {
-						throw new RESTError(`${method} ${path} failed to parse response JSON`);
-					}
-				}
-			} else {
-				let errData = {};
-				try {
-					errData = await res.json();
-				} catch (ex) { }
+  /**
+   *
+   * @param {Number} code
+   * @returns {Boolean} if the error should be caught
+   */
+  errorAction(status) {
+    if (status >= 500) {
+      useRouter().push('500')
+      return true
+    }
+  },
 
-				let err = new RESTError((errData || {}).error || `${method} ${path} failed with status: ${res.status}`);
-				err.status = res.status;
-				err.detail = (errData || {}).detail;
-				err.reason = (errData || {}).reason;
-				err.code = (errData || {}).code;
-				err.serverError = (errData || {}).error;
-				throw err;
-			}
-		} catch (ex) {
-			if (ex instanceof DOMException) {
-				throw new AbortError();
-			}
+  async request({ path, body, method, headers, nonJsonOk, signal }) {
+    try {
+      let res = await fetch(REST.getURL(path), {
+        method,
+        mode: 'same-origin',
+        headers: {
+          Accept: 'application/json',
+          'X-Anti-CSRF': '1',
+          ...this.getExtraHeaders(method, path),
+          ...headers,
+        },
+        body,
+        cache: 'default',
+        signal,
+      })
 
-			if (ex instanceof RESTError) {
-				if (REST.errorAction(ex.status)) return;
-				else throw ex;
-			}
+      if (res.ok) {
+        try {
+          return await res.json()
+        } catch (ex) {
+          if (!nonJsonOk) {
+            throw new RESTError(`${method} ${path} failed to parse response JSON`)
+          }
+        }
+      } else {
+        let errData = {}
+        try {
+          errData = await res.json()
+        } catch (ex) {}
 
-			throw new RESTError(`${method} ${path} ${ex.message}`);
-		}
-	},
+        let err = new RESTError(
+          (errData || {}).error || `${method} ${path} failed with status: ${res.status}`,
+        )
+        err.status = res.status
+        err.detail = (errData || {}).detail
+        err.reason = (errData || {}).reason
+        err.code = (errData || {}).code
+        err.serverError = (errData || {}).error
+        throw err
+      }
+    } catch (ex) {
+      if (ex instanceof DOMException) {
+        throw new AbortError()
+      }
 
-	GET(path, params, opts) {
-		if (params) {
-			params = { ...params };
+      if (ex instanceof RESTError) {
+        if (REST.errorAction(ex.status)) return
+        else throw ex
+      }
 
-			for (let [k, v] of Object.entries(params)) {
-				if (v === null || v === undefined) {
-					delete params[k];
-				}
-			}
-		}
+      throw new RESTError(`${method} ${path} ${ex.message}`)
+    }
+  },
 
-		let up = params ? new URLSearchParams(params) : null;
+  GET(path, params, opts) {
+    if (params) {
+      params = { ...params }
 
-		return REST.request({
-			method: 'GET',
-			path: path + (up ? '?' + up.toString() : ''),
-			...opts,
-		});
-	},
+      for (let [k, v] of Object.entries(params)) {
+        if (v === null || v === undefined) {
+          delete params[k]
+        }
+      }
+    }
 
-	POST(path, data, opts) {
-		return REST.request({
-			method: 'POST',
-			path,
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify(data),
-			...opts,
-		});
-	},
+    let up = params ? new URLSearchParams(params) : null
 
-	PUT(path, data, opts) {
-		return REST.request({
-			method: 'PUT',
-			path,
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify(data),
-			...opts,
-		});
-	},
+    return REST.request({
+      method: 'GET',
+      path: path + (up ? '?' + up.toString() : ''),
+      ...opts,
+    })
+  },
 
-	DELETE(path, opts, body) {
-		return REST.request({
-			method: 'DELETE',
-			path,
-			nonJsonOk: true,
-			...opts,
-			body: JSON.stringify(body)
-		});
-	},
+  POST(path, data, opts) {
+    return REST.request({
+      method: 'POST',
+      path,
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(data),
+      ...opts,
+    })
+  },
 
-	PATCH(path, data, opts) {
-		return REST.request({
-			method: 'PATCH',
-			path,
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify(data),
-			...opts,
-		});
-	},
-};
+  PUT(path, data, opts) {
+    return REST.request({
+      method: 'PUT',
+      path,
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(data),
+      ...opts,
+    })
+  },
+
+  DELETE(path, opts, body) {
+    return REST.request({
+      method: 'DELETE',
+      path,
+      nonJsonOk: true,
+      ...opts,
+      body: JSON.stringify(body),
+    })
+  },
+
+  PATCH(path, data, opts) {
+    return REST.request({
+      method: 'PATCH',
+      path,
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(data),
+      ...opts,
+    })
+  },
+}

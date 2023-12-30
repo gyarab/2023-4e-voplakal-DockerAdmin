@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { REST } from '../API'
+import { auth } from './auth'
 
 export default createStore({
   state: {
@@ -23,77 +24,76 @@ export default createStore({
       state.sidebarVisible = payload.value
     },
     updateApps(state, apps) {
-      state.apps = apps;
+      state.apps = apps
     },
     updateInstances(state, instances) {
-      state.instances = instances;
+      state.instances = instances
     },
 
     setSession(state, data) {
-      state.session = data;
+      state.session = data
     },
     logout(state, data) {
-      state.session = null;
-      state.error = true;
+      state.session = null
+      state.error = true
     },
     setSessionError(state, data) {
-      state.error = data;
+      state.error = data
     },
   },
   actions: {
-
     /*
-    * SESSION
-    */
+     * SESSION
+     */
     async getSession(context) {
       try {
         const response = {
-          role: "ADMIN"
+          role: 'ADMIN',
         } //await REST.GET('session');
-        console.log("get session");
-        context.commit('setSession', response);
+        console.log('get session')
+        context.commit('setSession', response)
       } catch (error) {
-        context.commit('setSessionError', error);
+        context.commit('setSessionError', error)
       }
     },
-    
+
     async logout(context) {
       try {
         // await REST.DELETE('session');
-        console.log("delete session");
-        context.commit('logout');
+        console.log('delete session')
+        context.commit('logout')
       } catch (error) {
-        context.commit('setSessionError', error);
+        context.commit('setSessionError', error)
       }
     },
 
     /*
-    * APPS
-    */
-   async getApps(context) {
-     try {
-        await new Promise(resolve => setTimeout(resolve, 700));
-        const response = appsData; //await REST.GET(`apps`);
-        context.commit('updateApps', response);
+     * APPS
+     */
+    async getApps(context) {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 700))
+        const response = appsData //await REST.GET(`apps`);
+        context.commit('updateApps', response)
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
     async createApp(context, imageRepo) {
       try {
-        let appID = "123432341ščř" //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
-        await console.log("create app", imageRepo);
-        context.dispatch("getApps")
+        let appID = '123432341ščř' //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
+        await console.log('create app', imageRepo)
+        context.dispatch('getApps')
         window.showToast('Created')
-        return appID;
+        return appID
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
     async deleteApp(context, id) {
       try {
-        await console.log("appDelete", id);
-        context.dispatch("getApps")
+        await console.log('appDelete', id)
+        context.dispatch('getApps')
         window.showToast('Deleted')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -101,8 +101,8 @@ export default createStore({
     },
     async saveApp(context, data) {
       try {
-        await console.log("saveApp", data);
-        context.dispatch("getApps")
+        await console.log('saveApp', data)
+        context.dispatch('getApps')
         window.showToast('Saved')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -110,24 +110,23 @@ export default createStore({
     },
 
     /*
-    *  INSTANCES
-    */
-
+     *  INSTANCES
+     */
 
     async getInstances(context) {
       try {
-        await new Promise(resolve => setTimeout(resolve, 700));
-        console.log("go");
-        const response = instances; //await REST.GET(`instances`);
-        context.commit('updateInstances', response);
+        await new Promise((resolve) => setTimeout(resolve, 700))
+        console.log('go')
+        const response = instances //await REST.GET(`instances`);
+        context.commit('updateInstances', response)
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
     async instancesUpgrade(ctx, { ids, tag }) {
       try {
-        console.log("upgrade", ids, tag);
-        ctx.dispatch("getInstances")
+        console.log('upgrade', ids, tag)
+        ctx.dispatch('getInstances')
         window.showToast('Upgraded')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -135,8 +134,8 @@ export default createStore({
     },
     async instancesDelete(ctx, ids) {
       try {
-        console.log("delete", ids);
-        ctx.dispatch("getInstances")
+        console.log('delete', ids)
+        ctx.dispatch('getInstances')
         window.showToast('Deleted')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -144,9 +143,9 @@ export default createStore({
     },
     async instanceSave(ctx, data) {
       try {
-        console.log("save", data.id);
-        console.log(data);
-        ctx.dispatch("getInstances")
+        console.log('save', data.id)
+        console.log(data)
+        ctx.dispatch('getInstances')
         window.showToast('Saved')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -154,8 +153,8 @@ export default createStore({
     },
     async instanceStart(ctx, id) {
       try {
-        console.log("start", id);
-        ctx.dispatch("getInstances")
+        console.log('start', id)
+        ctx.dispatch('getInstances')
         window.showToast('Started')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -163,8 +162,8 @@ export default createStore({
     },
     async instancesStop(ctx, id) {
       try {
-        console.log("stop", id);
-        ctx.dispatch("getInstances")
+        console.log('stop', id)
+        ctx.dispatch('getInstances')
         window.showToast('Stopped')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -172,21 +171,18 @@ export default createStore({
     },
     async instanceCreate(ctx, instance) {
       try {
-        console.log("create instance", instance);
-        ctx.dispatch("getInstances")
+        console.log('create instance', instance)
+        ctx.dispatch('getInstances')
         window.showToast('Created')
       } catch (error) {
         window.apiErrors.value.push(error)
       }
-    }
-
+    },
   },
-  modules: {},
+  modules: {
+    auth
+  },
 })
-
-
-
-
 
 let formHtmlPlaceholderData = `<div class="mb-3">
 <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -259,7 +255,7 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
 <label for="floatingTextarea2">Comments</label>
 </div>
-<button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
+<button type="submit" id="submiter" class="btn btn-primary">Submit</button>`
 
 let codeExample = `#!/bin/bash
 
@@ -301,27 +297,29 @@ sudo docker run -dp $3:3000 --name $2 -v "$mount_dir:/app/data" --restart always
 `
 let appsData = [
   {
-    name: "Moje prvni pojmenovaní",
-    id: "123432341ščř",
+    name: 'Moje prvni pojmenovaní',
+    id: '123432341ščř',
     repository: 'biobrejn-1',
     folder: 'moje-pojmenovani',
-    images: [{
-      tag: 'latest',
-      image_id: '08af2227f359',
-      created: '7 weeks ago',
-      size: '340 MB',
-    }, {
-      tag: 'recent',
-      image_id: '23452345',
-      created: '8 weeks ago',
-      size: '540 MB',
-    },
-    {
-      tag: '1.3',
-      image_id: '88af2227f359',
-      created: '8 weeks ago',
-      size: '540 MB',
-    }
+    images: [
+      {
+        tag: 'latest',
+        image_id: '08af2227f359',
+        created: '7 weeks ago',
+        size: '340 MB',
+      },
+      {
+        tag: 'recent',
+        image_id: '23452345',
+        created: '8 weeks ago',
+        size: '540 MB',
+      },
+      {
+        tag: '1.3',
+        image_id: '88af2227f359',
+        created: '8 weeks ago',
+        size: '540 MB',
+      },
     ],
     selected_image: 0,
     // //computed on mongo
@@ -336,27 +334,29 @@ let appsData = [
     htmlForm: formHtmlPlaceholderData,
   },
   {
-    name: "Moje pojmenovaní",
-    id: "123432čř",
+    name: 'Moje pojmenovaní',
+    id: '123432čř',
     repository: 'biobrejn-1',
     folder: 'moje-pojmenovani',
-    images: [{
-      tag: 'latest',
-      image_id: '08af2227f359',
-      created: '7 weeks ago',
-      size: '340 MB',
-    }, {
-      tag: 'recent',
-      image_id: '18af2227f359',
-      created: '8 weeks ago',
-      size: '540 MB',
-    },
-    {
-      tag: 'recent',
-      image_id: '88af2227f359',
-      created: '8 weeks ago',
-      size: '540 MB',
-    }
+    images: [
+      {
+        tag: 'latest',
+        image_id: '08af2227f359',
+        created: '7 weeks ago',
+        size: '340 MB',
+      },
+      {
+        tag: 'recent',
+        image_id: '18af2227f359',
+        created: '8 weeks ago',
+        size: '540 MB',
+      },
+      {
+        tag: 'recent',
+        image_id: '88af2227f359',
+        created: '8 weeks ago',
+        size: '540 MB',
+      },
     ],
     selected_image: 0,
     // //computed on mongo
@@ -369,63 +369,60 @@ let appsData = [
     init_code: codeExample,
     run_code: codeExample,
     htmlForm: formHtmlPlaceholderData,
-
   },
 ]
 
 let instances = [
   {
-    id: "62234444",
-    app_id: "123432341ščř",
-    status: "Up 3 days",
-    image_id: "23452345",
-    expiry_date: "2023-11-22",
-    created_on: "2023-01-16",
-    name: "deh-martin.air345",
-    client: "pepa.novak@seznam.cz",
+    id: '62234444',
+    app_id: '123432341ščř',
+    status: 'Up 3 days',
+    image_id: '23452345',
+    expiry_date: '2023-11-22',
+    created_on: '2023-01-16',
+    name: 'deh-martin.air345',
+    client: 'pepa.novak@seznam.cz',
     limits: {
       cpu: 60,
       ram: 2000,
       swap: 444,
-      disk: 46666
-    }
+      disk: 46666,
+    },
   },
   {
-    id: "12234445",
-    app_id: "123432341ščř",
-    client: "pepa.novak@seznam.cz",
-    expiry_date: "2023-11-22",
-    created_on: "2023-01-16",
-    container_id: "2cea44557dcb",
-    tag: "latest",
-    image_id: "23452345",
-    status: "Up 3 days",
-    name: "deh-martin.air345"
+    id: '12234445',
+    app_id: '123432341ščř',
+    client: 'pepa.novak@seznam.cz',
+    expiry_date: '2023-11-22',
+    created_on: '2023-01-16',
+    container_id: '2cea44557dcb',
+    tag: 'latest',
+    image_id: '23452345',
+    status: 'Up 3 days',
+    name: 'deh-martin.air345',
   },
   {
-    id: "12234445",
-    app_id: "123432čř",
-    client: "pepa.novak@seznam.cz",
-    created_on: "2023-01-16",
-    expiry_date: "2023-11-22",
-    container_id: "2cea44557dcb",
-    tag: "latest",
-    image_id: "23452345",
-    status: "Up 3 days",
-    name: "deh-martin.air345"
+    id: '12234445',
+    app_id: '123432čř',
+    client: 'pepa.novak@seznam.cz',
+    created_on: '2023-01-16',
+    expiry_date: '2023-11-22',
+    container_id: '2cea44557dcb',
+    tag: 'latest',
+    image_id: '23452345',
+    status: 'Up 3 days',
+    name: 'deh-martin.air345',
   },
   {
-    id: "12234445",
-    app_id: "123432čř",
-    container_id: "2cea44557dcb",
-    client: "pepa.novak@seznam.cz",
-    expiry_date: "2023-11-22",
-    tag: "latest",
-    image_id: "23452345",
-    created_on: "2023-01-16",
-    status: "Up 3 days",
-    name: "deh-martin.air345"
+    id: '12234445',
+    app_id: '123432čř',
+    container_id: '2cea44557dcb',
+    client: 'pepa.novak@seznam.cz',
+    expiry_date: '2023-11-22',
+    tag: 'latest',
+    image_id: '23452345',
+    created_on: '2023-01-16',
+    status: 'Up 3 days',
+    name: 'deh-martin.air345',
   },
 ]
-
-

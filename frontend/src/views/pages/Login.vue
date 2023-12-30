@@ -6,20 +6,20 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm :onsubmit="login">
+                <CForm :onsubmit="() => { login(); return false }">
                   <h1>Login</h1>
                   <p class="text-body-secondary">Sign In to your account</p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
-                    <CFormInput placeholder="Username" autocomplete="username" required />
+                    <CFormInput placeholder="E-mail" type="email" autocomplete="username" required v-model="username" />
                   </CInputGroup>
                   <CInputGroup class="mb-4">
                     <CInputGroupText>
                       <CIcon icon="cil-lock-locked" />
                     </CInputGroupText>
-                    <CFormInput type="password" placeholder="Password" autocomplete="current-password" required />
+                    <CFormInput type="password" placeholder="Password" autocomplete="current-password" required v-model="passwd" />
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="6">
@@ -58,13 +58,13 @@
   </div>
 
   <!-- WRONG CREADIALS -->
-  <CModal :visible="wrongCreditals" @close="() => { wrongCreditals = false }">
+  <CModal :visible="wrongCreditals.show" @close="() => { wrongCreditals.show = false }">
     <CModalHeader>
-      <CModalTitle>Passwords do not match</CModalTitle>
+      <CModalTitle>{{ wrongCreditals.message }}</CModalTitle>
     </CModalHeader>
     <CModalBody>Please make you sure you use rigth creditals and try again!</CModalBody>
     <CModalFooter>
-      <CButton color="primary" @click="() => { wrongCreditals = false }">
+      <CButton color="primary" @click="() => { wrongCreditals.show = false }">
         Close
       </CButton>
     </CModalFooter>
@@ -87,23 +87,49 @@
       </CForm>
     </CModalBody>
   </CModal>
+
+  {{ loggedIn }}<br><br>{{ user }}
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex';
 export default {
   name: 'Login',
   setup() {
-    let email = ref("");
-    let pass = ref("");
-    let wrongCreditals = ref(false)
-    let login = () => {
-      wrongCreditals.value = true;
-    }
+    let username = ref("");
+    let passwd = ref("");
+    let wrongCreditals = ref({ show: false, message: "" })
+
     let lostPassModal = ref(false);
-    let sendNewPass = () => {};
+    let sendNewPass = () => { };
+
+    const store = useStore();
+    const loggedIn = computed(() => store.state.auth.status.loggedIn)
+    const user = computed(() => store.state.auth.user)
+
+    const login = async () => {
+      try {
+        await store.dispatch("auth/login", {
+          username: username.value,
+          password: passwd.value
+        })
+        console.log("to profile");
+      } catch (error) {
+        wrongCreditals.value.show = true;
+        wrongCreditals.value.message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+
+    }
+
+
     return {
-      email, pass, wrongCreditals, login, lostPassModal, sendNewPass
+      username, passwd, wrongCreditals, login, lostPassModal, sendNewPass, loggedIn, user
     }
   }
 }
