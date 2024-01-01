@@ -48,8 +48,8 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       proxy: {
-        // https://vitejs.dev/config/server-options.html
-      },
+        "/api": { target: "http://localhost:3030" },
+    },
     },
     define: {
       // vitejs does not support process.env so we have to redefine it

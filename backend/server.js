@@ -1,16 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require('dotenv').config({path: './.env.local'})
-
+require("dotenv").config({ path: "./.env.local" });
 
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+    origin: "http://localhost:8081",
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+
+//error handling res.status(500).send({ message: err });
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -20,11 +22,48 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+    res.json({ message: "Welcome to bezkoder application." });
 });
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
+if (!PORT) {
+    console.error("env PORT not specified");
+    process.exit(1);
+}
+
+// routes
+require("./routes/auth.routes")(app);
+require("./routes/user.routes")(app);
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+    console.log(`Server is running on port ${PORT}.`);
 });
+
+const db = require("./models");
+const Role = db.role;
+
+db.mongoose
+    .connect(process.env.MongoDB_URI, {})
+    .then(() => {
+        console.log("Successfully connect to MongoDB.");
+        initial();
+    })
+    .catch((err) => {
+        console.error("Connection error", err);
+        process.exit();
+    });
+
+async function initial() {
+    let count = await Role.estimatedDocumentCount();
+    if (count > 0) return;
+
+    await new Role({
+        name: "user",
+    }).save();
+    await new Role({
+        name: "admin",
+    }).save();
+
+    console.log("added 'user' to roles collection");
+}
