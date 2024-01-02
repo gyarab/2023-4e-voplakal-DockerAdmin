@@ -6,6 +6,11 @@ tests/e2e/reports/
 # local env files
 .env.local
 .env.*.local
+.env
+
+.flaskenv*
+!.env.project
+!.env.vault
 
 # dependencies
 /node_modules
@@ -43,3 +48,7 @@ Thumbs.db
 *.vi
 *.zip
 *~
+backend/.env
+backend/.env
+backend/.env.me
+backend/.env
