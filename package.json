@@ -1,0 +1,10 @@
+{
+  "name": "2023-4e-voplakal-dockeradmin",
+  "version": "1.0.0",
+  "description": "DUCK - Docker Ultimate Container Kommander",
+  "scripts": {
+    
+  },
+  "author": "Martin Voplakal",
+  "license": "ISC"
+}
