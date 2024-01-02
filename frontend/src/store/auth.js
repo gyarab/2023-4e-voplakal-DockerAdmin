@@ -40,9 +40,8 @@ export const auth = {
       try {
         let resUser = await AuthService.login(user)
         commit('loginSuccess', resUser)
-        console.log(resUser);
+        console.log(resUser)
         return resUser
-
       } catch (error) {
         commit('loginFailure')
         window.apiErrors.value.push(error)
@@ -50,6 +49,7 @@ export const auth = {
       }
     },
     logout({ commit }) {
+      console.log('logout')
       AuthService.logout()
       commit('logout')
     },
@@ -68,12 +68,12 @@ export const auth = {
   },
   mutations: {
     loginSuccess(state, user) {
-      console.log("sucess");
+      console.log('sucess')
       state.status.loggedIn = true
       state.user = user
     },
     loginFailure(state) {
-      console.log("fail");
+      console.log('fail')
       state.status.loggedIn = false
       state.user = null
     },

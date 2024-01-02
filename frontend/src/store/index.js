@@ -47,13 +47,18 @@ export default createStore({
      */
     async getSession(context) {
       try {
-        const response = {
-          role: 'ADMIN',
-        } //await REST.GET('session');
+        let savedUser = context.state.auth.user
+        console.log(savedUser)
+        const response = await REST.GET('session', { userID: savedUser?.id })
         console.log('get session')
         context.commit('setSession', response)
+        console.log(response)
+        let user = response.user
+        if (!user) return window.router.push('login')
+        context.commit('auth/loginSuccess', user)
       } catch (error) {
-        context.commit('setSessionError', error)
+        window.apiErrors.value.push(error)
+        throw error
       }
     },
 
@@ -63,7 +68,8 @@ export default createStore({
         console.log('delete session')
         context.commit('logout')
       } catch (error) {
-        context.commit('setSessionError', error)
+        window.apiErrors.value.push(error)
+        throw error
       }
     },
 
@@ -116,7 +122,6 @@ export default createStore({
     async getInstances(context) {
       try {
         await new Promise((resolve) => setTimeout(resolve, 700))
-        console.log('go')
         const response = instances //await REST.GET(`instances`);
         context.commit('updateInstances', response)
       } catch (error) {
@@ -180,7 +185,7 @@ export default createStore({
     },
   },
   modules: {
-    auth
+    auth,
   },
 })
 

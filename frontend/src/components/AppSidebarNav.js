@@ -37,17 +37,6 @@ const isActiveItem = (route, item) => {
   return false
 }
 
-const hasAtLeastRole = (sessionRole, role) => {
-  const roles = {
-    ADMIN: 2,
-    WORKER: 1,
-    STUDENT: 0,
-    undefined: 0,
-  }
-
-  return roles[sessionRole] >= roles[role]
-}
-
 const AppSidebarNav = defineComponent({
   name: 'AppSidebarNav',
   components: {
@@ -139,7 +128,6 @@ const AppSidebarNav = defineComponent({
           )
     }
 
-
     console.log(props.session)
 
     return () =>
@@ -149,7 +137,7 @@ const AppSidebarNav = defineComponent({
         {
           default: () =>
             nav
-              .filter((i) => hasAtLeastRole(props.session.role, i.role))
+              .filter((i) => props.session.user?.roles?.some((r) => r === i.role || !r.role))
               .map((item) => renderItem(item)),
         },
       )

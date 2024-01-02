@@ -73,8 +73,6 @@
       </CForm>
     </CModalBody>
   </CModal>
-
-  {{ loggedIn }}<br><br>{{ user }}
 </template>
 
 <script>
@@ -91,7 +89,7 @@ export default {
     let sendNewPass = () => { };
 
     const store = useStore();
-    const loggedIn = computed(() => store.state.auth.status.loggedIn)
+    // const loggedIn = computed(() => store.state.auth.status.loggedIn)
     const user = computed(() => store.state.auth.user)
 
     const login = async () => {
@@ -106,7 +104,7 @@ export default {
 
 
     return {
-      username, passwd, wrongCreditals, login, lostPassModal, sendNewPass, loggedIn, user
+      username, passwd, wrongCreditals, login, lostPassModal, sendNewPass, user
     }
   }
 }

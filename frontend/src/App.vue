@@ -40,7 +40,7 @@
   </CModal>
 </template>
 <script>
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useColorModes } from '@coreui/vue'
@@ -57,9 +57,12 @@ export default {
     const router = useRouter();
     window.router = router;
     const store = useStore()
-    store.dispatch("getApps")
-    store.dispatch("getInstances")
-    store.dispatch('getSession');
+
+    onMounted(() => {
+      store.dispatch("getApps")
+      store.dispatch("getInstances")
+      store.dispatch('getSession');
+    })
 
     const error = computed(() => store.state.error)
     const session = computed(() => store.state.session)

@@ -4,30 +4,21 @@
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
-      <CDropdownHeader
-        component="h6"
-        class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top"
-      >
-        
-        Settings
+      <CDropdownHeader component="h6" class="bg-body-secondary text-body-secondary fw-semibold mb-2 rounded-top">
+
+        <CIcon icon="cil-user" /> Profile
+        <!-- {{ user }} -->
       </CDropdownHeader>
       <CDropdownItem>
-        <CIcon icon="cil-user" /> Profile
+         {{ user.email }}
       </CDropdownItem>
       <CDropdownItem>
-        <CIcon icon="cil-settings" /> Settings
+         {{ user.roles.join(" ") }}
       </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-dollar" /> Payments
-        <CBadge color="secondary" class="ms-auto">{{ itemsCount }}</CBadge>
-      </CDropdownItem>
-      <CDropdownItem>
-        <CIcon icon="cil-file" /> Projects
-        <CBadge color="primary" class="ms-auto">{{ itemsCount }}</CBadge>
-      </CDropdownItem>
+
       <CDropdownDivider />
 
-      <CDropdownItem>
+      <CDropdownItem @click="logout">
         <CIcon icon="cil-lock-locked" /> Logout
       </CDropdownItem>
     </CDropdownMenu>
@@ -36,12 +27,22 @@
 
 <script>
 import avatar from '@/assets/images/avatars/8.jpg'
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 export default {
   name: 'AppHeaderDropdownAccnt',
   setup() {
+    const store = useStore();
+    const router = useRouter();
     return {
       avatar: avatar,
       itemsCount: 42,
+      logout: () => {
+        store.dispatch("auth/logout");
+        router.push("login")
+      },
+      user: computed(() => store.state.auth.user)
     }
   },
 }

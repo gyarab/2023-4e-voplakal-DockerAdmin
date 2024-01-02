@@ -39,13 +39,12 @@ exports.signup = async (req, res, next) => {
 
 exports.signin = async (req, res, next) => {
     try {
-        let user = await User.findOne({
-            username: req.body.username,
-        }).populate("roles", "-__v");
+        let user = await this.getUser({ username: req.body.username });
 
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
+        console.log(user);
 
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
@@ -62,19 +61,26 @@ exports.signin = async (req, res, next) => {
             expiresIn: 86400, // 24 hours
         });
 
-        var authorities = [];
-
-        for (let i = 0; i < user.roles.length; i++) {
-            authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-        }
         res.status(200).send({
             id: user._id,
             username: user.username,
             email: user.email,
-            roles: authorities,
+            roles: user.roles,
             accessToken: token,
         });
     } catch (error) {
         next(error);
     }
+};
+
+exports.getUser = async (query) => {
+    let user = await User.findOne(query).populate("roles", "-__v").lean();
+    console.log(user);
+    if (!user) return;
+
+    for (let i = 0; i < user.roles.length; i++) {
+        user.roles[i] = user.roles[i].name.toUpperCase();
+    }
+    console.log(user);
+    return user;
 };
