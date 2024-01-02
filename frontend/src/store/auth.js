@@ -2,14 +2,14 @@ import { REST } from '../API'
 
 const AuthService = {
   async login(user) {
-    const response = await REST.GET('signin', {
+    const response = await REST.POST('auth/signin', {
       username: user.username,
       password: user.password,
     })
-    if (response.data.accessToken) {
-      localStorage.setItem('user', JSON.stringify(response.data))
+    if (response.accessToken) {
+      localStorage.setItem('user', JSON.stringify(response))
     }
-    return response.data
+    return response
   },
 
   logout() {
@@ -18,7 +18,7 @@ const AuthService = {
 
   async register(user) {
     const { username, email, password } = user
-    return await REST.POST('signup', {
+    return await REST.POST('auth/signup', {
       username,
       email,
       password,
@@ -35,42 +35,45 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
-    login({ commit }, user) {
-        console.log("login", user);
-      return AuthService.login(user).then(
-        (user) => {
-          commit('loginSuccess', user)
-          return Promise.resolve(user)
-        },
-        (error) => {
-          commit('loginFailure')
-          return Promise.reject(error)
-        },
-      )
+    async login({ commit }, user) {
+      console.log('login', user)
+      try {
+        let resUser = await AuthService.login(user)
+        commit('loginSuccess', resUser)
+        console.log(resUser);
+        return resUser
+
+      } catch (error) {
+        commit('loginFailure')
+        window.apiErrors.value.push(error)
+        throw error
+      }
     },
     logout({ commit }) {
       AuthService.logout()
       commit('logout')
     },
-    register({ commit }, user) {
-      return AuthService.register(user).then(
-        (response) => {
-          commit('registerSuccess')
-          return Promise.resolve(response.data)
-        },
-        (error) => {
-          commit('registerFailure')
-          return Promise.reject(error)
-        },
-      )
+    async register({ commit }, user) {
+      try {
+        let response = await AuthService.register(user)
+        commit('registerSuccess')
+        window.showToast('Registred.')
+        return response.data
+      } catch (error) {
+        commit('registerFailure')
+        window.apiErrors.value.push(error)
+        throw error
+      }
     },
   },
   mutations: {
     loginSuccess(state, user) {
+      console.log("sucess");
       state.status.loggedIn = true
       state.user = user
     },
     loginFailure(state) {
+      console.log("fail");
       state.status.loggedIn = false
       state.user = null
     },

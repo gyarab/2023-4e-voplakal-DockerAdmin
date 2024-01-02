@@ -1,5 +1,3 @@
-import { useRouter } from 'vue-router'
-
 if (!window.AbortError) {
   window.AbortError = class extends Error {
     constructor() {
@@ -12,6 +10,33 @@ export class RESTError extends Error {}
 
 export let REST = {
   prefix: '/api/',
+  /**
+   *
+   * @param {Number} status response code
+   * @returns true: behaves like ok response; false: throws error
+   */
+  codeOk: (code) => {
+    if (code === 401) return true
+    return false
+  },
+
+  /**
+   *
+   * @param {Number} code
+   * @returns {Boolean} if the error should be caught
+   */
+  errorAction(status) {
+    const router = window.router
+    if (status >= 500) {
+      router.push('500')
+      return true
+    }
+    if (status === 401) {
+      //unauthorized
+      router.push('login')
+      return true
+    }
+  },
 
   getURL(path) {
     return REST.prefix + path
@@ -33,19 +58,6 @@ export let REST = {
       }
     }
   },
-
-  /**
-   *
-   * @param {Number} code
-   * @returns {Boolean} if the error should be caught
-   */
-  errorAction(status) {
-    if (status >= 500) {
-      useRouter().push('500')
-      return true
-    }
-  },
-
   async request({ path, body, method, headers, nonJsonOk, signal }) {
     try {
       let res = await fetch(REST.getURL(path), {
@@ -62,7 +74,7 @@ export let REST = {
         signal,
       })
 
-      if (res.ok) {
+      if (res.ok || this.codeOk(res.status)) {
         try {
           return await res.json()
         } catch (ex) {
@@ -77,7 +89,7 @@ export let REST = {
         } catch (ex) {}
 
         let err = new RESTError(
-          (errData || {}).error || `${method} ${path} failed with status: ${res.status}`,
+          (errData || {}).message || `${method} ${path} failed with status: ${res.status}`,
         )
         err.status = res.status
         err.detail = (errData || {}).detail

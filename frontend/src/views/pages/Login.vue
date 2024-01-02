@@ -56,20 +56,6 @@
       </CRow>
     </CContainer>
   </div>
-
-  <!-- WRONG CREADIALS -->
-  <CModal :visible="wrongCreditals.show" @close="() => { wrongCreditals.show = false }">
-    <CModalHeader>
-      <CModalTitle>{{ wrongCreditals.message }}</CModalTitle>
-    </CModalHeader>
-    <CModalBody>Please make you sure you use rigth creditals and try again!</CModalBody>
-    <CModalFooter>
-      <CButton color="primary" @click="() => { wrongCreditals.show = false }">
-        Close
-      </CButton>
-    </CModalFooter>
-  </CModal>
-
   <!-- LOST PASS -->
   <CModal :visible="lostPassModal" @close="() => { lostPassModal = false }">
     <CModalHeader>
@@ -109,21 +95,12 @@ export default {
     const user = computed(() => store.state.auth.user)
 
     const login = async () => {
-      try {
-        await store.dispatch("auth/login", {
-          username: username.value,
-          password: passwd.value
-        })
-        console.log("to profile");
-      } catch (error) {
-        wrongCreditals.value.show = true;
-        wrongCreditals.value.message =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
+      await store.dispatch("auth/login", {
+        username: username.value,
+        password: passwd.value
+      })
+      router.push("/")
+
 
     }
 

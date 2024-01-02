@@ -23,12 +23,12 @@
   <CModal :visible="!!apiErrors.length" @close="() => { apiErrors.length = 0 }">
     <CModalHeader>
       <CModalTitle>
-        {{ title }}
+        <!-- {{ title }} -->
       </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <div v-for="err in apiErrors">
-        <b> {{ err.name }} </b> {{ err.message }}
+        <b> {{ err.name }}: </b> {{ err.message }}
       </div>
     </CModalBody>
     <CModalFooter>
@@ -42,6 +42,7 @@
 <script>
 import { onBeforeMount, ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { useColorModes } from '@coreui/vue'
 
 let toasts = ref([]);
@@ -53,6 +54,8 @@ export default {
     const { isColorModeSet, setColorMode } = useColorModes(
       'coreui-free-vue-admin-template-theme',
     )
+    const router = useRouter();
+    window.router = router;
     const store = useStore()
     store.dispatch("getApps")
     store.dispatch("getInstances")
@@ -60,6 +63,7 @@ export default {
 
     const error = computed(() => store.state.error)
     const session = computed(() => store.state.session)
+
 
     onBeforeMount(() => {
       const urlParams = new URLSearchParams(window.location.href.split('?')[1])
@@ -93,6 +97,7 @@ window.showToast = (p) => {
     p
   )
 }
+window.router;
 </script>
 
 <style lang="scss">

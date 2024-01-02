@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require("dotenv").config({ path: "./.env.local" });
+require("dotenv").config({ path: "./.env" });
 
 const app = express();
 
@@ -10,9 +10,6 @@ var corsOptions = {
 };
 
 // app.use(cors(corsOptions));
-
-
-//error handling res.status(500).send({ message: err });
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -67,3 +64,13 @@ async function initial() {
 
     console.log("added 'user' to roles collection");
 }
+
+//error handling
+app.use((err, req, res, next) => {
+    console.error(err);
+
+    if (typeof err === "string") res.status(500).send({ message: err });
+
+    const { name, message, cause } = err;
+    res.status(500).send({ message: name + ": " + message });
+});

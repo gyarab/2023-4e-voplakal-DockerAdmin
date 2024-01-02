@@ -5,15 +5,15 @@
         <CCol :md="9" :lg="7" :xl="6">
           <CCard class="mx-4">
             <CCardBody class="p-4">
-              <CForm :onsubmit="submit">
+              <CForm :onsubmit="() => { register(); return false }">
                 <h1>Register</h1>
                 <p class="text-body-secondary">Create your account</p>
-                <CInputGroup class="mb-3">
+                <!-- <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
                   </CInputGroupText>
                   <CFormInput placeholder="Username" autocomplete="username" required v-model="fullName" />
-                </CInputGroup>
+                </CInputGroup> -->
                 <CInputGroup class="mb-3">
                   <CInputGroupText>@</CInputGroupText>
                   <CFormInput placeholder="Email" autocomplete="email" type="email" required v-model="email" />
@@ -34,7 +34,8 @@
                   <CButton color="success" type="submit">Create Account</CButton>
                 </div>
               </CForm>
-              <p class="text-body-secondary">Do you have an account? <RouterLink to="/login">Log in</RouterLink></p>
+              <p class="text-body-secondary">Do you have an account? <RouterLink to="/login">Log in</RouterLink>
+              </p>
             </CCardBody>
           </CCard>
         </CCol>
@@ -58,22 +59,42 @@
 
 <script>
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 export default {
-    name: 'Register',
-    setup() {
-        let submit = () => { if (pass1.value !== pass2.value)
-            passNotMatch.value = true; };
-        let fullName = ref("");
-        let email = ref("");
-        let pass1 = ref("");
-        let pass2 = ref("");
-        let passNotMatch = ref(false);
-        return {
-            submit, fullName, email, pass1, pass2, passNotMatch
-        };
-    },
-    components: { RouterLink }
+  name: 'Register',
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    let fullName = ref("");
+    let email = ref("");
+    let pass1 = ref("");
+    let pass2 = ref("");
+    let passNotMatch = ref(false);
+
+    let register = async () => {
+      if (pass1.value !== pass2.value) {
+        passNotMatch.value = true; return
+      }
+      store.dispatch("auth/register", {
+        username: email.value,
+        email: email.value,
+        password: pass1.value
+      }).then(() => {
+        router.push("login");
+        window.showToast("Please login")
+      })
+    };
+
+
+
+
+
+    return {
+      register, fullName, email, pass1, pass2, passNotMatch
+    };
+  },
+  components: { RouterLink }
 }
 </script>
