@@ -26,7 +26,7 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
 
         next();
     } catch (err) {
-        res.status(500).send({ message: err });
+        res.status(500).send({ message: err.name + ": " + err.message });
     }
 };
 

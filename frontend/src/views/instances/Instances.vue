@@ -5,6 +5,7 @@
         <h3 id="traffic" class="card-title mb-0">Instances</h3>
         <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker containers</b> managed by this administration system.</div>
         <br>
+        <CSpinner v-if="!apps[0]"/>
         <CCard class="mb-4" v-for="app in  apps " :key="app.id">
           <CCardBody>
             <CRow>
@@ -75,18 +76,21 @@ import * as icon from '@coreui/icons';
 import AppLi from './InstanceLi.vue';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+import { CSpinner } from '@coreui/vue';
 
 export default {
   name: "Instances",
   components: {
     CIcon,
-    AppLi
-  },
+    AppLi,
+    CSpinner
+},
   setup() {
     //     app tag client status expiry
 
     const store = useStore();
 
+    store.dispatch("getInstances")
     /**
      * 
      * @param {Array} instances 

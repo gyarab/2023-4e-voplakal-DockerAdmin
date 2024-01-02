@@ -13,7 +13,6 @@ exports.signup = async (req, res, next) => {
             password: bcrypt.hashSync(req.body.password, 8),
         });
         await user.save();
-        console.log(user);
 
         if (req.body.roles) {
             let roles = await Role.find({
@@ -44,7 +43,6 @@ exports.signin = async (req, res, next) => {
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
-        console.log(user);
 
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 
@@ -55,7 +53,7 @@ exports.signin = async (req, res, next) => {
             });
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_Secret, {
+        const token = jwt.sign({ id: user._id }, process.env.JWT_Secret, {
             algorithm: "HS256",
             allowInsecureKeySizes: true,
             expiresIn: 86400, // 24 hours
@@ -75,12 +73,11 @@ exports.signin = async (req, res, next) => {
 
 exports.getUser = async (query) => {
     let user = await User.findOne(query).populate("roles", "-__v").lean();
-    console.log(user);
     if (!user) return;
 
     for (let i = 0; i < user.roles.length; i++) {
         user.roles[i] = user.roles[i].name.toUpperCase();
     }
-    console.log(user);
+
     return user;
 };

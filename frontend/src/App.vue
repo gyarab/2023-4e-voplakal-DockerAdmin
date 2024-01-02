@@ -59,8 +59,6 @@ export default {
     const store = useStore()
 
     onMounted(() => {
-      store.dispatch("getApps")
-      store.dispatch("getInstances")
       store.dispatch('getSession');
     })
 

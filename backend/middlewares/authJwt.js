@@ -11,12 +11,14 @@ verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, process.env.JWT_Secret, (err, decoded) => {
-        if (err) {
+        console.log(decoded);
+        if (err && !decoded.id) {
             return res.status(401).send({
                 message: "Unauthorized!",
             });
         }
         req.userId = decoded.id;
+        console.log(req.userId);
         next();
     });
 };
@@ -38,31 +40,13 @@ isAdmin = async (req, res, next) => {
 
         res.status(403).send({ message: "Require Admin Role!" });
     } catch (err) {
-        res.status(500).send({ message: err });
-    }
-};
-
-isModerator = async (req, res, next) => {
-    try {
-        let user = await User.findById(req.userId);
-        let roles = await Role.find({
-            _id: { $in: user.roles },
-        });
-        for (let i = 0; i < roles.length; i++) {
-            if (roles[i].name === "moderator") {
-                next();
-                return;
-            }
-        }
-        res.status(403).send({ message: "Require Moderator Role!" });
-    } catch (err) {
-        res.status(500).send({ message: err });
+        console.log(err);
+        res.status(500).send({ message: err.name + ": " + err.message });
     }
 };
 
 const authJwt = {
     verifyToken,
     isAdmin,
-    isModerator,
 };
 module.exports = authJwt;

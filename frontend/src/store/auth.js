@@ -35,12 +35,14 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
-    async login({ commit }, user) {
+    async login({ commit, dispatch }, user) {
       console.log('login', user)
       try {
         let resUser = await AuthService.login(user)
         commit('loginSuccess', resUser)
+        dispatch('getSession', null, { root: true })
         console.log(resUser)
+
         return resUser
       } catch (error) {
         commit('loginFailure')

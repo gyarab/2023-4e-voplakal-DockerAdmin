@@ -32,6 +32,7 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
+                      <CSpinner v-if="!appsData[0]"/>
                       <CTableRow v-for="app in appsData" :key="app.id">
                         <AppLi :rowData="app"></AppLi>
                       </CTableRow>
@@ -92,6 +93,8 @@ export default {
     const store = useStore()
     const router = useRouter()
     const appsData = computed(() => store.state.apps)
+
+    store.dispatch("getApps")
 
     const dockerImages = ref([]);
     const createModal = ref();
