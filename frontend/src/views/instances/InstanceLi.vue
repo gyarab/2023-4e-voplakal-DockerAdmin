@@ -19,7 +19,7 @@
             <CDropdownToggle component="a" color="primary">Actions</CDropdownToggle>
             <CDropdownMenu>
                 <CDropdownItem @click="stop">Stop</CDropdownItem>
-                <CDropdownItem @click="del">Delete</CDropdownItem>
+                <!-- <CDropdownItem @click="del">Delete</CDropdownItem> -->
             </CDropdownMenu>
         </CDropdown>
 

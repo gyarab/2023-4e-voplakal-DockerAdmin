@@ -83,15 +83,15 @@ export default createStore({
     },
     async getRepos(context) {
       try {
-        const { repos } = await REST.GET("app/availableRepos");
-        return repos;
+        const { repos } = await REST.GET('app/availableRepos')
+        return repos
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
     async deleteApp(context, id) {
       try {
-        await REST.DELETE("app/delete/"+ id)
+        await REST.DELETE('app/' + id)
         context.dispatch('getApps')
         window.showToast('Deleted')
       } catch (error) {
@@ -100,7 +100,8 @@ export default createStore({
     },
     async saveApp(context, data) {
       try {
-        await console.log('saveApp', data)
+        console.log('saveApp', data)
+        await REST.PUT('app/save', data)
         context.dispatch('getApps')
         window.showToast('Saved')
       } catch (error) {
@@ -114,14 +115,14 @@ export default createStore({
 
     async getInstances(context) {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 700))
-        const response = instances //await REST.GET(`instances`);
+        const response = await REST.GET(`instance/getAll`)
         context.commit('updateInstances', response)
       } catch (error) {
         window.apiErrors.value.push(error)
       }
     },
     async instancesUpgrade(ctx, { ids, tag }) {
+      //todo route
       try {
         console.log('upgrade', ids, tag)
         ctx.dispatch('getInstances')
@@ -133,7 +134,7 @@ export default createStore({
     async instancesDelete(ctx, ids) {
       try {
         console.log('delete', ids)
-        ctx.dispatch('getInstances')
+        await REST.DELETE('instances', { ids })
         window.showToast('Deleted')
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -181,58 +182,3 @@ export default createStore({
     auth,
   },
 })
-
-let instances = [
-  {
-    id: '62234444',
-    app_id: '123432341ščř',
-    status: 'Up 3 days',
-    image_id: '23452345',
-    expiry_date: '2023-11-22',
-    created_on: '2023-01-16',
-    name: 'deh-martin.air345',
-    client: 'pepa.novak@seznam.cz',
-    limits: {
-      cpu: 60,
-      ram: 2000,
-      swap: 444,
-      disk: 46666,
-    },
-  },
-  {
-    id: '12234445',
-    app_id: '123432341ščř',
-    client: 'pepa.novak@seznam.cz',
-    expiry_date: '2023-11-22',
-    created_on: '2023-01-16',
-    container_id: '2cea44557dcb',
-    tag: 'latest',
-    image_id: '23452345',
-    status: 'Up 3 days',
-    name: 'deh-martin.air345',
-  },
-  {
-    id: '12234445',
-    app_id: '123432čř',
-    client: 'pepa.novak@seznam.cz',
-    created_on: '2023-01-16',
-    expiry_date: '2023-11-22',
-    container_id: '2cea44557dcb',
-    tag: 'latest',
-    image_id: '23452345',
-    status: 'Up 3 days',
-    name: 'deh-martin.air345',
-  },
-  {
-    id: '12234445',
-    app_id: '123432čř',
-    container_id: '2cea44557dcb',
-    client: 'pepa.novak@seznam.cz',
-    expiry_date: '2023-11-22',
-    tag: 'latest',
-    image_id: '23452345',
-    created_on: '2023-01-16',
-    status: 'Up 3 days',
-    name: 'deh-martin.air345',
-  },
-]

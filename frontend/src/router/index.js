@@ -105,14 +105,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'))
-  const yourPages = _nav
-    .filter((i) => !i.role || (user?.roles.some((r) => r === i.role) && i.to))
+  const notYourPages = _nav
+    .filter((i) => i.role && user?.roles.some((r) => r !== i.role) && i.to)
     .map((item) => item.to)
 
-  if (yourPages.includes(to.path)) {
-    next()
+  if (notYourPages.includes(to.path)) {
+    next({ name: 'Login' })
   } else {
-    next('/login')
+    next()
   }
 })
 

@@ -208,7 +208,7 @@
 
     <!-- MODALS -->
     <MyModal ref="deleteModal" :title="'Delete instance ' + data.name + '?'" :on_submit="deleteInstance">
-      All data belonging to this instance will be deleted. Are you sure you want to delete this instance? It is no t rewersible.
+      All data belonging to this instance will be deleted. Are you sure you want to delete this instance? It is not reversible.
       <template #footer>
         <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
           Storno

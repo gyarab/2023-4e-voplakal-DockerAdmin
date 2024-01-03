@@ -14,7 +14,11 @@ module.exports = {
         res.send({ repos });
     },
     delete: async (req, res) => {
-        console.log("params:", req.params);
+        console.log("delete:", req.params);
+        res.send({});
+    },
+    save: async (req, res) => {
+        console.log("save:", req.body);
         res.send({});
     },
 };
@@ -206,3 +210,4 @@ let appsData = [
         htmlForm: formHtmlPlaceholderData,
     },
 ];
+

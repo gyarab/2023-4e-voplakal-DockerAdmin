@@ -1,8 +1,8 @@
 const { authJwt } = require("../middlewares");
 const Public = require("../controllers/public.controller");
 const Apps = require("../controllers/apps.controller");
+const Instances = require("../controllers/instances.controller");
 const { getUser } = require("../controllers/auth.controller");
-
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -20,10 +20,15 @@ module.exports = function (app) {
         });
     });
 
-
+    // APPS
     app.get("/api/app/getAll", [authJwt.verifyToken, authJwt.isAdmin], Apps.getAll);
     app.post("/api/app/create", [authJwt.verifyToken, authJwt.isAdmin], Apps.create);
     app.get("/api/app/availableRepos", [authJwt.verifyToken, authJwt.isAdmin], Apps.getRepos);
-    app.get("/api/app/delete/:id", [authJwt.verifyToken, authJwt.isAdmin], Apps.delete);
+    app.delete("/api/app/:id", [authJwt.verifyToken, authJwt.isAdmin], Apps.delete);
+    app.put("/api/app/save", [authJwt.verifyToken, authJwt.isAdmin], Apps.save);
+
+    // INSTANCES
+    app.get("/api/instance/getAll", [authJwt.verifyToken, authJwt.isAdmin], Instances.getAll);
+    app.delete("/api/instances", [authJwt.verifyToken, authJwt.isAdmin], Instances.delete);
     // app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
 };

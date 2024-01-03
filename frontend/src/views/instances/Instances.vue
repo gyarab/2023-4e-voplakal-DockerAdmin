@@ -5,7 +5,7 @@
         <h3 id="traffic" class="card-title mb-0">Instances</h3>
         <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker containers</b> managed by this administration system.</div>
         <br>
-        <CSpinner v-if="!apps[0]"/>
+        <CSpinner v-if="!apps[0]" />
         <CCard class="mb-4" v-for="app in  apps " :key="app.id">
           <CCardBody>
             <CRow>
@@ -68,6 +68,16 @@
       </CCol>
     </CRow>
   </div>
+  <!-- MODALS -->
+  <MyModal :data="deleteModal" :title="'Delete instance(s)?'">
+    All data belonging to this instance(s) will be deleted. Are you sure you want to delete it? It is not reversible.
+    <template #footer>
+      <CButton color="secondary" @click="() => deleteModal.show = false">
+        Storno
+      </CButton>
+      <CButton color="danger" type="submit">Delete</CButton>
+    </template>
+  </MyModal>
 </template>
 
 <script>
@@ -77,19 +87,20 @@ import AppLi from './InstanceLi.vue';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { CSpinner } from '@coreui/vue';
+import MyModal from '../../components/MyModal.vue';
 
 export default {
   name: "Instances",
   components: {
     CIcon,
     AppLi,
-    CSpinner
-},
+    CSpinner,
+    MyModal
+  },
   setup() {
     //     app tag client status expiry
 
     const store = useStore();
-
     store.dispatch("getInstances")
     /**
      * 
@@ -116,6 +127,11 @@ export default {
       return groupedArray;
     }
 
+    const deleteModal = reactive({
+      show: false,
+      data: {},
+    });
+
     const apps = computed(() => transformData(store.state.instances))
     const actionUpgradeTag = ref("");
     const editAction = (action, selected) => {
@@ -128,7 +144,11 @@ export default {
           })
           break;
         case "delete":
-          store.dispatch("instancesDelete", selected.map(s => s.id))
+          console.log(deleteModal);
+          deleteModal.show = true;
+          deleteModal.onSubmit = () => {
+            store.dispatch("instancesDelete", selected.map(s => s.id))
+          }
           break;
         case "stop":
           store.dispatch("instancesStop", selected.map(s => s.id))
@@ -137,7 +157,7 @@ export default {
     }
 
     return {
-      icon, apps, actionSelect: ref(""), actionUpgradeTag, editAction
+      icon, apps, actionSelect: ref(""), actionUpgradeTag, editAction, deleteModal
     }
   }
 }

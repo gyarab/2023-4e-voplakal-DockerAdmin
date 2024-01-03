@@ -58,8 +58,10 @@ export default {
     window.router = router;
     const store = useStore()
 
-    store.dispatch('getSession');
-    
+    store.dispatch('getSession').then(() => {
+      store.dispatch("getApps")
+    })
+
 
     const error = computed(() => store.state.error)
     const session = computed(() => store.state.session)

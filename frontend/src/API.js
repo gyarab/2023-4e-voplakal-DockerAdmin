@@ -155,11 +155,14 @@ export let REST = {
       ...opts,
     })
   },
-
-  DELETE(path, opts, body) {
+  
+  DELETE(path, body, opts,) {
     return REST.request({
       method: 'DELETE',
       path,
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
       nonJsonOk: true,
       ...opts,
       body: JSON.stringify(body),

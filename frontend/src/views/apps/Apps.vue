@@ -95,7 +95,6 @@ export default {
     const router = useRouter()
     const appsData = computed(() => store.state.apps)
 
-    store.dispatch("getApps")
 
     const dockerImages = ref([]);
     const createModal = ref();
