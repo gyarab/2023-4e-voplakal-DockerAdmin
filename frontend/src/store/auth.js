@@ -14,6 +14,7 @@ const AuthService = {
 
   logout() {
     localStorage.removeItem('user')
+    console.log("remove");
   },
 
   async register(user) {
@@ -36,12 +37,10 @@ export const auth = {
   state: initialState,
   actions: {
     async login({ commit, dispatch }, user) {
-      console.log('login', user)
       try {
         let resUser = await AuthService.login(user)
         commit('loginSuccess', resUser)
         dispatch('getSession', null, { root: true })
-        console.log(resUser)
 
         return resUser
       } catch (error) {
@@ -51,7 +50,6 @@ export const auth = {
       }
     },
     logout({ commit }) {
-      console.log('logout')
       AuthService.logout()
       commit('logout')
     },
@@ -70,9 +68,9 @@ export const auth = {
   },
   mutations: {
     loginSuccess(state, user) {
-      console.log('sucess')
       state.status.loggedIn = true
       state.user = user
+      // throw user;
     },
     loginFailure(state) {
       console.log('fail')

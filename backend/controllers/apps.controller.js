@@ -1,13 +1,23 @@
 module.exports = {
     getAll: async (req, res) => {
-        console.log("ahoj");
         let apps = appsData;
         if (!apps) apps = [];
         res.send(apps);
     },
+    create: async (req, res) => {
+        console.log(req.body.imageRepo);
+        let appID = "123432341ščř";
+        res.send({ appID });
+    },
+    getRepos: async (req, res) => {
+        let repos = ["Bio-brein", "DEH", "WordPress"];
+        res.send({ repos });
+    },
+    delete: async (req, res) => {
+        console.log("params:", req.params);
+        res.send({});
+    },
 };
-
-
 
 let formHtmlPlaceholderData = `<div class="mb-3">
 <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -80,7 +90,7 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
 <label for="floatingTextarea2">Comments</label>
 </div>
-<button type="submit" id="submiter" class="btn btn-primary">Submit</button>`
+<button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
 
 let codeExample = `#!/bin/bash
 
@@ -119,7 +129,7 @@ fi
 
 sudo docker rm -f $2
 sudo docker run -dp $3:3000 --name $2 -v "$mount_dir:/app/data" --restart always --network mongo-network $1
-`
+`;
 let appsData = [
     {
         name: "Moje prvni pojmenovaní",

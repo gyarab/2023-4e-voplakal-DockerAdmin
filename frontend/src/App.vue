@@ -58,9 +58,8 @@ export default {
     window.router = router;
     const store = useStore()
 
-    onMounted(() => {
-      store.dispatch('getSession');
-    })
+    store.dispatch('getSession');
+    
 
     const error = computed(() => store.state.error)
     const session = computed(() => store.state.session)

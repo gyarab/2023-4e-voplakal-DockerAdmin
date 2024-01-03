@@ -13,7 +13,8 @@ module.exports = function (app) {
     app.get("/api/ping", Public.ping);
 
     app.get("/api/session", [authJwt.verifyToken], async (req, res) => {
-        let user = await getUser({ id: req.body.id });
+        console.log(req.query.id);
+        let user = await getUser({ _id: req.query.id });
         res.status(200).send({
             user,
         });
@@ -21,5 +22,8 @@ module.exports = function (app) {
 
 
     app.get("/api/app/getAll", [authJwt.verifyToken, authJwt.isAdmin], Apps.getAll);
+    app.post("/api/app/create", [authJwt.verifyToken, authJwt.isAdmin], Apps.create);
+    app.get("/api/app/availableRepos", [authJwt.verifyToken, authJwt.isAdmin], Apps.getRepos);
+    app.get("/api/app/delete/:id", [authJwt.verifyToken, authJwt.isAdmin], Apps.delete);
     // app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
 };

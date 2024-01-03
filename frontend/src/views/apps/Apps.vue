@@ -79,6 +79,7 @@ import AppLi from './AppLi.vue';
 import { useStore } from 'vuex';
 import MyModal from '../../components/MyModal.vue';
 import { useRouter } from 'vue-router';
+import { REST } from '../../API';
 
 export default {
   name: "Apps",
@@ -98,9 +99,9 @@ export default {
 
     const dockerImages = ref([]);
     const createModal = ref();
-    const createAppDialogOpen = () => {
+    const createAppDialogOpen = async () => {
       createModal.value.data.show = true;
-      setTimeout(() => dockerImages.value = ["Bio-brein", "DEH", "WordPress"], 1500)
+      dockerImages.value = await store.dispatch("getRepos")
       //dockerImages = api call
     }
     const createApp = async (imageRepo) => {

@@ -1,5 +1,5 @@
 <template>
-  <CDropdown placement="bottom-end" variant="nav-item">
+  <CDropdown v-if="user" placement="bottom-end" variant="nav-item">
     <CDropdownToggle class="py-0 pe-0" :caret="false">
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import avatar from '@/assets/images/avatars/8.jpg'
+import avatar from '@/assets/images/user.png'
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -38,8 +38,8 @@ export default {
     return {
       avatar: avatar,
       itemsCount: 42,
-      logout: () => {
-        store.dispatch("auth/logout");
+      logout: async () => {
+        await store.dispatch("auth/logout");
         router.push("login")
       },
       user: computed(() => store.state.auth.user)

@@ -48,11 +48,9 @@ export default createStore({
     async getSession(context) {
       try {
         let savedUser = context.state.auth.user
-        console.log(savedUser)
-        const response = await REST.GET('session', { userID: savedUser?.id })
+        const response = await REST.GET('session', { id: savedUser?.id })
         context.commit('setSession', response)
-        console.log(response)
-        let user = response.user 
+        let user = response.user
         if (!user) return window.router.push('login')
         context.commit('auth/loginSuccess', user)
       } catch (error) {
@@ -61,14 +59,12 @@ export default createStore({
       }
     },
 
-
     /*
      * APPS
      */
     async getApps(context) {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 700))
-        const response = await REST.GET(`app/getAll`);
+        const response = await REST.GET(`app/getAll`)
         context.commit('updateApps', response)
       } catch (error) {
         window.apiErrors.value.push(error)
@@ -76,8 +72,8 @@ export default createStore({
     },
     async createApp(context, imageRepo) {
       try {
-        let appID = '123432341ščř' //from api call (imageRepo: "Biobrein") /await REST.POST(`app/create`);
-        await console.log('create app', imageRepo)
+        const { appID } = await REST.POST(`app/create`, { imageRepo })
+        console.log(appID)
         context.dispatch('getApps')
         window.showToast('Created')
         return appID
@@ -85,9 +81,17 @@ export default createStore({
         window.apiErrors.value.push(error)
       }
     },
+    async getRepos(context) {
+      try {
+        const { repos } = await REST.GET("app/availableRepos");
+        return repos;
+      } catch (error) {
+        window.apiErrors.value.push(error)
+      }
+    },
     async deleteApp(context, id) {
       try {
-        await console.log('appDelete', id)
+        await REST.DELETE("app/delete/"+ id)
         context.dispatch('getApps')
         window.showToast('Deleted')
       } catch (error) {

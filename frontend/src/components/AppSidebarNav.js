@@ -128,7 +128,7 @@ const AppSidebarNav = defineComponent({
           )
     }
 
-    console.log(props.session)
+    // console.log("app nav", props.session.user?.roles)
 
     return () =>
       h(
@@ -137,7 +137,7 @@ const AppSidebarNav = defineComponent({
         {
           default: () =>
             nav
-              .filter((i) => props.session.user?.roles?.some((r) => r === i.role || !r.role))
+              .filter((i) => !i.role || props.session.user?.roles?.some((r) => r === i.role))
               .map((item) => renderItem(item)),
         },
       )

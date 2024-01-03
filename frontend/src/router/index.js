@@ -1,5 +1,6 @@
 import { h, resolveComponent } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import _nav from '../_nav'
 
 import DefaultLayout from '@/layouts/DefaultLayout'
 
@@ -17,9 +18,7 @@ const routes = [
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ '@/views/dashboard/Dashboard.vue'
-          ),
+          import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/Dashboard.vue'),
       },
       {
         path: 'app-edit/:id',
@@ -88,8 +87,8 @@ const routes = [
         component: () => import('@/views/instances/InstanceCreate.vue'),
       },
       {
-        path: "/:pathMatch(.*)*",
-        redirect: "/404"
+        path: '/:pathMatch(.*)*',
+        redirect: '/404',
       },
     ],
   },
@@ -104,18 +103,17 @@ const router = createRouter({
   },
 })
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ['/login', '/register', '/home'];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem('user');
-  
-//   // trying to access a restricted page + not logged in
-//   // redirect to login page
-//   if (authRequired && !loggedIn) {
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  const yourPages = _nav
+    .filter((i) => !i.role || (user?.roles.some((r) => r === i.role) && i.to))
+    .map((item) => item.to)
+
+  if (yourPages.includes(to.path)) {
+    next()
+  } else {
+    next('/login')
+  }
+})
 
 export default router
