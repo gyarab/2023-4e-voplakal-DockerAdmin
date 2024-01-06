@@ -1,3 +1,5 @@
+const { getRepos } = require("../docker/docker");
+
 module.exports = {
     getAll: async (req, res) => {
         let apps = appsData;
@@ -10,8 +12,7 @@ module.exports = {
         res.send({ appID });
     },
     getRepos: async (req, res) => {
-        let repos = ["Bio-brein", "DEH", "WordPress"];
-        res.send({ repos });
+        res.send(await getRepos());
     },
     delete: async (req, res) => {
         console.log("delete:", req.params);
@@ -210,4 +211,3 @@ let appsData = [
         htmlForm: formHtmlPlaceholderData,
     },
 ];
-

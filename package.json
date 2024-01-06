@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "DUCK - Docker Ultimate Container Kommander",
   "scripts": {
+    "fe": "cd frontend && npm run dev",
+    "be": "cd backend && sudo npx nodemon"
     
   },
   "author": "Martin Voplakal",

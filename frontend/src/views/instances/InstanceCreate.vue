@@ -1,7 +1,7 @@
 <template>
     <CContainer>
         <CRow class="justify-content-center">
-            <CCol :sm="7">
+            <CCol :lg="7">
                 <CCard>
                     <CCardBody v-if="!statusDone">
                         <CRow class="justify-content-center" v-if="app">
@@ -46,8 +46,8 @@ export default {
     setup(props) {
         console.log(props.appId);
         const store = useStore()
-
-        const app = computed(() => store.state.apps?.find(app => app.id === props.appId));
+        store.dispatch("getApps");
+        const app = computed(() => store.state.apps.find(app => app.id === props.appId));
         const statusDone = ref(false)
 
         const createInstance = async (formData) => {

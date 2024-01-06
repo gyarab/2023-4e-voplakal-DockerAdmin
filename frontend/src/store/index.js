@@ -83,8 +83,7 @@ export default createStore({
     },
     async getRepos(context) {
       try {
-        const { repos } = await REST.GET('app/availableRepos')
-        return repos
+        return await REST.GET('app/availableRepos');
       } catch (error) {
         window.apiErrors.value.push(error)
       }

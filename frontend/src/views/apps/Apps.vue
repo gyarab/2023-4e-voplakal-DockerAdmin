@@ -62,7 +62,7 @@
 
     <CFormSelect v-model="selectedImage">
       <option>Choose a docker image repository</option>
-      <option v-for="image in dockerImages" :value="image">{{ image }}</option>
+      <option v-for="image in dockerImages" :value="image.id">{{ image.repoNameTag }}</option>
     </CFormSelect>
     <div class="small text-body-secondary">
       To use some app in this system you have to dockerize the app firstly.
@@ -104,8 +104,8 @@ export default {
       dockerImages.value = await store.dispatch("getRepos")
       //dockerImages = api call
     }
-    const createApp = async (imageRepo) => {
-      let id = await store.dispatch("createApp", imageRepo)
+    const createApp = async (imageId) => {
+      let id = await store.dispatch("createApp", imageId)
       router.push("/app-edit/" + id)
     }
 
