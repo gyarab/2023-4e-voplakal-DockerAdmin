@@ -32,7 +32,7 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <CSpinner v-if="!appsData[0]"/>
+                      <CSpinner v-if="!appsData[0]" />
                       <CTableRow v-for="app in appsData" :key="app.id">
                         <AppLi :rowData="app"></AppLi>
                       </CTableRow>
@@ -93,6 +93,7 @@ export default {
     // role_mgr3      latest      08af2227f359   6 weeks ago    239MB
     const store = useStore()
     const router = useRouter()
+    store.dispatch("getApps");
     const appsData = computed(() => store.state.apps)
 
 

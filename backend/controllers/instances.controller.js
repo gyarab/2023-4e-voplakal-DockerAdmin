@@ -6,65 +6,80 @@ module.exports = {
     },
     delete: async (req, res) => {
         console.log("delete:", req.body.ids);
-        res.send({})
+        res.send({});
     },
 
-    upgrade: async (/** @type {String} */req, res) => {
-        console.log("delete:", req.body.ids);
-        res.send({})
-    }
+    upgrade: async (req, res) => {
+        console.log("upgrade:", req.body.ids, req.body.tag);
+        req.res.send({});
+    },
+    save: async (req, res) => {
+        let instance = req.body;
+        console.log("save:", instance);
+        req.res.send({});
+    },
+    start: async (req, res) => {
+        let instanceId = req.body.id;
+        console.log("start:", instanceId);
+        req.res.send({});
+    },
+    create: async (req, res) => {
+        let instance = req.body;
+        console.log("create:", instance);
+        req.res.send({});
+    },
 };
 let instances = [
     {
-      id: '62234444',
-      app_id: '123432341ščř',
-      status: 'Up 3 days',
-      image_id: '23452345',
-      expiry_date: '2023-11-22',
-      created_on: '2023-01-16',
-      name: 'deh-martin.air345',
-      client: 'pepa.novak@seznam.cz',
-      limits: {
-        cpu: 60,
-        ram: 2000,
-        swap: 444,
-        disk: 46666,
-      },
+        id: "62234444",
+        app_id: "123432341ščř",
+        status: "Up 3 days",
+        image_id: "23452345",
+        expiry_date: "2023-11-22",
+        created_on: "2023-01-16",
+        name: "deh-martin.air345",
+        client: "pepa.novak@seznam.cz",
+        limits: {
+            cpu: 60,
+            ram: 2000,
+            swap: 444,
+            disk: 46666,
+        },
     },
     {
-      id: '12234445',
-      app_id: '123432341ščř',
-      client: 'pepa.novak@seznam.cz',
-      expiry_date: '2023-11-22',
-      created_on: '2023-01-16',
-      container_id: '2cea44557dcb',
-      tag: 'latest',
-      image_id: '23452345',
-      status: 'Up 3 days',
-      name: 'deh-martin.air345',
+        id: "12234445",
+        app_id: "123432341ščř",
+        client: "pepa.novak@seznam.cz",
+        expiry_date: "2023-11-22",
+        created_on: "2023-01-16",
+        container_id: "2cea44557dcb",
+        tag: "latest",
+        image_id: "23452345",
+        status: "Up 3 days",
+        name: "deh-martin.air345",
     },
     {
-      id: '12234445',
-      app_id: '123432čř',
-      client: 'pepa.novak@seznam.cz',
-      created_on: '2023-01-16',
-      expiry_date: '2023-11-22',
-      container_id: '2cea44557dcb',
-      tag: 'latest',
-      image_id: '23452345',
-      status: 'Up 3 days',
-      name: 'deh-martin.air345',
+        id: "12234445",
+        app_id: "123432čř",
+        client: "pepa.novak@seznam.cz",
+        created_on: "2023-01-16",
+        expiry_date: "2023-11-22",
+        container_id: "2cea44557dcb",
+        tag: "latest",
+        image_id: "23452345",
+        status: "Up 3 days",
+        name: "deh-martin.air345",
     },
     {
-      id: '12234445',
-      app_id: '123432čř',
-      container_id: '2cea44557dcb',
-      client: 'pepa.novak@seznam.cz',
-      expiry_date: '2023-11-22',
-      tag: 'latest',
-      image_id: '23452345',
-      created_on: '2023-01-16',
-      status: 'Up 3 days',
-      name: 'deh-martin.air345',
+        id: "12234445",
+        app_id: "123432čř",
+        container_id: "2cea44557dcb",
+        client: "pepa.novak@seznam.cz",
+        expiry_date: "2023-11-22",
+        tag: "latest",
+        image_id: "23452345",
+        created_on: "2023-01-16",
+        status: "Up 3 days",
+        name: "deh-martin.air345",
     },
-  ]
+];

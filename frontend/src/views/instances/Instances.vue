@@ -101,12 +101,13 @@ export default {
     //     app tag client status expiry
 
     const store = useStore();
-    store.dispatch("getInstances")
+    store.dispatch("getApps");
+    store.dispatch("getInstances");
     /**
      * 
      * @param {Array} instances 
      */
-    const transformData = (instances) => {
+    const transformData = (instances, storeApps) => {
       const groupedArray = [];
       for (const curr of instances) {
         const appId = curr.app_id;
@@ -116,7 +117,7 @@ export default {
           groupedArray.push({
             id: appId,
             instances: [],
-            ...store.state.apps.find(app => app.id === appId)
+            ...storeApps.find(app => app.id === appId)
             //...props of app (appID)
           })
           app = groupedArray[groupedArray.length - 1];
@@ -132,7 +133,7 @@ export default {
       data: {},
     });
 
-    const apps = computed(() => transformData(store.state.instances))
+    const apps = computed(() => transformData(store.state.instances, store.state.apps))
     const actionUpgradeTag = ref("");
     const editAction = (action, selected) => {
       if (selected.length === 0) return;

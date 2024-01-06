@@ -125,7 +125,7 @@ export default createStore({
       //todo route
       try {
         console.log('upgrade', ids, tag)
-        REST.POST('instances/upgrade', { ids, tag })
+        await REST.POST('instances/upgrade', { ids, tag })
         ctx.dispatch('getInstances')
         window.showToast('Upgraded')
       } catch (error) {
@@ -144,7 +144,7 @@ export default createStore({
     async instanceSave(ctx, data) {
       try {
         console.log('save', data.id)
-        console.log(data)
+        await REST.POST('instance/save', data)
         ctx.dispatch('getInstances')
         window.showToast('Saved')
       } catch (error) {
@@ -154,6 +154,7 @@ export default createStore({
     async instanceStart(ctx, id) {
       try {
         console.log('start', id)
+        await REST.POST('instance/start', { id })
         ctx.dispatch('getInstances')
         window.showToast('Started')
       } catch (error) {
@@ -163,6 +164,7 @@ export default createStore({
     async instancesStop(ctx, id) {
       try {
         console.log('stop', id)
+        await REST.POST('instance/stop', { id })
         ctx.dispatch('getInstances')
         window.showToast('Stopped')
       } catch (error) {
@@ -172,6 +174,7 @@ export default createStore({
     async instanceCreate(ctx, instance) {
       try {
         console.log('create instance', instance)
+        await REST.POST('instance/create', instance);
         ctx.dispatch('getInstances')
         window.showToast('Created')
       } catch (error) {
