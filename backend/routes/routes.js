@@ -30,5 +30,6 @@ module.exports = function (app) {
     // INSTANCES
     app.get("/api/instance/getAll", [authJwt.verifyToken, authJwt.isAdmin], Instances.getAll);
     app.delete("/api/instances", [authJwt.verifyToken, authJwt.isAdmin], Instances.delete);
-    // app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
+    app.post("/api/instances/upgrade", [authJwt.verifyToken, authJwt.isAdmin], Instances.upgrade);
 };
+

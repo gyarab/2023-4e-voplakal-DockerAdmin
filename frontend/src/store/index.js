@@ -125,6 +125,7 @@ export default createStore({
       //todo route
       try {
         console.log('upgrade', ids, tag)
+        REST.POST('instances/upgrade', { ids, tag })
         ctx.dispatch('getInstances')
         window.showToast('Upgraded')
       } catch (error) {

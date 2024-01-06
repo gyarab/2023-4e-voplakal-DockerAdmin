@@ -7,6 +7,11 @@ module.exports = {
     delete: async (req, res) => {
         console.log("delete:", req.body.ids);
         res.send({})
+    },
+
+    upgrade: async (/** @type {String} */req, res) => {
+        console.log("delete:", req.body.ids);
+        res.send({})
     }
 };
 let instances = [

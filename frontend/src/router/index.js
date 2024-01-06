@@ -104,16 +104,22 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const user = JSON.parse(localStorage.getItem('user'))
-  const notYourPages = _nav
-    .filter((i) => i.role && user?.roles.some((r) => r !== i.role) && i.to)
-    .map((item) => item.to)
+  // const user = JSON.parse(localStorage.getItem('user'))
+  // const notYourPages = _nav
+  //   .filter((i) => i.role && user?.roles.some((r) => r !== i.role) && i.to)
+  //   .map((item) => item.to)
 
-  if (notYourPages.includes(to.path)) {
+  // if (notYourPages.includes(to.path)) {
+
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/login']
+  const authRequired = !publicPages.some((e) => e.startsWith(to.path))
+  const auth = !!localStorage.getItem('user')
+
+  if (authRequired && !auth) {
     next({ name: 'Login' })
   } else {
     next()
   }
 })
-
 export default router
