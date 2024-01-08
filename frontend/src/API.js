@@ -29,7 +29,7 @@ export let REST = {
     const router = window.router
     if (status >= 500) {
       router.push('500')
-      return true
+      return false;
     }
     if (status === 401) {
       //unauthorized

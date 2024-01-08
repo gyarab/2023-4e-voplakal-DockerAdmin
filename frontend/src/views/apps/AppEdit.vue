@@ -1,6 +1,7 @@
 <template>
   <div v-if="!data">
     <CSpinner />
+    <div>We cannot find it...</div>
   </div>
   <div v-else>
     <CRow>
@@ -28,25 +29,9 @@
                   <CCardBody>
                     <CTable>
                       <CTableBody>
-                        <CTableRow>
-                          <CTableHeaderCell scope="row">Repository</CTableHeaderCell>
-                          <CTableDataCell>{{ data.repository }}</CTableDataCell>
-                        </CTableRow>
-                        <CTableRow>
-                          <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                          <CTableDataCell><b>{{ image.tag }}</b></CTableDataCell>
-                        </CTableRow>
-                        <CTableRow>
-                          <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                          <CTableDataCell>{{ image.created }}</CTableDataCell>
-                        </CTableRow>
-                        <CTableRow>
-                          <CTableHeaderCell scope="row">Size</CTableHeaderCell>
-                          <CTableDataCell>{{ image.size }}</CTableDataCell>
-                        </CTableRow>
-                        <CTableRow>
-                          <CTableHeaderCell scope="row">Image ID</CTableHeaderCell>
-                          <CTableDataCell>{{ image.image_id }}</CTableDataCell>
+                        <CTableRow v-for="(prop, key) in image" :key="prop._id" v-if="key !== '_id'">
+                          <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
+                          <CTableDataCell>{{ prop }}</CTableDataCell>
                         </CTableRow>
                       </CTableBody>
                     </CTable>
@@ -214,6 +199,7 @@ export default {
 
     //todo load item data app_id: props.id
     const data = computed(() => store.state.apps.find(a => a.id === props.id));
+    if (!store.state.apps[0]) store.dispatch("getApps");
 
     const deleteApp = () => {
       store.dispatch("deleteApp", data.value.id)

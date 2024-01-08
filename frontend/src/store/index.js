@@ -54,7 +54,7 @@ export default createStore({
         if (!user) return window.router.push('login')
         context.commit('auth/loginSuccess', user)
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
         throw error
       }
     },
@@ -67,25 +67,28 @@ export default createStore({
         const response = await REST.GET(`app/getAll`)
         context.commit('updateApps', response)
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
-    async createApp(context, imageRepo) {
+    async createApp(context, data) {
       try {
-        const { appID } = await REST.POST(`app/create`, { imageRepo })
+        const res = await REST.POST(`app/create`, data)
+        let appID = res.appID
         console.log(appID)
         context.dispatch('getApps')
         window.showToast('Created')
         return appID
+        // return appID
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
+        throw error
       }
     },
     async getRepos(context) {
       try {
-        return await REST.GET('app/availableRepos');
+        return await REST.GET('app/availableRepos')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async deleteApp(context, id) {
@@ -94,7 +97,7 @@ export default createStore({
         context.dispatch('getApps')
         window.showToast('Deleted')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async saveApp(context, data) {
@@ -104,7 +107,7 @@ export default createStore({
         context.dispatch('getApps')
         window.showToast('Saved')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
 
@@ -117,7 +120,7 @@ export default createStore({
         const response = await REST.GET(`instance/getAll`)
         context.commit('updateInstances', response)
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instancesUpgrade(ctx, { ids, tag }) {
@@ -128,7 +131,7 @@ export default createStore({
         ctx.dispatch('getInstances')
         window.showToast('Upgraded')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instancesDelete(ctx, ids) {
@@ -137,7 +140,7 @@ export default createStore({
         await REST.DELETE('instances', { ids })
         window.showToast('Deleted')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instanceSave(ctx, data) {
@@ -147,7 +150,7 @@ export default createStore({
         ctx.dispatch('getInstances')
         window.showToast('Saved')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instanceStart(ctx, id) {
@@ -157,7 +160,7 @@ export default createStore({
         ctx.dispatch('getInstances')
         window.showToast('Started')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instancesStop(ctx, id) {
@@ -167,17 +170,17 @@ export default createStore({
         ctx.dispatch('getInstances')
         window.showToast('Stopped')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
     async instanceCreate(ctx, instance) {
       try {
         console.log('create instance', instance)
-        await REST.POST('instance/create', instance);
+        await REST.POST('instance/create', instance)
         ctx.dispatch('getInstances')
         window.showToast('Created')
       } catch (error) {
-        window.apiErrors.value.push(error)
+        apiError(error)
       }
     },
   },
@@ -185,3 +188,8 @@ export default createStore({
     auth,
   },
 })
+
+function apiError(error) {
+  console.error(error)
+  window.apiErrors.value.push(error)
+}

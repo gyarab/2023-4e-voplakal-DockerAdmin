@@ -29,19 +29,13 @@ async function ps() {
     return JSON.parse(string);
 }
 /**
- * @returns {Promise<{id, repoNameTag}>}
+ * @returns {Promise<Array>}
  */
-async function getRepos() {
+async function getImages() {
     let string = await sh("docker images --format json");
     if (!string) return [];
     string = `[${string}]`;
-    string = string.replaceAll(/\r?\n/g, ",");
-    string = string.replaceAll(",]", "]");
-    let arr = JSON.parse(string);
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = { id: arr[i].ID, repoNameTag: `${arr[i].Repository}:${arr[i].Tag}` };
-    }
-    return arr;
+    return parseJS(string);
 }
 
 function sh(command) {
@@ -55,12 +49,17 @@ function sh(command) {
                 console.error(`stderr: ${stderr}`);
                 reject(error);
             }
-            console.log(`stdout: ${stdout}`);
+            // console.log(`stdout: ${stdout}`);
             resolve(stdout);
         });
     });
 }
+function parseJS(string) {
+    string = string.replaceAll(/\r?\n/g, ",");
+    string = string.replaceAll(",]", "]");
+    return JSON.parse(string);
+}
 
 // getRepos().then((v) => console.log(v));
 
-module.exports = { getRepos };
+module.exports = { getImages };

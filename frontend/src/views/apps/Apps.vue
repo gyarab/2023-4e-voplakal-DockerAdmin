@@ -57,12 +57,13 @@
     </CRow>
   </div>
 
-  <MyModal ref="createModal" title="Select docker image repository" :on_submit="() => createApp(selectedImage)">
-    <CSpinner v-if="!dockerImages.length" />
-
+  <MyModal ref="createModal" title="Select docker image repository" :on_submit="() => createApp(selectedImage, newAppName)">
+    <CSpinner v-if="!dockerImagesRepos.length" />
+    <CFormLabel for="staticEmail" class="col-sm-2 col-form-label">App name</CFormLabel>
+    <CFormInput v-model="newAppName" type="text" placeholder="Enter new app name" style="margin-bottom: 10px;"></CFormInput>
     <CFormSelect v-model="selectedImage">
       <option>Choose a docker image repository</option>
-      <option v-for="image in dockerImages" :value="image.id">{{ image.repoNameTag }}</option>
+      <option v-for="repo in dockerImagesRepos" :value="repo">{{ repo }}</option>
     </CFormSelect>
     <div class="small text-body-secondary">
       To use some app in this system you have to dockerize the app firstly.
@@ -97,20 +98,20 @@ export default {
     const appsData = computed(() => store.state.apps)
 
 
-    const dockerImages = ref([]);
+    const dockerImagesRepos = ref([]);
     const createModal = ref();
     const createAppDialogOpen = async () => {
       createModal.value.data.show = true;
-      dockerImages.value = await store.dispatch("getRepos")
+      dockerImagesRepos.value = await store.dispatch("getRepos")
       //dockerImages = api call
     }
-    const createApp = async (imageId) => {
-      let id = await store.dispatch("createApp", imageId)
+    const createApp = async (repoImageName, newAppName) => {
+      let id = await store.dispatch("createApp", { repoImageName, newAppName })
       router.push("/app-edit/" + id)
     }
 
     return {
-      icon, appsData, selectedImage: ref(), createApp, createAppDialogOpen, dockerImages, createModal
+      icon, appsData, selectedImage: ref(), newAppName: ref(), createApp, createAppDialogOpen, dockerImagesRepos, createModal
     }
   }
 }
