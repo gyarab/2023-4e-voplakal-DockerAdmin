@@ -116,13 +116,13 @@ let runCodeExample = codeExample;
 let appsData = [
     {
         name: "Moje prvni pojmenovaní",
-        id: "123432341ščř",
+        _id: "65a1585d99bb46177b19e518",
         repository: "biobrejn-1",
         folder: "moje-pojmenovani",
         images: [
             {
                 tag: "latest",
-                image_id: "08af2227f359",
+                image_id: "86552cbc4151",
                 created: "7 weeks ago",
                 size: "340 MB",
             },
@@ -151,98 +151,24 @@ let appsData = [
         run_code: codeExample,
         htmlForm: formHtmlPlaceholderData,
     },
-    {
-        name: "Moje pojmenovaní",
-        id: "123432čř",
-        repository: "biobrejn-1",
-        folder: "moje-pojmenovani",
-        images: [
-            {
-                tag: "latest",
-                image_id: "08af2227f359",
-                created: "7 weeks ago",
-                size: "340 MB",
-            },
-            {
-                tag: "recent",
-                image_id: "18af2227f359",
-                created: "8 weeks ago",
-                size: "540 MB",
-            },
-            {
-                tag: "recent",
-                image_id: "88af2227f359",
-                created: "8 weeks ago",
-                size: "540 MB",
-            },
-        ],
-        selected_image: 0,
-        // //computed on mongo
-        // image_selected: {
-        //   tag: 'latest',
-        //   image_id: '08af2227f359',
-        //   created: '7 weeks ago',
-        //   size: '340 MB',
-        // },
-        init_code: codeExample,
-        run_code: codeExample,
-        htmlForm: formHtmlPlaceholderData,
-    },
 ];
 
 
 let instances = [
     {
-        id: "62234444",
-        app_id: "123432341ščř",
+        app_id: "65a1585d99bb46177b19e518",
         status: "Up 3 days",
-        image_id: "23452345",
+        image_id: "86552cbc4151",
         expiry_date: "2023-11-22",
         created_on: "2023-01-16",
         name: "deh-martin.air345",
-        client: "pepa.novak@seznam.cz",
+        client: "65943b023ec47e78b1cec2b5",
         limits: {
             cpu: 60,
             ram: 2000,
             swap: 444,
             disk: 46666,
         },
-    },
-    {
-        id: "12234445",
-        app_id: "123432341ščř",
-        client: "pepa.novak@seznam.cz",
-        expiry_date: "2023-11-22",
-        created_on: "2023-01-16",
-        container_id: "2cea44557dcb",
-        tag: "latest",
-        image_id: "23452345",
-        status: "Up 3 days",
-        name: "deh-martin.air345",
-    },
-    {
-        id: "12234445",
-        app_id: "123432čř",
-        client: "pepa.novak@seznam.cz",
-        created_on: "2023-01-16",
-        expiry_date: "2023-11-22",
-        container_id: "2cea44557dcb",
-        tag: "latest",
-        image_id: "23452345",
-        status: "Up 3 days",
-        name: "deh-martin.air345",
-    },
-    {
-        id: "12234445",
-        app_id: "123432čř",
-        container_id: "2cea44557dcb",
-        client: "pepa.novak@seznam.cz",
-        expiry_date: "2023-11-22",
-        tag: "latest",
-        image_id: "23452345",
-        created_on: "2023-01-16",
-        status: "Up 3 days",
-        name: "deh-martin.air345",
     },
 ];
 

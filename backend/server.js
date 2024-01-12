@@ -35,6 +35,7 @@ require("./routes/auth.routes")(app);
 require("./routes/routes")(app);
 
 const db = require("./models");
+const Instance = require("./models/instance.model");
 
 db.mongoose
     .connect(process.env.MongoDB_URI, {})
@@ -58,19 +59,18 @@ async function initDB() {
         }).save();
         console.log("added 'user' to roles collection");
     }
-    // if ((await db.App.estimatedDocumentCount()) === 0) {
-    //     await db.App.insertMany(fixtures.appsData);
-    //     console.log("added 'apps' fixtures");
-    // }
-    // if ((await app.Instnace.estimatedDocumentCount()) <= 0) {
-    //     await new Role({
-    //         name: "user",
-    //     }).save();
-    //     await new Role({
-    //         name: "admin",
-    //     }).save();
-    //     console.log("added 'user' to roles collection");
-    // }
+
+    await db.App.deleteMany();
+    await Instance.deleteMany();
+
+    if ((await db.App.estimatedDocumentCount()) === 0) {
+        await db.App.insertMany(fixtures.appsData);
+        console.log("added 'apps' fixtures");
+    }
+    if ((await Instance.estimatedDocumentCount()) <= 0) {
+        Instance.create(fixtures.instances[0])
+        console.log("added 'instances' fixtures");
+    }
 }
 
 //error handling

@@ -4,7 +4,7 @@
   "description": "DUCK - Docker Ultimate Container Kommander",
   "scripts": {
     "fe": "cd frontend && npm run dev",
-    "be": "cd backend && npx nodemon"
+    "be": "cd backend && \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" && npx nodemon"
     
   },
   "author": "Martin Voplakal",

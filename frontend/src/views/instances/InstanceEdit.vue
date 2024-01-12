@@ -45,17 +45,10 @@
                               <CTableHeaderCell scope="row">Email</CTableHeaderCell>
                               <CTableDataCell>{{ data.client }}</CTableDataCell>
                             </CTableRow>
-                            <!-- <CTableRow>
-                              <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                              <CTableDataCell><b>aaaa</b></CTableDataCell>
-                            </CTableRow> -->
                           </CTableBody>
                         </CTable>
-
                       </CCardBody>
-                      <!-- <CCardFooter>                        <CRow>                          <CCol> </CCol>                        </CRow>                      </CCardFooter> -->
                     </CCard>
-
                     <CCard style="margin-bottom: 25px;">
                       <CCardBody>
                         <CCardTitle>App</CCardTitle>
@@ -73,7 +66,7 @@
                         </CTable>
                         <CCardTitle>Image</CCardTitle>
                         <CTable>
-                          <CTableBody>
+                          <CTableBody v-if="image">
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
                               <CTableDataCell>{{ image.tag }}</CTableDataCell>
@@ -91,6 +84,9 @@
                               <CTableDataCell>{{ data.image_id }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
+                          <CTableBody v-else>
+                            Image not foud
+                          </CTableBody>
                         </CTable>
                       </CCardBody>
                       <CCardFooter>
@@ -103,9 +99,7 @@
                           <CButton color="primary" size="sm" @click="upgradeTag(actionUpgradeTag)">OK</CButton>
                         </div>
                       </CcardFooter>
-                      <!-- <CCardFooter>                        <CRow>                          <CCol> </CCol>                        </CRow>                      </CCardFooter> -->
                     </CCard>
-
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
                         <h4 class="card-title mb-0">Resources limits</h4>
@@ -146,7 +140,6 @@
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
                         <h4 class="card-title">Statistics</h4>
-                        <!-- <div class="small text-body-secondary">This script run once when new app instance is created.</div> -->
                       </CCardHeader>
                       <CCardBody>
                         <CTable>
@@ -226,7 +219,7 @@ import { reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import MyModal from '../../components/MyModal.vue';
-import { CSpinner } from '@coreui/vue';
+import { CSpinner, CTableBody } from '@coreui/vue';
 
 
 
@@ -234,7 +227,8 @@ export default {
   name: "AppEdit",
   components: {
     MyModal,
-    CSpinner
+    CSpinner,
+    CTableBody
   },
   props: {
     id: {
@@ -247,9 +241,10 @@ export default {
 
     //todo load item data app_id: props.id
     store.dispatch("getInstances")
-    const data = computed(() => store.state.instances.find(i => i.id === props.id));
-    const app = computed(() => store.state.apps.find(a => a.id === data.value.app_id))
-    const image = computed(() => app.value.images.find(i => i.image_id === data.value.image_id))
+    if (!store.state.apps) store.dispatch("getApps");
+    const data = computed(() => store.state.instances?.find(i => i.id === props.id));
+    const app = computed(() => store.state.apps?.find(a => a.id === data.value.app_id))
+    const image = computed(() => app.value.images?.find(i => i.image_id === data.value.image_id))
 
     // {
     //   repository: "biobrein",

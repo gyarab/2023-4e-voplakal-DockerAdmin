@@ -13,6 +13,8 @@ export default createStore({
     session: null,
     error: null,
   },
+  getters: {
+  },
   mutations: {
     toggleSidebar(state) {
       state.sidebarVisible = !state.sidebarVisible

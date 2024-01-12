@@ -108,7 +108,7 @@ export default {
      * @param {Array} instances 
      */
     const transformData = (instances, storeApps) => {
-      if(!instances || !storeApps) return null;
+      if (!instances || !storeApps) return null;
       const groupedArray = [];
       for (const curr of instances) {
         const appId = curr.app_id;
@@ -125,7 +125,11 @@ export default {
         }
         app.instances.push(curr);
       }
-
+      for (const a of storeApps) {
+        if (!groupedArray.some(ga => ga.name === a.name))
+          groupedArray.push(a);
+      }
+      console.log(groupedArray);
       return groupedArray;
     }
 
