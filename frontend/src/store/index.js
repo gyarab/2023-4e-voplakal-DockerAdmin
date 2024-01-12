@@ -8,8 +8,8 @@ export default createStore({
     sidebarUnfoldable: false,
     theme: 'light',
 
-    apps: [],
-    instances: [],
+    apps: null,
+    instances: null,
     session: null,
     error: null,
   },

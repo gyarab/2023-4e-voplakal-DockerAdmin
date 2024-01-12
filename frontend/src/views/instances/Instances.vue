@@ -5,7 +5,7 @@
         <h3 id="traffic" class="card-title mb-0">Instances</h3>
         <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker containers</b> managed by this administration system.</div>
         <br>
-        <CSpinner v-if="!apps[0]" />
+        <CSpinner v-if="!apps" />
         <CCard class="mb-4" v-for="app in  apps " :key="app.id">
           <CCardBody>
             <CRow>
@@ -108,6 +108,7 @@ export default {
      * @param {Array} instances 
      */
     const transformData = (instances, storeApps) => {
+      if(!instances || !storeApps) return null;
       const groupedArray = [];
       for (const curr of instances) {
         const appId = curr.app_id;

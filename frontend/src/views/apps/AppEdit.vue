@@ -29,9 +29,11 @@
                   <CCardBody>
                     <CTable>
                       <CTableBody>
-                        <CTableRow v-for="(prop, key) in image" :key="prop._id" v-if="key !== '_id'">
-                          <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
-                          <CTableDataCell>{{ prop }}</CTableDataCell>
+                        <CTableRow v-for="(prop, key) in image" :key="prop._id">
+                          <div v-if="key !== '_id'">
+                            <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
+                            <CTableDataCell>{{ prop }}</CTableDataCell>
+                          </div>
                         </CTableRow>
                       </CTableBody>
                     </CTable>
@@ -43,7 +45,8 @@
                         <CTooltip content="Set this image as default for new instances" placement="right">
                           <template #toggler="{ on }">
                             <span v-on="on">
-                              <CFormCheck type="radio" :button="{ color: 'primary', variant: 'outline' }" name="btnradio" :id="image.image_id" autocomplete="off" label="Set default" :checked="data.selected_image === index ? '' : null" @click="data.selected_image = index" />
+                              <CFormCheck label="Set default"  @click="() => clickk(data, index)" />
+                                <!-- type="radio" :button="{ color: 'primary', variant: 'outline' }" name="btnradio" :id="image.image_id" autocomplete="off" label="Set default" :checked="data.selected_image === index ? '' : null" -->
                             </span>
                           </template>
                         </CTooltip>
@@ -198,8 +201,8 @@ export default {
     const router = useRouter()
 
     //todo load item data app_id: props.id
-    const data = computed(() => store.state.apps.find(a => a.id === props.id));
-    if (!store.state.apps[0]) store.dispatch("getApps");
+    const data = computed(() => store.state.apps?.find(a => a.id === props.id));
+    if (!store.state.apps) store.dispatch("getApps");
 
     const deleteApp = () => {
       store.dispatch("deleteApp", data.value.id)
@@ -216,7 +219,11 @@ export default {
 
 
     return {
-      data, deleteApp, saveChanges, nav, editFormModal,
+      data, deleteApp, saveChanges, nav, editFormModal, clickk(data, index) {
+        data.selected_image = index;
+        console.log(index);
+        console.log(data);
+      },
     }
   },
 

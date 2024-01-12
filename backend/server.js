@@ -80,8 +80,8 @@ app.use((err, req, res, next) => {
 
     if (typeof err !== "object") res.status(500).send({ message: err });
 
-    const { name, message, cause } = err;
-    res.status(500).send({ message: name + ": " + message });
+    const { name, message, cause, status } = err;
+    res.status(status ?? 500).send({ message: name + ": " + message });
 });
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);

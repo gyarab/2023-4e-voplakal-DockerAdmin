@@ -32,7 +32,7 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <CSpinner v-if="!appsData[0]" />
+                      <CSpinner v-if="!appsData" />
                       <CTableRow v-for="app in appsData" :key="app.id">
                         <AppLi :rowData="app"></AppLi>
                       </CTableRow>
@@ -58,10 +58,10 @@
   </div>
 
   <MyModal ref="createModal" title="Select docker image repository" :on_submit="() => createApp(selectedImage, newAppName)">
-    <CSpinner v-if="!dockerImagesRepos.length" />
+    <CSpinner v-if="!dockerImagesRepos" />
     <CFormLabel for="staticEmail" class="col-sm-2 col-form-label">App name</CFormLabel>
-    <CFormInput v-model="newAppName" type="text" placeholder="Enter new app name" style="margin-bottom: 10px;"></CFormInput>
-    <CFormSelect v-model="selectedImage">
+    <CFormInput v-model="newAppName" type="text" placeholder="Enter new app name" style="margin-bottom: 10px;" required></CFormInput>
+    <CFormSelect v-model="selectedImage" required>
       <option>Choose a docker image repository</option>
       <option v-for="repo in dockerImagesRepos" :value="repo">{{ repo }}</option>
     </CFormSelect>
