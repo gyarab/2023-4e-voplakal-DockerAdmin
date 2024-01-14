@@ -13,8 +13,7 @@ export default createStore({
     session: null,
     error: null,
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
     toggleSidebar(state) {
       state.sidebarVisible = !state.sidebarVisible
@@ -181,6 +180,14 @@ export default createStore({
         await REST.POST('instance/create', instance)
         ctx.dispatch('getInstances')
         window.showToast('Created')
+      } catch (error) {
+        apiError(error)
+      }
+    },
+    async getInstanceStats(ctx, id) {
+      try {
+        console.log(id)
+        return await REST.GET('instance/getStats', { id })
       } catch (error) {
         apiError(error)
       }

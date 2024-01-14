@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
-const fixtures = require("./fixtures");
+//limits defaults
+const ld = JSON.parse(process.env.instance_resource_limits);
+console.log("set limits:", { cpu: ld.cpu, ram: ld.ram, swap: ld.swap, disk: ld.disk });
 
 const InstanceSchema = new mongoose.Schema(
     {
         app_id: { type: mongoose.Schema.Types.ObjectId, required: true },
-        status: { type: String, required: true },
         image_id: { type: String, required: true },
+        container_id: { type: String, required: true },
         expiry_date: { type: String, required: true },
-        created_on: { type: String, required: true },
+        created_on: { type: String, default: () => new Date().toUTCString() },
         name: { type: String, required: true },
         client: {
             type: mongoose.Schema.Types.ObjectId,
@@ -15,10 +17,10 @@ const InstanceSchema = new mongoose.Schema(
             required: true,
         },
         limits: {
-            cpu: Number,
-            ram: Number,
-            swap: Number,
-            disk: Number,
+            cpu: { type: Number, default: ld.cpu },
+            ram: { type: Number, default: ld.ram },
+            swap: { type: Number, default: ld.swap },
+            disk: { type: Number, default: ld.disk },
         },
     },
     {

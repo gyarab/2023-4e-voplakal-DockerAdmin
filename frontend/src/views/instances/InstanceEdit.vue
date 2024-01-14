@@ -144,10 +144,11 @@
                       <CCardBody>
                         <CTable>
                           <CTableBody>
-                            <CTableRow>
+                            <CTableRow v-if="data.status">
                               <CTableHeaderCell scope="row">Status</CTableHeaderCell>
                               <CTableDataCell>{{ data.status }}</CTableDataCell>
                             </CTableRow>
+                            <!-- <div :js="delete stats.Status"></div> -->
                             <CSpinner v-if="!stats" />
                             <CTableRow v-for="(val, key ) in stats">
                               <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
@@ -215,7 +216,7 @@
 
 
 <script>
-import { reactive, ref, computed } from 'vue';
+import { reactive, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import MyModal from '../../components/MyModal.vue';
@@ -245,6 +246,8 @@ export default {
     const data = computed(() => store.state.instances?.find(i => i.id === props.id));
     const app = computed(() => store.state.apps?.find(a => a.id === data.value.app_id))
     const image = computed(() => app.value.images?.find(i => i.image_id === data.value.image_id))
+
+    // setInterval(() => console.log(store.state.instances?.find(i => i.id === props.id)), 1000);
 
     // {
     //   repository: "biobrein",
@@ -279,11 +282,7 @@ export default {
     }
 
     const stats = ref(null);
-    const loadStats = async () => {
-      setTimeout(() => stats.value = { BlockIO: "108MB / 59.4MB", CPUPerc: "0.00%", Container: "a85f49b55397", ID: "a85f49b55397", MemPerc: "4.43%", MemUsage: "87.75MiB / 1.936GiB", Name: "m-test1", NetIO: "2.44GB / 510MB", PIDs: "24", }
-        , 1500)
-    }
-    loadStats();
+    watch(data, data => store.dispatch("getInstanceStats", data.container_id).then(v => stats.value = v));
 
 
     return {

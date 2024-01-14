@@ -18,15 +18,20 @@ const { exec } = require("node:child_process");
  * @property {string} Status - The status of the container.
  */
 /**
- * @returns {Promise<DockerContainerInfo>}
+ * returns docker ps -as
+ * @returns {Promise<[DockerContainerInfo]>}
+ * @param {String|undefined} containerId
  */
-async function ps() {
-    let string = await sh("docker ps -a --format json");
-    if (!string) return [];
+async function ps(containerId) {
+    let command = "docker ps -as " + (containerId ? "--filter ID=" + containerId : "") + " --format json";
+    let string = await sh(command);
+    if (!string) {
+        let e = {};
+        e["Fatal Error: Container with id:" + containerId + " was not found on the host machine"] = "";
+        return [e]; //, 'please contact our server admin': ''};
+    }
     string = `[${string}]`;
-    string = string.replaceAll(/\r?\n/g, ",");
-    string = string.replaceAll(",]", "]");
-    return JSON.parse(string);
+    return parseJS(string);
 }
 /**
  * @returns {Promise<Array>}
@@ -46,11 +51,11 @@ function sh(command) {
                 reject(error);
             }
             if (stderr) {
-                console.error(`stderr: ${stderr}`);
+                // console.error(`stderr: ${stderr}`);
                 reject(error);
             }
-            // console.log(`stdout: ${stdout}`);
-            resolve(stdout);
+            console.log(`stdout: ${stdout}`);
+            resolve(stdout.trim());
         });
     });
 }
@@ -62,4 +67,4 @@ function parseJS(string) {
 
 // getRepos().then((v) => console.log(v));
 
-module.exports = { getImages };
+module.exports = { getImages, ps };

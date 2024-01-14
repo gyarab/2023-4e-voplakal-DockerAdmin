@@ -59,7 +59,7 @@ async function initDB() {
         }).save();
         console.log("added 'user' to roles collection");
     }
-
+    return;
     await db.App.deleteMany();
     await Instance.deleteMany();
 
@@ -68,7 +68,7 @@ async function initDB() {
         console.log("added 'apps' fixtures");
     }
     if ((await Instance.estimatedDocumentCount()) <= 0) {
-        Instance.create(fixtures.instances[0])
+        Instance.create(fixtures.instances[0]);
         console.log("added 'instances' fixtures");
     }
 }

@@ -27,13 +27,12 @@
               <CCol :sm="12" :lg="5" :xl="4" :xxl="3">
                 <CCard v-for="(image, index) in data.images" :key="image.image_id" style="margin-bottom: 25px;">
                   <CCardBody>
+
                     <CTable>
-                      <CTableBody>
+                      <CTableBody :js="delete image._id">
                         <CTableRow v-for="(prop, key) in image" :key="prop._id">
-                          <div v-if="key !== '_id'">
-                            <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
-                            <CTableDataCell>{{ prop }}</CTableDataCell>
-                          </div>
+                          <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
+                          <CTableDataCell>{{ prop }}</CTableDataCell>
                         </CTableRow>
                       </CTableBody>
                     </CTable>
@@ -45,8 +44,9 @@
                         <CTooltip content="Set this image as default for new instances" placement="right">
                           <template #toggler="{ on }">
                             <span v-on="on">
-                              <CFormCheck label="Set default"  @click="() => clickk(data, index)" />
-                                <!-- type="radio" :button="{ color: 'primary', variant: 'outline' }" name="btnradio" :id="image.image_id" autocomplete="off" label="Set default" :checked="data.selected_image === index ? '' : null" -->
+                              <div @click="() => data.selected_image = index">
+                                <CFormCheck :button="{ color: 'primary', variant: 'outline' }" type="radio" name="btnradio" :id="image.image_id" autocomplete="off" label="Set default" :checked="data.selected_image === index ? '' : null" />
+                              </div>
                             </span>
                           </template>
                         </CTooltip>
@@ -164,7 +164,7 @@
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
-import { reactive, ref, computed } from 'vue';
+import { reactive, ref, computed, watch } from 'vue';
 import MyModal from '../../components/MyModal.vue';
 import { VAceEditor } from "vue3-ace-editor";
 // import 'ace-builds/src-noconflict/mode-sh';
@@ -202,6 +202,7 @@ export default {
 
     //todo load item data app_id: props.id
     const data = computed(() => store.state.apps?.find(a => a.id === props.id));
+    
     if (!store.state.apps) store.dispatch("getApps");
 
     const deleteApp = () => {
@@ -216,14 +217,8 @@ export default {
     const editFormModal = reactive({
       show: false
     })
-
-
     return {
-      data, deleteApp, saveChanges, nav, editFormModal, clickk(data, index) {
-        data.selected_image = index;
-        console.log(index);
-        console.log(data);
-      },
+      data, deleteApp, saveChanges, nav, editFormModal
     }
   },
 

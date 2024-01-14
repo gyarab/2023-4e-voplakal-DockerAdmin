@@ -157,8 +157,8 @@ let appsData = [
 let instances = [
     {
         app_id: "65a1585d99bb46177b19e518",
-        status: "Up 3 days",
         image_id: "86552cbc4151",
+        container_id: "a1ef515e3ec1",
         expiry_date: "2023-11-22",
         created_on: "2023-01-16",
         name: "deh-martin.air345",
