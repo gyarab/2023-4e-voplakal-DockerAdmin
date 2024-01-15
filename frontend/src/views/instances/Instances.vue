@@ -6,15 +6,16 @@
         <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Docker containers</b> managed by this administration system.</div>
         <br>
         <CSpinner v-if="!apps" />
-        <CCard class="mb-4" v-for="app in  apps " :key="app.id">
+        <h4 v-else v-if="!apps[0]">You have to <router-link to="/apps"> create an App</router-link> at first</h4>
+        <CCard class="mb-4" v-for="app in apps " :key="app._id">
           <CCardBody>
             <CRow>
               <CCol :sm="5">
                 <h4 id="traffic" class="card-title mb-0">{{ app.name }}</h4>
-                <div class="small text-body-secondary" style="margin-top: 7px;">id: {{ app.id }}</div>
+                <div class="small text-body-secondary" style="margin-top: 7px;">id: {{ app._id }}</div>
               </CCol>
               <CCol :sm="7" class="  d-md-block">
-                <router-link :to="'/instance-create/' + app.id">
+                <router-link :to="'/instance-create/' + app._id">
                   <CButton size="lg" color="primary" class="float-end">
                     <CIcon size="xl" :icon="icon.cilPlus" />
                     Add
@@ -39,7 +40,7 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <CTableRow v-for="instance in app.instances" :key="app.id">
+                      <CTableRow v-for="instance in app.instances" :key="app._id">
                         <AppLi :dataRow="instance"></AppLi>
                       </CTableRow>
                     </CTableBody>

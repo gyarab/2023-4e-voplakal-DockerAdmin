@@ -20,23 +20,20 @@ const AppSchema = new mongoose.Schema(
         name: { type: String, required: true },
         repository: { type: String, required: true },
         folder: { type: String, required: true },
-        images: [ImageSchema],
+      //  images: computed later,
+      //  selected_image: computed later,
         init_code: { type: String, required: true, default: fixtures.initCodeExample },
-        selected_image: { type: Number, default: 0 },
+        selected_image_id: { type: String },
         run_code: { type: String, required: true, default: fixtures.runCodeExample },
         htmlForm: { type: String, required: true, default: fixtures.formHtmlPlaceholderData },
     },
     {
         virtuals: {
-            image_selected: {
-                get() {
-                    return this.images[this.selected_image];
-                },
-            },
         },
         toJSON: { virtuals: true },
     }
 );
+AppSchema.plugin(require('mongoose-lean-virtuals'));
 
 const App = mongoose.model("App", AppSchema);
 

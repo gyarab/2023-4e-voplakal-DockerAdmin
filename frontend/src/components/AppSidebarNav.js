@@ -3,7 +3,6 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import { CBadge, CSidebarNav, CNavItem, CNavGroup, CNavTitle } from '@coreui/vue'
 import nav from '@/_nav.js'
-import { useStore } from 'vuex'
 
 const normalizePath = (path) =>
   decodeURI(path)
@@ -47,9 +46,7 @@ const AppSidebarNav = defineComponent({
   props: ['session'],
   setup(props) {
     const route = useRoute()
-    const store = useStore()
     const firstRender = ref(true)
-    const session = computed(() => store.state.session)
 
     onMounted(() => {
       firstRender.value = false

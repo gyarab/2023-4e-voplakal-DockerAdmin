@@ -8,8 +8,8 @@ const InstanceSchema = new mongoose.Schema(
         app_id: { type: mongoose.Schema.Types.ObjectId, required: true },
         image_id: { type: String, required: true },
         container_id: { type: String, required: true },
-        expiry_date: { type: String, required: true },
-        created_on: { type: String, default: () => new Date().toUTCString() },
+        expiry_date: { type: String },
+        created_on: { type: String, default: () => new Date().toISOString().split('T')[0] },
         name: { type: String, required: true },
         client: {
             type: mongoose.Schema.Types.ObjectId,
@@ -34,6 +34,9 @@ const InstanceSchema = new mongoose.Schema(
         toJSON: { virtuals: true }, //also adds id virtual for _id
     }
 );
+
+InstanceSchema.plugin(require('mongoose-lean-virtuals'));
+
 
 const Instance = mongoose.model("Instance", InstanceSchema);
 

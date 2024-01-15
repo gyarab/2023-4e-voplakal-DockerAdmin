@@ -4,7 +4,10 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="inputEmail" required>
 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
 </div>
-
+<div class="mb-3">
+<label for="instanceName" class="form-label">Instance name</label>
+<input type="text" class="form-control" id="instanceName" name="instanceName" required>
+</div>
 <div class="mb-3 form-check">
 <input class="form-check-input" type='hidden' id="exampleCheck1" value='0' name='checkbs'> <!--set unchecked value-->
 <input type="checkbox" class="form-check-input" id="exampleCheck1" name="checkbs" value="1" checked>

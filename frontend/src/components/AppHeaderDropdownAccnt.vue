@@ -40,7 +40,7 @@ export default {
       itemsCount: 42,
       logout: async () => {
         await store.dispatch("auth/logout");
-        router.push("login")
+        router.push("/login")
       },
       user: computed(() => store.state.auth.user)
     }

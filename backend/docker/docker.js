@@ -54,7 +54,7 @@ function sh(command) {
                 // console.error(`stderr: ${stderr}`);
                 reject(error);
             }
-            console.log(`stdout: ${stdout}`);
+            // console.log(`stdout: ${stdout}`);
             resolve(stdout.trim());
         });
     });
@@ -64,7 +64,16 @@ function parseJS(string) {
     string = string.replaceAll(",]", "]");
     return JSON.parse(string);
 }
+function run(instance) {
+    for (const k in instance) {
+        if (Object.hasOwnProperty.call(instance, k)) {
+            const element = instance[k];
+            console.log(element);
+        }
+    }
 
+    return "a883d9203112";
+}
 // getRepos().then((v) => console.log(v));
 
-module.exports = { getImages, ps };
+module.exports = { getImages, ps, run };

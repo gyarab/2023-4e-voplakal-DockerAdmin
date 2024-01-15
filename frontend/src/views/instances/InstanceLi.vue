@@ -4,13 +4,13 @@
         <CFormCheck v-model="dataRow.selected" />
     </CTableDataCell>
     <CTableDataCell>{{ dataRow.name }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.tag }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.client }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.status }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.image.Tag }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.client.email }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.container.Status }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.expiry_date }}</CTableDataCell>
     <CTableDataCell>
         <CButtonGroup role="group">
-            <router-link :to="'/instance-edit/' + dataRow.id">
+            <router-link :to="'/instance-edit/' + dataRow._id">
                 <CButton color="primary" variant="outline">Details</CButton>
             </router-link>
         </CButtonGroup>

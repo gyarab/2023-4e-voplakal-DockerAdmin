@@ -13,7 +13,7 @@
         {{ toast.content }}
       </CToastBody>
     </CToast> -->
-    <CToast v-for="(toast, index) in toasts" :color="toast.color" class="text-white align-items-center" visible>
+    <CToast v-for="(toast, index) in toasts" :key="toast" :color="toast.color" class="text-white align-items-center" visible>
       <div class="d-flex">
         <CToastBody>{{ toast.content }}</CToastBody>
         <CToastClose class="me-2 m-auto" white />

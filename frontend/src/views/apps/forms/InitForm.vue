@@ -10,7 +10,7 @@
                         </CCardHeader>
                         <CCardBody>
                             <v-ace-editor wrap v-model:value="data.htmlForm" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;" @input="loadData" />
-                            <div v-if="!htmlFormValid" style="font-size: larger; background-color: red;">You are missing input with <b>name="inputEmail"</b> or <b>name="instance_name"</b> in the form!</div>
+                            <div v-if="!htmlFormValid" style="font-size: larger; background-color: red;">You are missing input with <b>name="inputEmail"</b> or <b>name="instanceName"</b> in the form!</div>
                         </CCardBody>
                     </CCard>
                 </CCol>

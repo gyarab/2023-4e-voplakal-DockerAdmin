@@ -28,12 +28,12 @@ export let REST = {
   errorAction(status) {
     const router = window.router
     if (status >= 500) {
-      router.push('500')
+      router.push('/500')
       return false;
     }
     if (status === 401) {
       //unauthorized
-      router.push('login')
+      router.push('/login')
       return true
     }
   },

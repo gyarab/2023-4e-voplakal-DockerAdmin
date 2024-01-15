@@ -21,10 +21,10 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                       <CButton class="float-end" color="danger" variant="ghost" @click="() => this.$refs.deleteModal.data.show = true">Delete</CButton>
 
-                      <CButton v-if="!data.status" class="float-end" color="primary" variant="ghost" size="lg">
+                      <CButton v-if="!stats" class="float-end" color="primary" variant="ghost" size="lg">
                         <CSpinner />
                       </CButton>
-                      <CButton v-else-if="data.status.substring(0, 2) === 'Up'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
+                      <CButton v-else-if="stats.Status?.substring(0, 2) === 'Up'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
                       <CButton v-else class="float-end" color="primary" variant="ghost" size="lg" @click="startInstance">Start</CButton>
 
                       <CButton class="float-end" color="success" size="lg" @click="saveChanges">Save</CButton>
@@ -43,7 +43,7 @@
                           <CTableBody>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Email</CTableHeaderCell>
-                              <CTableDataCell>{{ data.client }}</CTableDataCell>
+                              <CTableDataCell>{{ data.client.email }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                         </CTable>
@@ -66,26 +66,32 @@
                         </CTable>
                         <CCardTitle>Image</CCardTitle>
                         <CTable>
-                          <CTableBody v-if="image">
+                          <CTableBody v-if="data.image">
+                            <!-- <CTableRow v-for="( prop, key ) in  data.image " :key="prop.ID">
+                              <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
+                              <CTableDataCell>{{ prop }}</CTableDataCell>
+                            </CTableRow> -->
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                              <CTableDataCell>{{ image.tag }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.Tag }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell>{{ image.created }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.CreatedAt }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Size</CTableHeaderCell>
-                              <CTableDataCell>{{ image.size }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.Size }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Image ID</CTableHeaderCell>
-                              <CTableDataCell>{{ data.image_id }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.ID }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                           <CTableBody v-else>
-                            Image not foud
+                            <h5>
+                              <CBadge color="danger">Image not foud</CBadge>
+                            </h5>
                           </CTableBody>
                         </CTable>
                       </CCardBody>
@@ -139,15 +145,21 @@
 
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
-                        <h4 class="card-title">Statistics</h4>
+                        <CRow>
+                          <CCol :sm="5">
+                            <h4 class="card-title">Statistics</h4>
+                          </CCol>
+                          <CCol :sm="7" class="  d-md-block">
+                            <h4>
+                              <CSpinner v-if="!stats"></CSpinner>
+                              <CBadge v-else :color="stats.Status?.substring(0, 2) === 'Up' ? 'success' : 'secondary'" class="float-end"> {{ stats.Status }} </CBadge>
+                            </h4>
+                          </CCol>
+                        </CRow>
                       </CCardHeader>
                       <CCardBody>
                         <CTable>
                           <CTableBody>
-                            <CTableRow v-if="data.status">
-                              <CTableHeaderCell scope="row">Status</CTableHeaderCell>
-                              <CTableDataCell>{{ data.status }}</CTableDataCell>
-                            </CTableRow>
                             <!-- <div :js="delete stats.Status"></div> -->
                             <CSpinner v-if="!stats" />
                             <CTableRow v-for="(val, key ) in stats">
@@ -266,11 +278,11 @@ export default {
       store.dispatch("instanceSave", data.value)
     }
     const startInstance = () => {
-      data.value.status = undefined
+      stats.value.status = undefined
       store.dispatch("instanceStart", data.value.id)
     }
     const stopInstance = () => {
-      data.value.status = undefined
+      stats.value.status = undefined
       store.dispatch("instancesStop", [data.value.id])
     }
 

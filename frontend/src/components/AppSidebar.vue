@@ -25,8 +25,6 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
-import { CIcon } from '@coreui/icons-vue';
-import * as icon from '@coreui/icons';
 export default {
   name: 'AppSidebar',
   components: {

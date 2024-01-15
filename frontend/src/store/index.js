@@ -28,6 +28,10 @@ export default createStore({
       state.apps = apps
     },
     updateInstances(state, instances) {
+      for (const instance of instances) {
+        let a = state.apps?.find((app) => app.id === instance.app_id)
+        instance.image = a.images?.find((i) => i.ID === a.selected_image_id)
+      }
       state.instances = instances
     },
 

@@ -6,17 +6,15 @@ const { App } = require("../models");
 
 module.exports = {
     getAll: async (req, res) => {
-        let ins = await Instance.find();
+        let ins = await Instance.find().populate("client", "email").lean({ virtuals: true });
         if (!ins) ins = [];
-        //todo load from docker ps stats and add
-        // let ps = await docker.ps();
-        // console.log(ps);
-        // for (const i of ins) {
-        //     let d = ps.find(c => c.ID === i.container_id);
-        //     if(!d) continue;
-        //     Object.assign(i, d);
-        // }
-
+        let ps = await docker.ps();
+        for (const i of ins) {
+            let d = ps.find((c) => c.ID === i.container_id);
+            if (!d) continue;
+            i.container = d;
+        }
+        console.log(ins);
         res.send(ins);
     },
     delete: async (req, res) => {
@@ -45,7 +43,7 @@ module.exports = {
     },
     create: async (req, res) => {
         let { app_id, client_email, instance_name, formData } = req.body;
-        console.log("create:", app_id, client_email, instance_name, formData);
+        // console.log("create:", app_id, client_email, instance_name, formData);
 
         let client = await User.findOne({ email: client_email });
         if (!client) client = await User.create({ email: client_email });
@@ -53,7 +51,7 @@ module.exports = {
 
         let instance = new Instance({
             app_id,
-            image_id: app.image_selected.ID,
+            image_id: app.selected_image_id,
             name: instance_name,
             client: client._id,
         });
@@ -61,7 +59,7 @@ module.exports = {
         //spustit
         let container_id = docker.run(instance);
         instance.container_id = container_id;
-        
+
         //uložit pokud běží ok
         await instance.save();
         res.send({});

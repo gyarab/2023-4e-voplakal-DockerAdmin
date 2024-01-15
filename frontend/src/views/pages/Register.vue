@@ -82,7 +82,7 @@ export default {
         email: email.value,
         password: pass1.value
       }).then(() => {
-        router.push("login");
+        router.push("/login");
         window.showToast("Please login")
       })
     };

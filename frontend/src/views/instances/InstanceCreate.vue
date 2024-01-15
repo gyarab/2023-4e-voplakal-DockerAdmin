@@ -27,10 +27,9 @@
     </CContainer>
 </template>
 <script>
-import { onBeforeMount, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import InitForm from '../apps/forms/InitForm.vue';
-import { useRouter } from 'vue-router';
 
 
 export default {
@@ -47,7 +46,7 @@ export default {
         console.log(props.appId);
         const store = useStore()
         store.dispatch("getApps");
-        const app = computed(() => store.state.apps.find(app => app.id === props.appId));
+        const app = computed(() => store.state.apps?.find(app => app.id === props.appId));
         const statusDone = ref(false)
 
         const createInstance = async (formData) => {

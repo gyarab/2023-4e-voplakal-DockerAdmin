@@ -27,6 +27,7 @@
                         <CTableHeaderCell scope="col">Name</CTableHeaderCell>
                         <CTableHeaderCell scope="col">repository</CTableHeaderCell>
                         <CTableHeaderCell scope="col">images</CTableHeaderCell>
+                        <CTableHeaderCell scope="col"></CTableHeaderCell>
 
                         <CTableHeaderCell scope="col"></CTableHeaderCell>
                       </CTableRow>
@@ -85,7 +86,6 @@ import { REST } from '../../API';
 export default {
   name: "Apps",
   components: {
-    CIcon,
     AppLi,
     MyModal
   },
@@ -103,7 +103,6 @@ export default {
     const createAppDialogOpen = async () => {
       createModal.value.data.show = true;
       dockerImagesRepos.value = await store.dispatch("getRepos")
-      //dockerImages = api call
     }
     const createApp = async (repoImageName, newAppName) => {
       let id = await store.dispatch("createApp", { repoImageName, newAppName })
