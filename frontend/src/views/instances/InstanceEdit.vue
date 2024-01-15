@@ -100,7 +100,7 @@
                         <div class="flex-container">
                           <CFormSelect v-model="actionUpgradeTag" size="sm" class="mb-3">
                             <option>Select</option>
-                            <option v-for="image in app.images" :value="image.tag">{{ image.tag }}</option>
+                            <option v-for="image in app.images" :value="image.tag">{{ image.Tag }}</option>
                           </CFormSelect>
                           <CButton color="primary" size="sm" @click="upgradeTag(actionUpgradeTag)">OK</CButton>
                         </div>
