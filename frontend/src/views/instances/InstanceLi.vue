@@ -4,7 +4,7 @@
         <CFormCheck v-model="dataRow.selected" />
     </CTableDataCell>
     <CTableDataCell>{{ dataRow.name }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.image.Tag }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.image?.Tag }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.client.email }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.container.Status }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.expiry_date }}</CTableDataCell>

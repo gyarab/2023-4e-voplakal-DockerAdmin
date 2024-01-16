@@ -51,12 +51,12 @@ export default {
 
         const createInstance = async (formData) => {
             if (!props.appId || !formData.inputEmail || !formData.instanceName) return window.apiErrors.value.push(new Error("in the form you are missing: email or instanceName"));
-            
+
             await store.dispatch("instanceCreate", {
                 app_id: props.appId,
                 client_email: formData.inputEmail,
                 instance_name: formData.instanceName,
-                formData
+                form_data: formData
             },)
             statusDone.value = true;
         }

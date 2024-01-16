@@ -6,7 +6,6 @@ module.exports = {
     getAll: async (req, res) => {
         let images = docker.getImages();
         let apps = await App.find().lean({ virtuals: true });
-        console.log(apps);
         images = await images;
         if (!apps) apps = [];
         for (const app of apps) {
@@ -24,7 +23,7 @@ module.exports = {
         let folder =
             String(repoImageName)
                 .toLowerCase()
-                .replace(/\\|:|\/|"|\*|\||\?/g, "-") + "_data";
+                .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_scripts";
         let images = (await docker.getImages()).filter((i) => i.Repository === repoImageName);
         const { id } = await new App({ name: newAppName, repository: repoImageName, folder, images }).save();
         res.send({ appID: id });
@@ -39,8 +38,7 @@ module.exports = {
     },
     delete: async (req, res) => {
         console.log("delete:", req.params.id);
-        let r = await App.deleteOne({ _id: req.params.id });
-        console.log(r);
+        await App.deleteOne({ _id: req.params.id });
         res.send({});
     },
     save: async (req, res) => {

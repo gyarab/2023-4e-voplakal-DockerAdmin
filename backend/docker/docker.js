@@ -1,4 +1,5 @@
 const { exec } = require("node:child_process");
+const { App } = require("../models");
 
 /**
  * @typedef {Object} DockerContainerInfo
@@ -64,16 +65,34 @@ function parseJS(string) {
     string = string.replaceAll(",]", "]");
     return JSON.parse(string);
 }
-function run(instance) {
-    for (const k in instance) {
-        if (Object.hasOwnProperty.call(instance, k)) {
-            const element = instance[k];
-            console.log(element);
+async function run(instance) {
+    let app = await App.findById(instance.app_id);
+
+    let /** @type {String} */ shout = await sh(objectToBashVars() + app.run_code);
+    console.log(shout);
+    return shout.split("\n").pop();
+}
+function init(instance) {
+    console.log("init...todo");
+}
+/**
+ * @returns {String} string containing command that will inject vars to shell
+ * @param {Object} o
+ */
+function objectToBashVars(o) {
+    let strings = [];
+    for (const key in o) {
+        if (Object.hasOwnProperty.call(o, key)) {
+            const val = o[key];
+            strings.push(`${key}=${escape(val)};`); // export ${key};
         }
     }
+    return strings.join("\n");
 
-    return "a883d9203112";
+    function escape(v) {
+        v = v.replaceAll("'", "'\\''");
+        return "'" + v + "'";
+    }
 }
-// getRepos().then((v) => console.log(v));
 
-module.exports = { getImages, ps, run };
+module.exports = { getImages, ps, run, init };

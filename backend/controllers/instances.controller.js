@@ -14,7 +14,6 @@ module.exports = {
             if (!d) continue;
             i.container = d;
         }
-        console.log(ins);
         res.send(ins);
     },
     delete: async (req, res) => {
@@ -54,10 +53,16 @@ module.exports = {
             image_id: app.selected_image_id,
             name: instance_name,
             client: client._id,
+            mount_folder:
+                String(instance_name)
+                    .toLowerCase()
+                    .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount",
         });
+        instance.validateSync();
 
+        await docker.init(instance);
         //spustit
-        let container_id = docker.run(instance);
+        let container_id = await docker.run(instance);
         instance.container_id = container_id;
 
         //uložit pokud běží ok
@@ -68,7 +73,6 @@ module.exports = {
         let id = req.query.id;
         console.log("getStats:", id);
         let stats = (await docker.ps(id))[0];
-        console.log(stats);
         res.send(stats);
         // await Instance.create(instance)
         // let stats = await res.send({

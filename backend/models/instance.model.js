@@ -9,8 +9,22 @@ const InstanceSchema = new mongoose.Schema(
         image_id: { type: String, required: true },
         container_id: { type: String, required: true },
         expiry_date: { type: String },
-        created_on: { type: String, default: () => new Date().toISOString().split('T')[0] },
+        created_on: { type: String, default: () => new Date().toISOString().split("T")[0] },
         name: { type: String, required: true },
+        mount_folder: { type: String, required: true },
+        form_data: {
+            type: Object,
+            required: true,
+            validate: {
+                validator: function (v) {
+                    for (const key in v) {
+                        if (!/[a-zA-Z0-9_]/.test(key)) return false;
+                    }
+                    return true;
+                },
+                message: (props) => `${props.value} is not a valid phone number!`,
+            },
+        },
         client: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -35,8 +49,7 @@ const InstanceSchema = new mongoose.Schema(
     }
 );
 
-InstanceSchema.plugin(require('mongoose-lean-virtuals'));
-
+InstanceSchema.plugin(require("mongoose-lean-virtuals"));
 
 const Instance = mongoose.model("Instance", InstanceSchema);
 

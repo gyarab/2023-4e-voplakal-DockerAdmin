@@ -6,7 +6,8 @@
                     <CCard class="mb-4">
                         <CCardHeader>
                             <h4>Html form content</h4>Between {{ '<form></form>' }} tags<br><br>
-                            <b>you have to include:<br> <code>{{ '<input name="inputEmail" required>' }}</code></b>
+                            <b>you have to include:<br> <code>{{ '<input name="inputEmail" required>' }}</code></b><br>
+                            name atributes have to be [a-zA-Z0-9_]
                         </CCardHeader>
                         <CCardBody>
                             <v-ace-editor wrap v-model:value="data.htmlForm" lang="sh" theme="chrome" style="height: 700px; resize: vertical; font-size: medium;" @input="loadData" />

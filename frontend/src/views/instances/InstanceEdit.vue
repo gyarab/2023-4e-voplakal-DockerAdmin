@@ -228,7 +228,7 @@
 
 
 <script>
-import { reactive, ref, computed, watch } from 'vue';
+import { reactive, ref, computed, watch, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import MyModal from '../../components/MyModal.vue';
@@ -253,12 +253,19 @@ export default {
     const router = useRouter();
 
     //todo load item data app_id: props.id
-    store.dispatch("getInstances")
+    if (!store.state.instances) store.dispatch("getInstances")
     if (!store.state.apps) store.dispatch("getApps");
-    const data = computed(() => store.state.instances?.find(i => i.id === props.id));
+    const data = computed(() => {
+      let data = store.state.instances?.find(i => i.id === props.id);
+      if (data) loadStats(data);
+      return data;
+    });
     const app = computed(() => store.state.apps?.find(a => a.id === data.value.app_id))
     const image = computed(() => app.value.images?.find(i => i.image_id === data.value.image_id))
 
+
+    const stats = ref(null);
+    const loadStats = (data) => store.dispatch("getInstanceStats", data.container_id).then(v => stats.value = v)
     // setInterval(() => console.log(store.state.instances?.find(i => i.id === props.id)), 1000);
 
     // {
@@ -277,6 +284,19 @@ export default {
     const saveChanges = async () => {
       store.dispatch("instanceSave", data.value)
     }
+    const keyEvent = (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        // Prevent the Save dialog to open
+        e.preventDefault();
+        // Place your code here
+        saveChanges();
+        console.log("ctrl+S");
+      }
+
+    }
+    document.body.addEventListener("keydown", keyEvent, true);
+    onUnmounted(() => document.body.removeEventListener("keydown", keyEvent, true));
+
     const startInstance = () => {
       stats.value.status = undefined
       store.dispatch("instanceStart", data.value.id)
@@ -292,11 +312,6 @@ export default {
         tag
       })
     }
-
-    const stats = ref(null);
-    watch(data, data => store.dispatch("getInstanceStats", data.container_id).then(v => stats.value = v));
-
-
     return {
       data, deleteInstance, saveChanges, stats, image, stopInstance, startInstance, app, actionUpgradeTag: ref(), upgradeTag,
     }

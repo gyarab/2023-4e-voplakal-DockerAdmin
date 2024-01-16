@@ -29,8 +29,8 @@
                   <CCardBody>
 
                     <CTable>
-                      <CTableBody >
-                        <CTableRow v-for="( prop, key ) in  image " :key=" prop.ID ">
+                      <CTableBody>
+                        <CTableRow v-for="( prop, key ) in  image " :key="prop.ID">
                           <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
                           <CTableDataCell>{{ prop }}</CTableDataCell>
                         </CTableRow>
@@ -42,9 +42,9 @@
                       <CCol>
                         <CTooltip content="Set this image as default for new instances" placement="right">
                           <template #toggler="{ on }">
-                            <span v-on=" on ">
-                              <div @click=" () => data.selected_image_id = image.ID">
-                                <CFormCheck :button=" { color: 'primary', variant: 'outline' } " type="radio" name="btnradio" :id=" image.image_id " autocomplete="off" label="Set default" :checked=" data.selected_image_id === image.ID ? '' : null " />
+                            <span v-on="on">
+                              <div @click="() => data.selected_image_id = image.ID">
+                                <CFormCheck :button="{ color: 'primary', variant: 'outline' }" type="radio" name="btnradio" :id="image.image_id" autocomplete="off" label="Set default" :checked="data.selected_image_id === image.ID ? '' : null" />
                               </div>
                             </span>
                           </template>
@@ -58,29 +58,29 @@
               <CCol>
                 <CNav variant="tabs">
                   <CNavItem>
-                    <CNavLink :active=" nav === 'init' ? '' : null " @click="nav = 'init'">
+                    <CNavLink :active="nav === 'init' ? '' : null" @click="nav = 'init'">
                       Init script
                     </CNavLink>
                   </CNavItem>
                   <CNavItem>
-                    <CNavLink :active=" nav === 'run' ? '' : null " @click="nav = 'run'">
+                    <CNavLink :active="nav === 'run' ? '' : null" @click="nav = 'run'">
                       Run script
                     </CNavLink>
                   </CNavItem>
                   <CNavItem>
-                    <CNavLink :active=" nav === 'form' ? '' : null " @click="nav = 'form'">
+                    <CNavLink :active="nav === 'form' ? '' : null" @click="nav = 'form'">
                       User init form
                     </CNavLink>
                   </CNavItem>
                 </CNav>
-                <div v-show=" nav === 'init' ">
+                <div v-show="nav === 'init'">
                   <CCard> <!--Init script-->
                     <CCardHeader>
                       <h4 class="card-title">Init script</h4>
-                      <div class="small text-body-secondary">This script run once when new app instance is created.</div>
+                      <div class="small text-body-secondary">This script run once when new app instance is created. In $variables you get all props from init form.</div>
                     </CCardHeader>
                     <CCardBody>
-                      <v-ace-editor v-model:value=" data.init_code " lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
+                      <v-ace-editor v-model:value="data.init_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
                       <!-- prop: wrap -->
                     </CCardBody>
                     <CCardFooter>
@@ -89,30 +89,30 @@
                   </CCard>
                 </div>
 
-                <div v-show=" nav === 'run' ">
+                <div v-show="nav === 'run'">
                   <CCard><!-- Run script -->
                     <CCardHeader>
                       <h4 class="card-title">Run script</h4>
-                      <div class="small text-body-secondary">This script run every time container runs.</div>
+                      <div class="small text-body-secondary">This script run every time container runs. In $variables you get all props from init form. Script usually includes <code>docker run</code> command and must return container id as a second stdout line.</div>
                     </CCardHeader>
                     <CCardBody>
-                      <v-ace-editor v-model:value=" data.run_code " lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
+                      <v-ace-editor v-model:value="data.run_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
                     </CCardBody>
                     <CCardFooter>
                       script is located in ./Apps/{{ data.folder }}/run.sh
                     </CCardFooter>
                   </CCard>
                 </div>
-                <div v-show=" nav === 'form' ">
+                <div v-show="nav === 'form'">
                   <CCard><!-- Init form -->
                     <CCardHeader>
                       <CRow>
-                        <CCol :sm=" 8 ">
+                        <CCol :sm="8">
                           <h4 class="card-title">User init form</h4>
                           <div class="small text-body-secondary">This form is to be filled by user when inicializing this App.</div>
                         </CCol>
-                        <CCol :sm=" 4 " class="d-md-block">
-                          <CButton color="primary" class="float-end" @click=" () => editFormModal.show = true ">
+                        <CCol :sm="4" class="d-md-block">
+                          <CButton color="primary" class="float-end" @click="() => editFormModal.show = true">
                             <!-- @click="() => this.$refs.deleteModal.data.show = true" -->
                             <CIcon icon="cil-pencil" />
                             Edit
@@ -121,7 +121,7 @@
                       </CRow>
                     </CCardHeader>
                     <CCardBody>
-                      <InitForm :data=" data " dataPreview></InitForm>
+                      <InitForm :data="data" dataPreview></InitForm>
                     </CCardBody>
                     <CCardFooter>
                       Filled values from the form will be passed to Init script.
@@ -137,24 +137,24 @@
 
 
     <!-- MODALS -->
-    <MyModal ref="deleteModal" :title=" 'Remove app ' + data.name + '?' " :on_submit=" deleteApp ">
+    <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
       This will not remove your docker image.
       <template #footer>
-        <CButton color="secondary" @click=" () => this.$refs.deleteModal.data.show = false ">
+        <CButton color="secondary" @click="() => this.$refs.deleteModal.data.show = false">
           Storno
         </CButton>
         <CButton color="danger" type="submit">Delete</CButton>
       </template>
     </MyModal>
-    <CModal fluid fullscreen size="xl" :visible=" editFormModal.show " @close=" () => { editFormModal.show = false } ">
+    <CModal fluid fullscreen size="xl" :visible="editFormModal.show" @close="() => { editFormModal.show = false }">
       <CModalHeader>
         <CModalTitle>User init form Customization</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <InitForm :data=" data " edit editFull dataPreview></InitForm>
+        <InitForm :data="data" edit editFull dataPreview></InitForm>
       </CModalBody>
       <CModalFooter>
-        <CButton color="primary" type="submit" @click=" () => { editFormModal.show = false } ">Close & continue</CButton>
+        <CButton color="primary" type="submit" @click="() => { editFormModal.show = false }">Close & continue</CButton>
       </CModalFooter>
     </CModal>
   </div>
@@ -163,7 +163,7 @@
 
 <script>
 import { CIcon } from '@coreui/icons-vue';
-import { reactive, ref, computed, watch } from 'vue';
+import { reactive, ref, computed, watch, onUnmounted } from 'vue';
 import MyModal from '../../components/MyModal.vue';
 import { VAceEditor } from "vue3-ace-editor";
 // import 'ace-builds/src-noconflict/mode-sh';
@@ -208,6 +208,19 @@ export default {
       store.dispatch("deleteApp", data.value._id)
       router.push("/apps")
     }
+    const keyEvent = (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        // Prevent the Save dialog to open
+        e.preventDefault();
+        // Place your code here
+        saveChanges();
+        console.log("ctrl+S");
+      }
+
+    }
+    document.body.addEventListener("keydown", keyEvent, true);
+    onUnmounted(() => document.body.removeEventListener("keydown", keyEvent, true));
+
     const saveChanges = () => {
       store.dispatch("saveApp", data.value)
     }
