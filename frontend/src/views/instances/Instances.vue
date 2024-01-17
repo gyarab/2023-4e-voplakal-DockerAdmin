@@ -62,7 +62,7 @@
               <CFormSelect v-if="actionSelect === 'upgrade'" v-model="actionUpgradeTag" size="sm" class="mb-3">
                 <option v-for="image in app.images" :value="image.tag">{{ image.tag }}</option>
               </CFormSelect>
-              <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="(actionSelect && app.instances.some(i => i.selected)) ? null : true">OK</CButton>
+              <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="(actionSelect && app.instances?.some(i => i.selected)) ? null : true">OK</CButton>
             </div>
           </CCardFooter>
         </CCard>

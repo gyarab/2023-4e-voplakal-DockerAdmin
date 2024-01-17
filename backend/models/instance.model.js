@@ -22,7 +22,7 @@ const InstanceSchema = new mongoose.Schema(
                     }
                     return true;
                 },
-                message: (props) => `${props.value} is not a valid phone number!`,
+                message: (props) => `Form data object props must pass [a-zA-Z0-9_]`,
             },
         },
         client: {

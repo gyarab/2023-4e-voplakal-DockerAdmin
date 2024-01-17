@@ -134,8 +134,8 @@ export default createStore({
       try {
         console.log('upgrade', ids, tag)
         await REST.POST('instances/upgrade', { ids, tag })
-        ctx.dispatch('getInstances')
         window.showToast('Upgraded')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -145,6 +145,7 @@ export default createStore({
         console.log('delete', ids)
         await REST.DELETE('instances', { ids })
         window.showToast('Deleted')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -155,6 +156,7 @@ export default createStore({
         await REST.POST('instance/save', data)
         ctx.dispatch('getInstances')
         window.showToast('Saved')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -163,8 +165,8 @@ export default createStore({
       try {
         console.log('start', id)
         await REST.POST('instance/start', { id })
-        ctx.dispatch('getInstances')
         window.showToast('Started')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -175,6 +177,7 @@ export default createStore({
         await REST.POST('instance/stop', { id })
         ctx.dispatch('getInstances')
         window.showToast('Stopped')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -183,8 +186,8 @@ export default createStore({
       try {
         console.log('create instance', instance)
         await REST.POST('instance/create', instance)
-        ctx.dispatch('getInstances')
         window.showToast('Created')
+        await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }

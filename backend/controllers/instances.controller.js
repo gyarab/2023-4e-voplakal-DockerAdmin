@@ -41,7 +41,7 @@ module.exports = {
         res.send({});
     },
     create: async (req, res) => {
-        let { app_id, client_email, instance_name, formData } = req.body;
+        let { app_id, client_email, instance_name, form_data } = req.body;
         // console.log("create:", app_id, client_email, instance_name, formData);
 
         let client = await User.findOne({ email: client_email });
@@ -53,6 +53,7 @@ module.exports = {
             image_id: app.selected_image_id,
             name: instance_name,
             client: client._id,
+            form_data,  
             mount_folder:
                 String(instance_name)
                     .toLowerCase()
@@ -63,6 +64,7 @@ module.exports = {
         await docker.init(instance);
         //spustit
         let container_id = await docker.run(instance);
+        console.log(container_id);
         instance.container_id = container_id;
 
         //uložit pokud běží ok

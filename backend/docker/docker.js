@@ -1,4 +1,4 @@
-const { exec } = require("node:child_process");
+const { exec, spawn } = require("node:child_process");
 const { App } = require("../models");
 
 /**
@@ -45,21 +45,40 @@ async function getImages() {
 }
 
 function sh(command) {
-    return new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
-                reject(error);
-            }
-            if (stderr) {
-                // console.error(`stderr: ${stderr}`);
-                reject(error);
-            }
-            // console.log(`stdout: ${stdout}`);
-            resolve(stdout.trim());
+    return new Promise(async (resolve, reject) => {
+        const process = spawn(`bash`, []);
+
+        let stdout = [];
+        let stderr = [];
+
+        // wait for the process to spawn
+        await new Promise((resolve) => process.once(`spawn`, resolve));
+
+        // retrun output
+        process.stdout.on(`data`, (data) => stdout.push(data.toString().trim()));
+
+        // log any stderr
+        process.stderr.on(`data`, (data) => {
+            stderr.push(data.toString().trim());
         });
+
+        await new Promise((resolve) => process.stdin.write(command + " \n", `utf8`, () => resolve()));
+        // await new Promise((resolve) => process.stdin.write(`echo $aaa $bbb \n`, `utf8`, () => resolve()));
+
+        // wait for stdout and stderr stream to end, and process to close
+        let p = Promise.all([new Promise((resolve) => process.stdout.on("end", resolve)), new Promise((resolve) => process.stderr.on("end", resolve)), new Promise((resolve) => process.once(`close`, resolve))]);
+
+        setTimeout(() => {
+            process.kill();
+            reject("Timeout");
+        }, 8000);
+        await p;
+        if(stderr[0]) reject(stderr.join(""));
+        else resolve(stdout.join(""))
     });
 }
+
+// sh("inputEmail='martin.air@seznam.cz';instanceName='xxxxx';image_id='eced04caab4a';echo docker run: $image_id").then(t => console.log(`"${t}"`));
 function parseJS(string) {
     string = string.replaceAll(/\r?\n/g, ",");
     string = string.replaceAll(",]", "]");
@@ -67,9 +86,11 @@ function parseJS(string) {
 }
 async function run(instance) {
     let app = await App.findById(instance.app_id);
+    let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: app.selected_image_id }) + app.run_code;
+    console.log(command);
 
-    let /** @type {String} */ shout = await sh(objectToBashVars() + app.run_code);
-    console.log(shout);
+    let /** @type {String} */ shout = await sh(command);
+    console.log("shout", shout, "\n\n");
     return shout.split("\n").pop();
 }
 function init(instance) {
@@ -87,7 +108,7 @@ function objectToBashVars(o) {
             strings.push(`${key}=${escape(val)};`); // export ${key};
         }
     }
-    return strings.join("\n");
+    return strings.join(" ");
 
     function escape(v) {
         v = v.replaceAll("'", "'\\''");

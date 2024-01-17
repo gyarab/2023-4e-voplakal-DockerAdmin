@@ -1,12 +1,12 @@
 <template>
     <!-- <CTableHeaderCell scope="row"><CFormCheck/></CTableHeaderCell> -->
-    <CTableDataCell scope="row" active>
+    <CTableDataCell scope="row" active @click="() => { dataRow.selected = !dataRow.selected }">
         <CFormCheck v-model="dataRow.selected" />
     </CTableDataCell>
     <CTableDataCell>{{ dataRow.name }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.image?.Tag }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.image?.Tag ?? "unknown" }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.client.email }}</CTableDataCell>
-    <CTableDataCell>{{ dataRow.container.Status }}</CTableDataCell>
+    <CTableDataCell>{{ dataRow.container?.Status ?? "unknown!" }}</CTableDataCell>
     <CTableDataCell>{{ dataRow.expiry_date }}</CTableDataCell>
     <CTableDataCell>
         <CButtonGroup role="group">
