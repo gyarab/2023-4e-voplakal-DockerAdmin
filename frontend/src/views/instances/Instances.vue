@@ -158,7 +158,7 @@ export default {
           }
           break;
         case "stop":
-          store.dispatch("instancesStop", selected.map(s => s.id))
+          store.dispatch("instancesStop", selected.map(s => s.container_id))
           break;
       }
     }

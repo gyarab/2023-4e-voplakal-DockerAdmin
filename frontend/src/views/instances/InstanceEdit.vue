@@ -21,10 +21,10 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                       <CButton class="float-end" color="danger" variant="ghost" @click="() => this.$refs.deleteModal.data.show = true">Delete</CButton>
 
-                      <CButton v-if="!stats" class="float-end" color="primary" variant="ghost" size="lg">
+                      <CButton v-if="!stats?.State" class="float-end" color="primary" variant="ghost" size="lg">
                         <CSpinner />
                       </CButton>
-                      <CButton v-else-if="stats.Status?.substring(0, 2) === 'Up'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
+                      <CButton v-else-if="stats.State === 'running'" class="float-end" color="dark" variant="ghost" size="lg" @click="stopInstance">Stop</CButton>
                       <CButton v-else class="float-end" color="primary" variant="ghost" size="lg" @click="startInstance">Start</CButton>
 
                       <CButton class="float-end" color="success" size="lg" @click="saveChanges">Save</CButton>
@@ -34,8 +34,7 @@
                 </CRow>
                 <br>
                 <CRow>
-                  <CCol :sm="12" :lg="6" :xl="5" :xxl="3">
-
+                  <CCol :sm="12" :md="12" :lg="7" :xl="6" :xxl="5" class="w-break">
                     <CCard style="margin-bottom: 25px;">
                       <CCardBody>
                         <CCardTitle>User</CCardTitle>
@@ -73,19 +72,19 @@
                             </CTableRow> -->
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                              <CTableDataCell class="w-break">{{ data.image.Tag }}</CTableDataCell>
+                              <CTableDataCell >{{ data.image.Tag }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell class="w-break">{{ data.image.CreatedAt }}</CTableDataCell>
+                              <CTableDataCell >{{ data.image.CreatedAt }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Size</CTableHeaderCell>
-                              <CTableDataCell class="w-break">{{ data.image.Size }}</CTableDataCell>
+                              <CTableDataCell >{{ data.image.Size }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Image ID</CTableHeaderCell>
-                              <CTableDataCell class="w-break">{{ data.image.ID }}</CTableDataCell>
+                              <CTableDataCell >{{ data.image.ID }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                           <CTableBody v-else>
@@ -108,32 +107,38 @@
                     </CCard>
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
-                        <h4 class="card-title mb-0">Resources limits</h4>
+                        <h4 class="card-title mb-0">Resources limits</h4><div class="small text-body-secondary" style="margin-top: 7px;">deactivate by <b>-1</b></div>
                       </CCardHeader>
                       <CCardBody>
                         <CTable>
-                          <CTableBody>
+                          <CTableBody class="input_with">
                             <CTableRow>
-                              <CTableHeaderCell scope="row">CPU</CTableHeaderCell>
+                              <CTableHeaderCell scope="row">CPU shares</CTableHeaderCell>
                               <CTableDataCell class="flex-container">
-                                <CFormInput type="number" :min="0" :max="100" v-model="data.limits.cpu" style="width: fit-content;"></CFormInput>
-                                <h4>%</h4>
+                                <CFormInput type="number" v-model="data.limits.cpu" style="width: fit-content;"></CFormInput>
+                                <div>(priority), default 1024 <code>--cpu-shares</code></div>
                               </CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">RAM</CTableHeaderCell>
                               <CTableDataCell class="flex-container">
-                                <CFormInput type="number" :min="0" :max="100" v-model="data.limits.ram" style="width: fit-content;"></CFormInput>
-                                <h4>%</h4>
+                                <CFormInput type="number" v-model="data.limits.ram" style="width: fit-content;"></CFormInput>
+                                <div style="margin-top: 4px; margin-left: 3px; font-size: large;">MB <code>--memory-reservation</code></div>
                               </CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">SWAP</CTableHeaderCell>
-                              <CTableDataCell>{{ data.limits.swap }}</CTableDataCell>
+                              <CTableDataCell class="flex-container">
+                                <CFormInput type="number"  v-model="data.limits.swap" style="width: fit-content;"></CFormInput>
+                                <div style="margin-top: 4px; margin-left: 3px; font-size: large;">MB <code>--memory-swap</code></div>
+                              </CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Disk</CTableHeaderCell>
-                              <CTableDataCell>{{ data.limits.disk }}</CTableDataCell>
+                              <CTableDataCell class="flex-container">
+                                <CFormInput type="number" v-model="data.limits.disk" style="width: fit-content;"></CFormInput>
+                                <div style="margin-top: 4px; margin-left: 3px; font-size: large;">(priority) default 500<code>--blkio-weight</code></div>
+                              </CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                         </CTable>
@@ -141,8 +146,7 @@
                     </CCard>
                   </CCol>
 
-                  <CCol>
-
+                  <CCol class="w-break">
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
                         <CRow>
@@ -298,17 +302,18 @@ export default {
     onUnmounted(() => document.body.removeEventListener("keydown", keyEvent, true));
 
     const startInstance = () => {
-      stats.value.status = undefined
-      store.dispatch("instanceStart", data.value.id)
+      stats.value.State = undefined
+      store.dispatch("instanceStart", data.value.container_id)
     }
     const stopInstance = () => {
-      stats.value.status = undefined
-      store.dispatch("instancesStop", [data.value.id])
+      stats.value.State = undefined
+      store.dispatch("instancesStop", [data.value.container_id])
     }
 
     const upgradeTag = (tag) => {
       store.dispatch("instancesUpgrade", {
         ids: [data.value.id],
+        repo : app.value.repository,
         tag
       })
     }
@@ -328,7 +333,10 @@ export default {
   align-items: flex-start;
 }
 
-.w-break {
+.w-break td {
   word-break: break-word;
+}
+.input_with input {
+  width: 82px !important;
 }
 </style>

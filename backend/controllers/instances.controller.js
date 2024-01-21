@@ -11,7 +11,7 @@ module.exports = {
         let ps = await docker.ps();
         let images = await docker.getImages();
         // console.log("ps: ", ps);
-        console.log("images: ", images);
+        // console.log("images: ", images);
         for (const i of ins) {
             let d = ps.find((c) => c.ID === i.container_id);
             let f = images.find((im) => im.ID === i.image_id);
@@ -22,6 +22,11 @@ module.exports = {
     },
     delete: async (req, res) => {
         console.log("delete:", req.body.ids);
+        let instances = await Instance.find({
+            _id: { $in: req.body.ids },
+        });
+        let containers = instances.map((i) => i.container_id);
+        await docker.rm(...containers);
         await Instance.deleteMany({
             _id: { $in: req.body.ids },
         });
@@ -29,7 +34,16 @@ module.exports = {
     },
 
     upgrade: async (req, res) => {
-        console.log("upgrade:", req.body.ids, req.body.tag);
+        console.log("upgrade:", req.body.ids, req.body.repo, req.body.tag);
+        let instances = await Instance.find({
+            _id: { $in: req.body.ids },
+        });
+        // let imageId //todo mám v selectu rovnou ImageId >> není potřeba poslílat z FE repository ale pošle se rovnou image ID
+        for (const instance of instances) {
+            await docker.rm(instance.container_id);
+            instance.image_id = imageId;
+            instance.container_id = await docker.run(instance);
+        }
         res.send({});
     },
     save: async (req, res) => {
@@ -40,8 +54,15 @@ module.exports = {
         res.send({});
     },
     start: async (req, res) => {
-        let instanceId = req.body.id;
-        console.log("start:", instanceId);
+        let containerId = req.body.id;
+        console.log("start:", containerId);
+        await docker.start([containerId]);
+        res.send({});
+    },
+    stop: async (req, res) => {
+        let containerIds = req.body.ids;
+        console.log("stop:", containerIds);
+        await docker.stop(...containerIds);
         res.send({});
     },
     create: async (req, res) => {
@@ -70,6 +91,9 @@ module.exports = {
         let container_id = await docker.run(instance);
         console.log("container id:", container_id);
         instance.container_id = container_id;
+
+        console.log("instance limits:", instance.limits);
+        await docker.setLimits(container_id, instance.limits);
 
         //uložit pokud běží ok
         await instance.save();

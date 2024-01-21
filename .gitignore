@@ -50,3 +50,4 @@ Thumbs.db
 *.zip
 *~
 
+backend/.env.vault

@@ -129,11 +129,11 @@ export default createStore({
         apiError(error)
       }
     },
-    async instancesUpgrade(ctx, { ids, tag }) {
+    async instancesUpgrade(ctx, { ids, repo, tag }) {
       //todo route
       try {
-        console.log('upgrade', ids, tag)
-        await REST.POST('instances/upgrade', { ids, tag })
+        console.log('upgrade', ids, repo, tag)
+        await REST.POST('instances/upgrade', { repo, ids, tag })
         window.showToast('Upgraded')
         await ctx.dispatch('getInstances')
       } catch (error) {
@@ -171,11 +171,10 @@ export default createStore({
         apiError(error)
       }
     },
-    async instancesStop(ctx, id) {
+    async instancesStop(ctx, ids) {
       try {
-        console.log('stop', id)
-        await REST.POST('instance/stop', { id })
-        ctx.dispatch('getInstances')
+        console.log('stop', ids)
+        await REST.POST('instance/stop', { ids })
         window.showToast('Stopped')
         await ctx.dispatch('getInstances')
       } catch (error) {

@@ -25,7 +25,6 @@ const { App } = require("../models");
  */
 async function ps(containerId) {
     let command = "docker ps --no-trunc -as " + (containerId ? "--filter ID=" + containerId : "") + " --format json";
-    console.log(command);
     let string = await sh(command);
     if (!string) {
         let e = {};
@@ -78,10 +77,10 @@ function sh(command) {
         setTimeout(() => {
             process.kill();
             stderr.unshift("Timeout");
-        }, 7000);
+        }, 11000);
         await p;
 
-        if (stderr[0]) reject("STDIN:\n" + stderr.join("\n") + "\nSTDOUT:\n" + stdout.join("\n"));
+        if (stderr[0]) reject("STDERR:\n" + stderr.join("\n") + "\nSTDOUT:\n" + stdout.join("\n"));
         else resolve(stdout.join("\n"));
     });
 }
@@ -94,16 +93,35 @@ function parseJS(string) {
 }
 async function run(instance) {
     let app = await App.findById(instance.app_id);
-    console.log("selected image:", app.selected_image_id);
+    // console.log("selected image:", app.selected_image_id);
     let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: app.selected_image_id }) + app.run_code;
-    console.log(command);
+    // console.log(command);
 
     let /** @type {String} */ shout = await sh(command);
     console.log("shout", shout, "\n\n");
     return shout.split("\n").pop();
 }
+async function stop(...containerIds) {
+    await sh("docker stop " + containerIds.join(" "));
+}
+async function start(...containerIds) {
+    await sh("docker start " + containerIds.join(" "));
+}
+async function rm(...containerIds) {
+    await sh("docker rm -f " + containerIds.join(" "));
+}
 function init(instance) {
     console.log("init...todo");
+}
+async function setLimits(containerId, { cpu, ram, swap, disk }) {
+    let c = "";
+    if (cpu > -1) c += ` --cpu-shares="${cpu}"`;
+    if (ram > -1) c += ` --memory-reservation ${ram}M`; //soft limit = pokud není málo paměti, mohou i více
+    // if (swap > -1) c += ` --memory-swap ${swap + (ram == -1 ? 0 : ram)}M`;
+    if (disk > -1) c += ` --blkio-weight ${disk}`;
+
+    if (c.length === 0) return;
+    await sh(`docker update ${c} ${containerId}`);
 }
 /**
  * @returns {String} string containing command that will inject vars to shell
@@ -125,4 +143,4 @@ function objectToBashVars(o) {
     }
 }
 
-module.exports = { getImages, ps, run, init };
+module.exports = { getImages, ps, run, init, setLimits, stop, rm, start };

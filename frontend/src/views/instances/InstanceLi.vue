@@ -18,7 +18,7 @@
         <CDropdown color="secondary">
             <CDropdownToggle component="a" color="primary">Actions</CDropdownToggle>
             <CDropdownMenu>
-                <CDropdownItem @click="stop">Stop</CDropdownItem>
+                <CDropdownItem @click="stop" :disabled="dataRow.container.State === 'running' ? null : true">Stop</CDropdownItem>
                 <!-- <CDropdownItem @click="del">Delete</CDropdownItem> -->
             </CDropdownMenu>
         </CDropdown>
@@ -49,7 +49,7 @@ export default {
                 store.dispatch("instancesDelete", [props.dataRow.id])
             },
             stop: () => {
-                store.dispatch("instancesStop", [props.dataRow.id])
+                store.dispatch("instancesStop", [props.dataRow.container_id])
             }
         }
     }
