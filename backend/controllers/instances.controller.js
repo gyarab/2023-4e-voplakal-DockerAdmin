@@ -9,10 +9,14 @@ module.exports = {
         let ins = await Instance.find().populate("client", "email").lean({ virtuals: true });
         if (!ins) ins = [];
         let ps = await docker.ps();
+        let images = await docker.getImages();
+        // console.log("ps: ", ps);
+        console.log("images: ", images);
         for (const i of ins) {
             let d = ps.find((c) => c.ID === i.container_id);
-            if (!d) continue;
+            let f = images.find((im) => im.ID === i.image_id);
             i.container = d;
+            i.image = f;
         }
         res.send(ins);
     },
@@ -53,7 +57,7 @@ module.exports = {
             image_id: app.selected_image_id,
             name: instance_name,
             client: client._id,
-            form_data,  
+            form_data,
             mount_folder:
                 String(instance_name)
                     .toLowerCase()
@@ -64,7 +68,7 @@ module.exports = {
         await docker.init(instance);
         //spustit
         let container_id = await docker.run(instance);
-        console.log(container_id);
+        console.log("container id:", container_id);
         instance.container_id = container_id;
 
         //uložit pokud běží ok
@@ -74,6 +78,7 @@ module.exports = {
     getStats: async (req, res) => {
         let id = req.query.id;
         console.log("getStats:", id);
+        console.log("stats for: ", id);
         let stats = (await docker.ps(id))[0];
         res.send(stats);
         // await Instance.create(instance)

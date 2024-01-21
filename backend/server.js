@@ -74,9 +74,9 @@ async function initDB() {
 }
 
 //error handling
-app.use((err, req, res, next) => {
-    console.error("error", err);
-    if (res.headersSent) return;
+app.use((err, req, /**@type {import("express").Response} */ res, next) => {
+    console.error("error handling:\n", err);
+    if (!res.writable) return;
 
     if (typeof err !== "object") res.status(500).send({ message: err });
 

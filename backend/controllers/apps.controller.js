@@ -24,8 +24,8 @@ module.exports = {
             String(repoImageName)
                 .toLowerCase()
                 .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_scripts";
-        let images = (await docker.getImages()).filter((i) => i.Repository === repoImageName);
-        const { id } = await new App({ name: newAppName, repository: repoImageName, folder, images }).save();
+        let selected_image_id = (await docker.getImages()).find(i => i.Repository === repoImageName).ID
+        const { id } = await new App({ name: newAppName, repository: repoImageName, folder, selected_image_id }).save();
         res.send({ appID: id });
     },
     getRepos: async (req, res) => {

@@ -56,7 +56,7 @@
                           <CTableBody>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Name</CTableHeaderCell>
-                              <CTableDataCell>{{ app.name }}</CTableDataCell>
+                              <CTableDataCell class="w-break">{{ app.name }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Repository</CTableHeaderCell>
@@ -73,19 +73,19 @@
                             </CTableRow> -->
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                              <CTableDataCell>{{ data.image.Tag }}</CTableDataCell>
+                              <CTableDataCell class="w-break">{{ data.image.Tag }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell>{{ data.image.CreatedAt }}</CTableDataCell>
+                              <CTableDataCell class="w-break">{{ data.image.CreatedAt }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Size</CTableHeaderCell>
-                              <CTableDataCell>{{ data.image.Size }}</CTableDataCell>
+                              <CTableDataCell class="w-break">{{ data.image.Size }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Image ID</CTableHeaderCell>
-                              <CTableDataCell>{{ data.image.ID }}</CTableDataCell>
+                              <CTableDataCell class="w-break">{{ data.image.ID }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                           <CTableBody v-else>
@@ -326,5 +326,9 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+}
+
+.w-break {
+  word-break: break-word;
 }
 </style>

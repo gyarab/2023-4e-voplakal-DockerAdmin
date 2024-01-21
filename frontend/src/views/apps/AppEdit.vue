@@ -24,7 +24,7 @@
             </CRow>
             <br>
             <CRow>
-              <CCol :sm="12" :lg="5" :xl="4" :xxl="3">
+              <CCol :sm="12" :lg="5" :xl="4" :xxl="4">
                 <CCard v-for="(image, index) in  data.images " :key="image.image_id" style="margin-bottom: 25px;">
                   <CCardBody>
 
@@ -32,7 +32,7 @@
                       <CTableBody>
                         <CTableRow v-for="( prop, key ) in  image " :key="prop.ID">
                           <CTableHeaderCell scope="row">{{ key }}</CTableHeaderCell>
-                          <CTableDataCell>{{ prop }}</CTableDataCell>
+                          <CTableDataCell style="word-break: break-word">{{ prop }}</CTableDataCell>
                         </CTableRow>
                       </CTableBody>
                     </CTable>
@@ -56,7 +56,7 @@
               </CCol>
 
               <CCol>
-                <CNav variant="tabs">
+                <CNav variant="tabs" style="cursor: pointer;">
                   <CNavItem>
                     <CNavLink :active="nav === 'init' ? '' : null" @click="nav = 'init'">
                       Init script

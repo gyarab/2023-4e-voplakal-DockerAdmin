@@ -7,7 +7,16 @@ const InstanceSchema = new mongoose.Schema(
     {
         app_id: { type: mongoose.Schema.Types.ObjectId, required: true },
         image_id: { type: String, required: true },
-        container_id: { type: String, required: true },
+        container_id: {
+            type: String,
+            required: true,
+            validate: {
+                validator: function (/**@type{String}*/v) {
+                    return v && !v.includes(" ");
+                },
+                message: (props) => `${props.value} is not a container id!`,
+            },
+        },
         expiry_date: { type: String },
         created_on: { type: String, default: () => new Date().toISOString().split("T")[0] },
         name: { type: String, required: true },

@@ -78,40 +78,7 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 let codeExample = `#!/bin/bash
 
 set -e
-
-
-# example usage:
-example="./restDock containerName port_to_expose"
-#	./restDock hrozinka-main 8083
-
-if [[ -z $1 ]] ; then
-    echo 'missing argument. You have to specify image name or type help for getting example.'
-    exit 1
-fi
-if [[ $1 == help ]]; then 
-  echo $example
-fi
-if [[ -z $2 ]] ; then
-    echo 'missing argument. You have to specify volume dir name! Also used for container name.'
-    exit 1
-fi
-if [[ -z $3 ]] ; then
-    echo 'missing argument. You have to specify port to expose!'
-    exit 1
-fi
-
-mount_dir=$(pwd)/mounts/$2
-
-# check if backend .env.local file exist
-if [ -f "$mount_dir/.env.local" ]; then
-        echo "config file successfully found"
-else
-    echo "file $mount_dir/.env.local does not exist"
-    exit 1
-fi
-
-sudo docker rm -f $2
-sudo docker run -dp $3:3000 --name $2 -v "$mount_dir:/app/data" --restart always --network mongo-network $1
+docker run -dp $image_id
 `;
 
 let initCodeExample = codeExample;

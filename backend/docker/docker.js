@@ -24,7 +24,8 @@ const { App } = require("../models");
  * @param {String|undefined} containerId
  */
 async function ps(containerId) {
-    let command = "docker ps -as " + (containerId ? "--filter ID=" + containerId : "") + " --format json";
+    let command = "docker ps --no-trunc -as " + (containerId ? "--filter ID=" + containerId : "") + " --format json";
+    console.log(command);
     let string = await sh(command);
     if (!string) {
         let e = {};
@@ -38,13 +39,18 @@ async function ps(containerId) {
  * @returns {Promise<Array>}
  */
 async function getImages() {
-    let string = await sh("docker images --format json");
+    let string = await sh("docker images --no-trunc	--format json");
     if (!string) return [];
     string = `[${string}]`;
-    return parseJS(string);
+    images = parseJS(string);
+    for (const i of images) {
+        i.ID = i.ID.replaceAll("sha256:", "");
+    }
+    return images;
 }
 
 function sh(command) {
+    console.log(command);
     return new Promise(async (resolve, reject) => {
         const process = spawn(`bash`, []);
 
@@ -56,6 +62,7 @@ function sh(command) {
 
         // retrun output
         process.stdout.on(`data`, (data) => stdout.push(data.toString().trim()));
+        process.on("error", (err) => reject("Failed to start subprocess.\n", err));
 
         // log any stderr
         process.stderr.on(`data`, (data) => {
@@ -63,18 +70,19 @@ function sh(command) {
         });
 
         await new Promise((resolve) => process.stdin.write(command + " \n", `utf8`, () => resolve()));
-        // await new Promise((resolve) => process.stdin.write(`echo $aaa $bbb \n`, `utf8`, () => resolve()));
+        process.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close
         let p = Promise.all([new Promise((resolve) => process.stdout.on("end", resolve)), new Promise((resolve) => process.stderr.on("end", resolve)), new Promise((resolve) => process.once(`close`, resolve))]);
 
         setTimeout(() => {
             process.kill();
-            reject("Timeout");
-        }, 8000);
+            stderr.unshift("Timeout");
+        }, 7000);
         await p;
-        if(stderr[0]) reject(stderr.join(""));
-        else resolve(stdout.join(""))
+
+        if (stderr[0]) reject("STDIN:\n" + stderr.join("\n") + "\nSTDOUT:\n" + stdout.join("\n"));
+        else resolve(stdout.join("\n"));
     });
 }
 
@@ -86,6 +94,7 @@ function parseJS(string) {
 }
 async function run(instance) {
     let app = await App.findById(instance.app_id);
+    console.log("selected image:", app.selected_image_id);
     let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: app.selected_image_id }) + app.run_code;
     console.log(command);
 
@@ -104,7 +113,7 @@ function objectToBashVars(o) {
     let strings = [];
     for (const key in o) {
         if (Object.hasOwnProperty.call(o, key)) {
-            const val = o[key];
+            const val = o[key] ?? "";
             strings.push(`${key}=${escape(val)};`); // export ${key};
         }
     }
