@@ -3,6 +3,7 @@ const Instance = require("../models/instance.model");
 const docker = require("../docker/docker");
 const User = require("../models/user.model");
 const { App } = require("../models");
+const assert = require("node:assert");
 
 module.exports = {
     getAll: async (req, res) => {
@@ -15,6 +16,10 @@ module.exports = {
         for (const i of ins) {
             let d = ps.find((c) => c.ID === i.container_id);
             let f = images.find((im) => im.ID === i.image_id);
+            // if (!d || !f) {
+            //     if (process.env.NODE_ENV === "production") console.log("Not found matching image or container");
+            //     else throw "Not found matching image or container. Try to delete DB";
+            // }
             i.container = d;
             i.image = f;
         }
@@ -34,15 +39,20 @@ module.exports = {
     },
 
     upgrade: async (req, res) => {
-        console.log("upgrade:", req.body.ids, req.body.repo, req.body.tag);
+        console.log("upgrade:", req.body.ids, req.body.imageId);
+        assert.ok(req.body.ids && req.body.imageId, "Invalid request, missing props: imageId or ids");
         let instances = await Instance.find({
             _id: { $in: req.body.ids },
         });
-        // let imageId //todo mám v selectu rovnou ImageId >> není potřeba poslílat z FE repository ale pošle se rovnou image ID
         for (const instance of instances) {
             await docker.rm(instance.container_id);
-            instance.image_id = imageId;
-            instance.container_id = await docker.run(instance);
+            console.log("před: ", instance.image_id);
+            instance.image_id = req.body.imageId;
+            console.log("po: ", instance.image_id);
+            let newContainerID = await docker.run(instance);
+            if (!newContainerID) throw "No new container ID provided";
+            instance.container_id = newContainerID;
+            await instance.save();
         }
         res.send({});
     },

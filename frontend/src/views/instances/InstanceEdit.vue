@@ -72,19 +72,19 @@
                             </CTableRow> -->
                             <CTableRow>
                               <CTableHeaderCell scope="row">Tag</CTableHeaderCell>
-                              <CTableDataCell >{{ data.image.Tag }}</CTableDataCell>
+                              <CTableDataCell active><b>{{ data.image.Tag }}</b></CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Created</CTableHeaderCell>
-                              <CTableDataCell >{{ data.image.CreatedAt }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.CreatedAt }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Size</CTableHeaderCell>
-                              <CTableDataCell >{{ data.image.Size }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.Size }}</CTableDataCell>
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Image ID</CTableHeaderCell>
-                              <CTableDataCell >{{ data.image.ID }}</CTableDataCell>
+                              <CTableDataCell>{{ data.image.ID }}</CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                           <CTableBody v-else>
@@ -97,17 +97,18 @@
                       <CCardFooter>
                         <CCardTitle>Change version (tag)</CCardTitle>
                         <div class="flex-container">
-                          <CFormSelect v-model="actionUpgradeTag" size="sm" class="mb-3">
-                            <option>Select</option>
-                            <option v-for="image in app.images" :value="image.tag">{{ image.Tag }}</option>
+                          <CFormSelect v-model="actionUpgradeImage" size="sm" class="mb-3">
+                            <option :value="null">Select</option>
+                            <option v-for="image in app.images" :value="image.ID">{{ image.Tag }}</option>
                           </CFormSelect>
-                          <CButton color="primary" size="sm" @click="upgradeTag(actionUpgradeTag)">OK</CButton>
+                          <CButton color="primary" size="sm" @click="upgradeTag(actionUpgradeImage)" :disabled="actionUpgradeImage ? null : true">OK</CButton>
                         </div>
                       </CcardFooter>
                     </CCard>
                     <CCard style="margin-bottom: 25px;">
                       <CCardHeader>
-                        <h4 class="card-title mb-0">Resources limits</h4><div class="small text-body-secondary" style="margin-top: 7px;">deactivate by <b>-1</b></div>
+                        <h4 class="card-title mb-0">Resources limits</h4>
+                        <div class="small text-body-secondary" style="margin-top: 7px;">deactivate by <b>-1</b></div>
                       </CCardHeader>
                       <CCardBody>
                         <CTable>
@@ -129,7 +130,7 @@
                             <CTableRow>
                               <CTableHeaderCell scope="row">SWAP</CTableHeaderCell>
                               <CTableDataCell class="flex-container">
-                                <CFormInput type="number"  v-model="data.limits.swap" style="width: fit-content;"></CFormInput>
+                                <CFormInput type="number" v-model="data.limits.swap" style="width: fit-content;"></CFormInput>
                                 <div style="margin-top: 4px; margin-left: 3px; font-size: large;">MB <code>--memory-swap</code></div>
                               </CTableDataCell>
                             </CTableRow>
@@ -265,7 +266,6 @@ export default {
       return data;
     });
     const app = computed(() => store.state.apps?.find(a => a.id === data.value.app_id))
-    const image = computed(() => app.value.images?.find(i => i.image_id === data.value.image_id))
 
 
     const stats = ref(null);
@@ -310,15 +310,14 @@ export default {
       store.dispatch("instancesStop", [data.value.container_id])
     }
 
-    const upgradeTag = (tag) => {
+    const upgradeTag = (imageId) => {
       store.dispatch("instancesUpgrade", {
         ids: [data.value.id],
-        repo : app.value.repository,
-        tag
+        imageId
       })
     }
     return {
-      data, deleteInstance, saveChanges, stats, image, stopInstance, startInstance, app, actionUpgradeTag: ref(), upgradeTag,
+      data, deleteInstance, saveChanges, stats, stopInstance, startInstance, app, actionUpgradeImage: ref(), upgradeTag,
     }
   },
 
@@ -336,6 +335,7 @@ export default {
 .w-break td {
   word-break: break-word;
 }
+
 .input_with input {
   width: 82px !important;
 }

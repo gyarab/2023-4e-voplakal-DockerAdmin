@@ -4,11 +4,13 @@
       <CHeaderToggler @click="$store.commit('toggleSidebar')" style="margin-inline-start: -14px">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      
-      <AppBreadcrumb />
 
+      <AppBreadcrumb />
+      <span style="margin: auto">
+        <CSpinner v-if="this.working"></CSpinner>
+      </span>
       <CHeaderNav class="ms-auto">
- 
+
         <CDropdown variant="nav-item" placement="bottom-end">
           <CDropdownToggle :caret="false">
             <CIcon v-if="colorMode === 'dark'" icon="cil-moon" size="lg" />
@@ -16,31 +18,13 @@
             <CIcon v-else icon="cil-contrast" size="lg" />
           </CDropdownToggle>
           <CDropdownMenu>
-            <CDropdownItem
-              :active="colorMode === 'light'"
-              class="d-flex align-items-center"
-              component="button"
-              type="button"
-              @click="setColorMode('light')"
-            >
+            <CDropdownItem :active="colorMode === 'light'" class="d-flex align-items-center" component="button" type="button" @click="setColorMode('light')">
               <CIcon class="me-2" icon="cil-sun" size="lg" /> Light
             </CDropdownItem>
-            <CDropdownItem
-              :active="colorMode === 'dark'"
-              class="d-flex align-items-center"
-              component="button"
-              type="button"
-              @click="setColorMode('dark')"
-            >
+            <CDropdownItem :active="colorMode === 'dark'" class="d-flex align-items-center" component="button" type="button" @click="setColorMode('dark')">
               <CIcon class="me-2" icon="cil-moon" size="lg" /> Dark
             </CDropdownItem>
-            <CDropdownItem
-              :active="colorMode === 'auto'"
-              class="d-flex align-items-center"
-              component="button"
-              type="button"
-              @click="setColorMode('auto')"
-            >
+            <CDropdownItem :active="colorMode === 'auto'" class="d-flex align-items-center" component="button" type="button" @click="setColorMode('auto')">
               <CIcon class="me-2" icon="cil-contrast" size="lg" /> Auto
             </CDropdownItem>
           </CDropdownMenu>
@@ -51,7 +35,7 @@
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
     </CContainer>
-  
+
   </CHeader>
 </template>
 
@@ -83,7 +67,7 @@ export default {
     return {
       headerClassNames,
       colorMode,
-      setColorMode,
+      setColorMode
     }
   },
 }

@@ -40,9 +40,8 @@
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
-                      <CTableRow v-for="instance in app.instances" :key="app._id">
-                        <AppLi :dataRow="instance"></AppLi>
-                      </CTableRow>
+                      <InstanceLi v-for="instance in app.instances" :key="app._id" :dataRow="instance">
+                      </InstanceLi>
                     </CTableBody>
                   </CTable>
 
@@ -59,8 +58,8 @@
                 <option value="delete">Delete</option>
                 <option value="stop">Stop</option>
               </CFormSelect>
-              <CFormSelect v-if="actionSelect === 'upgrade'" v-model="actionUpgradeTag" size="sm" class="mb-3">
-                <option v-for="image in app.images" :value="image.tag">{{ image.tag }}</option>
+              <CFormSelect v-if="actionSelect === 'upgrade'" v-model="actionUpgradeImage" size="sm" class="mb-3">
+                <option v-for="image in app.images" :value="image.ID">{{ image.Tag }}</option>
               </CFormSelect>
               <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="(actionSelect && app.instances?.some(i => i.selected)) ? null : true">OK</CButton>
             </div>
@@ -84,7 +83,7 @@
 <script>
 import { CIcon } from '@coreui/icons-vue';
 import * as icon from '@coreui/icons';
-import AppLi from './InstanceLi.vue';
+import InstanceLi from './InstanceLi.vue';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { CSpinner } from '@coreui/vue';
@@ -94,7 +93,7 @@ export default {
   name: "Instances",
   components: {
     CIcon,
-    AppLi,
+    InstanceLi,
     CSpinner,
     MyModal
   },
@@ -140,14 +139,14 @@ export default {
     });
 
     const apps = computed(() => transformData(store.state.instances, store.state.apps))
-    const actionUpgradeTag = ref("");
+    const actionUpgradeImage = ref("");
     const editAction = (action, selected) => {
       if (selected.length === 0) return;
       switch (action) {
         case "upgrade":
           store.dispatch("instancesUpgrade", {
             ids: selected.map(s => s.id),
-            tag: actionUpgradeTag.value
+            imageId: actionUpgradeImage.value
           })
           break;
         case "delete":
@@ -164,7 +163,7 @@ export default {
     }
 
     return {
-      icon, apps, actionSelect: ref(""), actionUpgradeTag, editAction, deleteModal
+      icon, apps, actionSelect: ref(""), actionUpgradeImage, editAction, deleteModal
     }
   }
 }

@@ -78,7 +78,7 @@ app.use((err, req, /**@type {import("express").Response} */ res, next) => {
     console.error("error handling:\n", err);
     if (!res.writable) return;
 
-    if (typeof err !== "object") res.status(500).send({ message: err });
+    if (typeof err !== "object") return res.status(500).send({ message: err });
 
     const { name, message, cause, status } = err;
     res.status(status ?? 500).send({ message: name + ": " + message });

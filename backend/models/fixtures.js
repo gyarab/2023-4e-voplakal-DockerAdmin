@@ -78,7 +78,7 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 let codeExample = `#!/bin/bash
 
 set -e
-docker run -dp $image_id
+docker run -dti $image_id
 `;
 
 let initCodeExample = codeExample;

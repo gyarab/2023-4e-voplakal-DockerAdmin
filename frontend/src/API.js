@@ -36,6 +36,10 @@ export let REST = {
       router.push('/login')
       return true
     }
+    if (status === 469) {
+      //script syntax check fail
+      return false
+    }
   },
 
   getURL(path) {
@@ -60,6 +64,7 @@ export let REST = {
   },
   async request({ path, body, method, headers, nonJsonOk, signal }) {
     try {
+      // window.working = true;
       let res = await fetch(REST.getURL(path), {
         method,
         mode: 'same-origin',
@@ -73,6 +78,7 @@ export let REST = {
         cache: 'default',
         signal,
       })
+      window.working = false;
 
       if (res.ok || this.codeOk(res.status)) {
         try {

@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, computed } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -15,3 +15,5 @@ app.provide('icons', icons)
 app.component('CIcon', CIcon)
 
 app.mount('#app')
+window.working = false;
+app.config.globalProperties.working = computed(() => window.working);

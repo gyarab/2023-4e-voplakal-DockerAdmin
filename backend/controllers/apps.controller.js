@@ -24,7 +24,7 @@ module.exports = {
             String(repoImageName)
                 .toLowerCase()
                 .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_scripts";
-        let selected_image_id = (await docker.getImages()).find(i => i.Repository === repoImageName).ID
+        let selected_image_id = (await docker.getImages()).find((i) => i.Repository === repoImageName).ID;
         const { id } = await new App({ name: newAppName, repository: repoImageName, folder, selected_image_id }).save();
         res.send({ appID: id });
     },
@@ -43,6 +43,13 @@ module.exports = {
     },
     save: async (req, res) => {
         // console.log("save:", req.body);
+        try {
+            await App.checkScripts(req.body);
+        } catch (error) {
+            return res.status(469).send({
+                message: error,
+            });
+        }
         let r = await App.findByIdAndUpdate(req.body._id, req.body);
         if (!r) res.status(404).send({});
         res.send({});

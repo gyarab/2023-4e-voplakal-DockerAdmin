@@ -3,7 +3,13 @@
         <CRow class="justify-content-center">
             <CCol :lg="7">
                 <CCard>
-                    <CCardBody v-if="!statusDone">
+                    <CSpinner v-if="status === 'in progress'"></CSpinner>
+                    <CCardBody v-if="status === 'done'">
+                        <CRow class="justify-content-center">
+                            <h3>Email with acces instruction has been send.</h3>
+                        </CRow>
+                    </CCardBody>
+                    <CCardBody v-else>
                         <CRow class="justify-content-center" v-if="app">
                             <h3>Create your own instance of {{ app.name }}</h3><br>
                             <p class="small text-body-secondary"> Fill in the form below and get info to your email</p>
@@ -16,11 +22,6 @@
                         </CRow>
                     </CCardBody>
 
-                    <CCardBody v-else>
-                        <CRow class="justify-content-center">
-                            <h3>Email with acces instruction has been send.</h3>
-                        </CRow>
-                    </CCardBody>
                 </CCard>
             </CCol>
         </CRow>
@@ -47,21 +48,23 @@ export default {
         const store = useStore()
         store.dispatch("getApps");
         const app = computed(() => store.state.apps?.find(app => app.id === props.appId));
-        const statusDone = ref(false)
+        const status = ref(false)
 
         const createInstance = async (formData) => {
             if (!props.appId || !formData.inputEmail || !formData.instanceName) return window.apiErrors.value.push(new Error("in the form you are missing: email or instanceName"));
 
+
+            status.value = "in progress";
             await store.dispatch("instanceCreate", {
                 app_id: props.appId,
                 client_email: formData.inputEmail,
                 instance_name: formData.instanceName,
                 form_data: formData
             },)
-            statusDone.value = true;
+            status.value = "done";
         }
 
-        return { app, createInstance, statusDone }
+        return { app, createInstance, status }
     },
 }
 </script>

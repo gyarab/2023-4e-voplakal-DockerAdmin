@@ -28,11 +28,6 @@ export default createStore({
       state.apps = apps
     },
     updateInstances(state, instances) {
-      for (const instance of instances) {
-        let a = state.apps?.find((app) => app.id === instance.app_id)
-        if (!a) continue
-        instance.image = a.images?.find((i) => i.ID === a.selected_image_id)
-      }
       state.instances = instances
     },
 
@@ -129,11 +124,11 @@ export default createStore({
         apiError(error)
       }
     },
-    async instancesUpgrade(ctx, { ids, repo, tag }) {
+    async instancesUpgrade(ctx, { ids, imageId }) {
       //todo route
       try {
-        console.log('upgrade', ids, repo, tag)
-        await REST.POST('instances/upgrade', { repo, ids, tag })
+        console.log('upgrade', ids, imageId)
+        await REST.POST('instances/upgrade', { ids, imageId })
         window.showToast('Upgraded')
         await ctx.dispatch('getInstances')
       } catch (error) {
@@ -174,6 +169,7 @@ export default createStore({
     async instancesStop(ctx, ids) {
       try {
         console.log('stop', ids)
+        window.showToast('It may take some time')
         await REST.POST('instance/stop', { ids })
         window.showToast('Stopped')
         await ctx.dispatch('getInstances')

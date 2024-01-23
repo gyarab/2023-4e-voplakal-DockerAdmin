@@ -91,15 +91,30 @@ function parseJS(string) {
     string = string.replaceAll(",]", "]");
     return JSON.parse(string);
 }
+/**
+ * @param {*} instance
+ * @returns stdout */
+async function init(instance) {
+    let app = await App.findById(instance.app_id);
+    return _runScript(instance, app.init_code);
+}
+/**
+ * @param {Object} instance
+ * @returns last line of stdout */
 async function run(instance) {
     let app = await App.findById(instance.app_id);
-    // console.log("selected image:", app.selected_image_id);
-    let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: app.selected_image_id }) + app.run_code;
-    // console.log(command);
-
+    return (await _runScript(instance, app.run_code)).split("\n").pop();
+}
+/**
+ * @param {Object} instance
+ * @param {String} script to run
+ * @returns last line from stdout
+ */
+async function _runScript(instance, script) {
+    console.log("\n\n\n image id: ", instance.image_id, "\n\n\n");
+    let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: instance.image_id }) + script;
     let /** @type {String} */ shout = await sh(command);
-    console.log("shout", shout, "\n\n");
-    return shout.split("\n").pop();
+    return shout;
 }
 async function stop(...containerIds) {
     await sh("docker stop " + containerIds.join(" "));
@@ -109,9 +124,6 @@ async function start(...containerIds) {
 }
 async function rm(...containerIds) {
     await sh("docker rm -f " + containerIds.join(" "));
-}
-function init(instance) {
-    console.log("init...todo");
 }
 async function setLimits(containerId, { cpu, ram, swap, disk }) {
     let c = "";
@@ -143,4 +155,4 @@ function objectToBashVars(o) {
     }
 }
 
-module.exports = { getImages, ps, run, init, setLimits, stop, rm, start };
+module.exports = { getImages, ps, sh, run, init, setLimits, stop, rm, start };
