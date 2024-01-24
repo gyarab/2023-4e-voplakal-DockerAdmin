@@ -3,8 +3,8 @@
         <CRow class="justify-content-center">
             <CCol :lg="7">
                 <CCard>
-                    <CSpinner v-if="status === 'in progress'"></CSpinner>
-                    <CCardBody v-if="status === 'done'">
+                    <div v-if="status === 'in progress'">working...</div>
+                    <CCardBody v-else-if="status === 'done'">
                         <CRow class="justify-content-center">
                             <h3>Email with acces instruction has been send.</h3>
                         </CRow>

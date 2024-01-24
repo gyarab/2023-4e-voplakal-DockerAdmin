@@ -11,13 +11,21 @@ const InstanceSchema = new mongoose.Schema(
             type: String,
             required: true,
             validate: {
-                validator: function (/**@type{String}*/v) {
+                validator: function (/**@type{String}*/ v) {
                     return v && !v.includes(" ");
                 },
                 message: (props) => `${props.value} is not a container id!`,
             },
         },
-        expiry_date: { type: String },
+        expiry_date: {
+            type: Date,
+            get: function (d) {
+                return d.toISOString().slice(0, 10);
+            },
+            set: function (v) {
+                return new Date(v);
+            },
+        },
         created_on: { type: String, default: () => new Date().toISOString().split("T")[0] },
         name: { type: String, required: true },
         mount_folder: { type: String, required: true },
@@ -48,17 +56,26 @@ const InstanceSchema = new mongoose.Schema(
     },
     {
         virtuals: {
-            // client_email: {
+            // expiry_date: {
             //     get() {
-            //         return this.client + "email";
+            //         if (!this._expiry_date) return "";
+            //         let d = new Date(this._expiry_date);
+            //         return d.toISOString().slice(0, 10);
+            //     },
+            //     set(v) {
+            //         console.log("\n\nSET: ", v);
+            //         throw "huráaaaa"
+            //         this._expiry_date = new Date(v);
+            //         console.log(this._expiry_date);
             //     },
             // },
         },
-        toJSON: { virtuals: true }, //also adds id virtual for _id
+        toJSON: { virtuals: true, getters: true, setters: true }, //also adds id virtual for _id
     }
 );
 
 InstanceSchema.plugin(require("mongoose-lean-virtuals"));
+InstanceSchema.plugin(require("mongoose-lean-getters"));
 
 const Instance = mongoose.model("Instance", InstanceSchema);
 

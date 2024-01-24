@@ -7,7 +7,7 @@
 
       <AppBreadcrumb />
       <span style="margin: auto">
-        <CSpinner v-if="this.working"></CSpinner>
+        <CSpinner v-if="working"></CSpinner>  
       </span>
       <CHeaderNav class="ms-auto">
 
@@ -44,6 +44,8 @@ import { onMounted, ref } from 'vue'
 import { useColorModes } from '@coreui/vue'
 import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
+
+window.working = ref(false);
 export default {
   name: 'AppHeader',
   components: {
@@ -67,7 +69,7 @@ export default {
     return {
       headerClassNames,
       colorMode,
-      setColorMode
+      setColorMode, working: window.working
     }
   },
 }

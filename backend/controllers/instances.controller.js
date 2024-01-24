@@ -4,10 +4,11 @@ const docker = require("../docker/docker");
 const User = require("../models/user.model");
 const { App } = require("../models");
 const assert = require("node:assert");
+const email = require("../email");
 
 module.exports = {
     getAll: async (req, res) => {
-        let ins = await Instance.find().populate("client", "email").lean({ virtuals: true });
+        let ins = await Instance.find().populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
         if (!ins) ins = [];
         let ps = await docker.ps();
         let images = await docker.getImages();
@@ -58,7 +59,7 @@ module.exports = {
     },
     save: async (req, res) => {
         let instance = req.body;
-        console.log("save:", instance);
+        // console.log("save:", instance);
         let updated = await Instance.findByIdAndUpdate(req.body._id, req.body);
         if (!updated) return res.status(404).send({});
         res.send({});
@@ -107,12 +108,18 @@ module.exports = {
 
         //uložit pokud běží ok
         await instance.save();
+        if (process.env.EMAIL === "ON") {
+            await email.send({
+                to: client_email,
+                subject: "Vaše instance aplikace " + app.name,
+                text: "Vaše instance " + instance_name + " aplikace " + app.name + " byla vytvořena. \n použili jste tyto init data:\n" + JSON.stringify(form_data, null, 2),
+            });
+        }
         res.send({});
     },
     getStats: async (req, res) => {
         let id = req.query.id;
-        console.log("getStats:", id);
-        console.log("stats for: ", id);
+        // console.log("getStats:", id);
         let stats = (await docker.ps(id))[0];
         res.send(stats);
         // await Instance.create(instance)

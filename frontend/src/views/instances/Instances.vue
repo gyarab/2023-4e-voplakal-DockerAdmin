@@ -59,9 +59,10 @@
                 <option value="stop">Stop</option>
               </CFormSelect>
               <CFormSelect v-if="actionSelect === 'upgrade'" v-model="actionUpgradeImage" size="sm" class="mb-3">
+                <option :value="null">select version (image tag)</option>
                 <option v-for="image in app.images" :value="image.ID">{{ image.Tag }}</option>
               </CFormSelect>
-              <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="(actionSelect && app.instances?.some(i => i.selected)) ? null : true">OK</CButton>
+              <CButton color="primary" size="sm" @click="editAction(actionSelect, app.instances.filter(i => i.selected))" :disabled="((actionSelect && app.instances?.some(i => i.selected)) ? null : true) || actionUpgradeImage === null">OK</CButton>
             </div>
           </CCardFooter>
         </CCard>

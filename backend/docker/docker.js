@@ -49,7 +49,7 @@ async function getImages() {
 }
 
 function sh(command) {
-    console.log(command);
+    // console.log(command);
     return new Promise(async (resolve, reject) => {
         const process = spawn(`bash`, []);
 

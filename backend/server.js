@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
 require("dotenv").config({ path: "./.env" });
 
@@ -36,6 +37,7 @@ require("./routes/routes")(app);
 
 const db = require("./models");
 const Instance = require("./models/instance.model");
+const email = require("./email");
 
 db.mongoose
     .connect(process.env.MongoDB_URI, {})
@@ -86,3 +88,23 @@ app.use((err, req, /**@type {import("express").Response} */ res, next) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });
+
+// EXPIRY INSTANCE
+
+// setInterval(checkExpiry, 1000);
+
+checkExpiry();
+async function checkExpiry() {
+    let instances = await Instance.find({ expiry_date: { $lte: "2024-01-01" } }); //should be all stopped
+    let ps = await docker.ps();
+    ps = ps.filter((c) => c.State === "running"); // running containers
+
+    for (const instance of instances) {
+        for (const container of ps) {
+            if (instance.container_id === container.ID) {
+                await docker.stop(container.ID)
+                console.log("send email that expiry stop");
+            }
+        }
+    }
+}

@@ -32,10 +32,10 @@
       </div>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" @click="() => { apiErrors.length = 0 }">
+      <CButton color="secondary" type="submit" @click="reload">Reload</CButton>
+      <CButton color="primary" @click="() => { apiErrors.length = 0 }">
         Close
       </CButton>
-      <CButton color="primary" type="submit" @click="reload">Reload</CButton>
     </CModalFooter>
   </CModal>
 </template>

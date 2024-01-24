@@ -64,7 +64,7 @@ export let REST = {
   },
   async request({ path, body, method, headers, nonJsonOk, signal }) {
     try {
-      // window.working = true;
+      working.value = true;
       let res = await fetch(REST.getURL(path), {
         method,
         mode: 'same-origin',
@@ -78,7 +78,7 @@ export let REST = {
         cache: 'default',
         signal,
       })
-      window.working = false;
+      working.value = false;
 
       if (res.ok || this.codeOk(res.status)) {
         try {
