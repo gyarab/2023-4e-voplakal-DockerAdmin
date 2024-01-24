@@ -38,6 +38,7 @@ require("./routes/routes")(app);
 const db = require("./models");
 const Instance = require("./models/instance.model");
 const email = require("./email");
+const User = require("./models/user.model");
 
 db.mongoose
     .connect(process.env.MongoDB_URI, {})
@@ -91,19 +92,27 @@ app.listen(PORT, () => {
 
 // EXPIRY INSTANCE
 
-// setInterval(checkExpiry, 1000);
+// setInterval(checkExpiry, 30000);
 
 checkExpiry();
+
 async function checkExpiry() {
-    let instances = await Instance.find({ expiry_date: { $lte: "2024-01-01" } }); //should be all stopped
+    let instances = await Instance.find({ expiry_date: { $lte: new Date().toISOString().split("T")[0] } }); //should be all stopped
     let ps = await docker.ps();
     ps = ps.filter((c) => c.State === "running"); // running containers
 
     for (const instance of instances) {
         for (const container of ps) {
             if (instance.container_id === container.ID) {
-                await docker.stop(container.ID)
-                console.log("send email that expiry stop");
+                console.log("stopping");
+                await docker.stop(container.ID);
+                let user = await User.findById(instance.client);
+                let app = await db.App.findById(instance.app_id);
+                email.send({
+                    to: user.email,
+                    subject: "Vaše aplikace " + instance.name + " byla pozastavena",
+                    text: "Vaše aplikace " + instance.name + " expirovala a byla proto pozastavena. Pokud máte zájem aplikaci " + app.name + " i nadále používat, kontaktujte nás prosím na email.",
+                });
             }
         }
     }

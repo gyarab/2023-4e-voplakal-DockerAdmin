@@ -7,8 +7,8 @@
         <CTableDataCell @click="bulk">{{ dataRow.name }}</CTableDataCell>
         <CTableDataCell @click="bulk">{{ dataRow.image?.Tag ?? "unknown" }}</CTableDataCell>
         <CTableDataCell @click="bulk">{{ dataRow.client.email }}</CTableDataCell>
-        <CTableDataCell @click="bulk">{{ dataRow.container?.Status ?? "unknown!" }}</CTableDataCell>
-        <CTableDataCell @click="bulk">{{ dataRow.expiry_date }}</CTableDataCell>
+        <CTableDataCell @click="bulk" :class="{ red: dataRow.container?.State === 'exited' }">{{ dataRow.container?.Status ?? "unknown!" }}</CTableDataCell>
+        <CTableDataCell @click="bulk" :class="{ red: isExpired(dataRow.expiry_date) }">{{ dataRow.expiry_date }}</CTableDataCell>
         <CTableDataCell>
             <CButtonGroup role="group">
                 <router-link :to="'/instance-edit/' + dataRow._id">
@@ -26,6 +26,11 @@
         </CTableDataCell>
     </CTableRow>
 </template>
+<style>
+.red {
+    color: red !important;
+}
+</style>
   
 <script>
 import { CFormCheck } from '@coreui/vue';
@@ -52,7 +57,11 @@ export default {
             stop: () => {
                 store.dispatch("instancesStop", [props.dataRow.container_id])
             },
-            bulk: () => { props.dataRow.selected = !props.dataRow.selected }
+            bulk: () => { props.dataRow.selected = !props.dataRow.selected },
+            isExpired: (date) => {
+                let d = new Date(date);
+                return d.getTime() < new Date().getTime();
+            }
         }
     }
 }

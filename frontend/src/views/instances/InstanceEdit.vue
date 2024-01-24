@@ -196,7 +196,7 @@
                             </CTableRow>
                             <CTableRow>
                               <CTableHeaderCell scope="row">Expiry date</CTableHeaderCell>
-                              <CTableDataCell>
+                              <CTableDataCell :color="isExpired(data.expiry_date) ? 'danger' : ''">
                                 <CFormInput type="date" v-model="data.expiry_date" />
                               </CTableDataCell>
                             </CTableRow>
@@ -317,7 +317,10 @@ export default {
       })
     }
     return {
-      data, deleteInstance, saveChanges, stats, stopInstance, startInstance, app, actionUpgradeImage: ref(), upgradeTag,
+      data, deleteInstance, saveChanges, stats, stopInstance, startInstance, app, actionUpgradeImage: ref(), upgradeTag, isExpired: (date) => {
+        let d = new Date(date);
+        return d.getTime() < new Date().getTime();
+      }
     }
   },
 
@@ -338,5 +341,9 @@ export default {
 
 .input_with input {
   width: 82px !important;
+}
+
+.red {
+  color: red !important;
 }
 </style>
