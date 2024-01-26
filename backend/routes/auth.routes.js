@@ -12,5 +12,5 @@ module.exports = function (app) {
 
     app.post("/api/auth/signin", controller.signin);
     app.post("/api/auth/forgotten-passwd", wrap(controller.forgottenPasswd));
-    app.post("/api/auth/createPasswd", wrap(controller.createPasswd));
+    app.post("/api/auth/create-passwd", wrap(controller.createPasswd));
 };

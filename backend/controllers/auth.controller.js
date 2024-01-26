@@ -79,11 +79,12 @@ class TokensArray extends Array {
                 // only splice array when item is found
                 this.splice(index, 1); // 2nd parameter means remove one item only
             }
-        });
+        }, 3 * 60 * 60000);
         return super.push(token);
     }
 }
 let tokensArray = new TokensArray();
+
 exports.forgottenPasswd = async (req, res) => {
     let user = await this.getUser({ email: req.body.email });
 
@@ -96,24 +97,29 @@ exports.forgottenPasswd = async (req, res) => {
         user: user._id,
         token,
     });
+    console.log(tokensArray);
 
     let link = "http://localhost:3000/#/login/" + token;
 
-    email.send({
-        to: user.email,
-        subject: "Žádost o změnu hesla",
-        text: "Pokud si přejete změnit heslo do administračního systému DUCK klikněte na následijící odkaz: " + link + "\nPokud jste o změnu nežádali ignorujte tuto zprávu",
-    });
+    // email.send({
+    //     to: user.email,
+    //     subject: "Žádost o změnu hesla",
+    //     text: "Pokud si přejete změnit heslo do administračního systému DUCK klikněte na následijící odkaz: " + link + "\nPokud jste o změnu nežádali ignorujte tuto zprávu",
+    // });
+    console.log("token: " + token);
 
     res.status(200).send({
         message: "Email with instructions have been sent.",
     });
 };
 exports.createPasswd = async (req, res) => {
+    console.log(tokensArray);
+    console.log(req.body.tokens);
     let token = tokensArray.find((t) => t.token === req.body.token);
     if (!token) {
         return res.status(469).send({ message: "Expired attempt token. Please try forogotten password again." });
     }
+    console.log("token: ", token);
     let user = await User.findById(token.user);
 
     if (!user) {

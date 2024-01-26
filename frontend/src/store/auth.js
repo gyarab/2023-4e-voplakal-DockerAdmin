@@ -72,7 +72,7 @@ export const auth = {
       window.showToast(res.message)
     },
     async createNewPass(ctx, { newPass, token }) {
-      let res = await REST.POST('auth/forgotten-passwd', {
+      let res = await REST.POST('auth/create-passwd', {
         token,
         newPass,
       })

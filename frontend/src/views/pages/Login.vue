@@ -123,8 +123,9 @@ export default {
       router.push("/")
     }
 
-    const sendLostPass = (email) => {
-      store.dispatch("auth/forgottenPasswd", email)
+    const sendLostPass = async (email) => {
+      await store.dispatch("auth/forgottenPasswd", email);
+      lostPassModal.value = false;
     }
 
     const newPassModal = ref();
@@ -134,11 +135,12 @@ export default {
       newPassModal.value = !!props.token
     })
 
-    const createNewPass = (newPass) => {
-      store.dispatch("auth/createNewPass", {
+    const createNewPass = async (newPass) => {
+      await store.dispatch("auth/createNewPass", {
         newPass,
         token: props.token
       })
+      newPassModal.value = false;
     }
 
 
