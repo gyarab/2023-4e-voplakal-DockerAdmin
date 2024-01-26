@@ -5,6 +5,12 @@ const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
 require("dotenv").config({ path: "./.env" });
 
+module.exports.wrap = function wrap(fn) {
+    return (req, res, next) => {
+        fn(req, res).catch(next);
+    };
+};
+
 const app = express();
 
 var corsOptions = {

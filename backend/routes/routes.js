@@ -3,12 +3,8 @@ const Public = require("../controllers/public.controller");
 const Apps = require("../controllers/apps.controller");
 const Instances = require("../controllers/instances.controller");
 const { getUser } = require("../controllers/auth.controller");
+const { wrap } = require("../server");
 
-function wrap(fn) {
-    return (req, res, next) => {
-        fn(req, res).catch(next);
-    };
-}
 module.exports = function (app) {
     app.use(function (req, res, next) {
         res.header("Access-Control-Allow-Headers", "x-access-token, Origin, Content-Type, Accept");
@@ -20,6 +16,7 @@ module.exports = function (app) {
     app.get("/api/session", [authJwt.verifyToken], async (req, res) => {
         console.log(req.query.id);
         let user = await getUser({ _id: req.query.id });
+        if (!user) return res.status(401).send({});
         res.status(200).send({
             user,
         });

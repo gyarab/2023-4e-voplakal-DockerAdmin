@@ -33,6 +33,7 @@ export let REST = {
     }
     if (status === 401) {
       //unauthorized
+      console.log("redirect 401");
       router.push('/login')
       return true
     }

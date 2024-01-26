@@ -14,7 +14,7 @@ const AuthService = {
 
   logout() {
     localStorage.removeItem('user')
-    console.log("remove");
+    console.log('remove')
   },
 
   async register(user) {
@@ -64,6 +64,23 @@ export const auth = {
         window.apiErrors.value.push(error)
         throw error
       }
+    },
+    async forgottenPasswd(ctx, email) {
+      let res = await REST.POST('auth/forgotten-passwd', {
+        email,
+      })
+      window.showToast(res.message)
+    },
+    async createNewPass(ctx, { newPass, token }) {
+      let res = await REST.POST('auth/forgotten-passwd', {
+        token,
+        newPass,
+      })
+      console.log(res);
+      window.showToast({
+        content: "" + res.message,
+        color: "primary"
+      })
     },
   },
   mutations: {

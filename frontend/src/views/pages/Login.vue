@@ -62,8 +62,8 @@
       <CModalTitle>Please enter you email adress</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CForm onsubmit="() => false">
-        <CFormInput type="email" autocomplete="email" required></CFormInput>
+      <CForm :onsubmit="() => { sendLostPass(lostPassEmail); return false }">
+        <CFormInput type="email" autocomplete="email" required v-model="lostPassEmail"></CFormInput>
         <CModalFooter>
           <CButton color="secondary" @click="() => { lostPassModal = false }">
             Close
@@ -73,14 +73,37 @@
       </CForm>
     </CModalBody>
   </CModal>
+  <!-- CREATE NEW PASS -->
+  <CModal :visible="newPassModal" @close="() => { newPassModal = false }">
+    <CModalHeader>
+      <CModalTitle>Please enter you new password</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <CForm :onsubmit="() => { createNewPass(newPass); return false }">
+        <CFormInput type="password" autocomplete="password" required v-model="newPass"></CFormInput>
+        <CModalFooter>
+          <CButton color="secondary" @click="() => { newPassModal = false }">
+            Close
+          </CButton>
+          <CButton color="primary" @click="sendNewPass" type="submit">OK</CButton>
+        </CModalFooter>
+      </CForm>
+    </CModalBody>
+  </CModal>
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex';
 export default {
   name: 'Login',
-  setup() {
+  props: {
+    token: {
+      type: String,
+      requied: false
+    },
+  },
+  setup(props) {
     let username = ref("");
     let passwd = ref("");
     let wrongCreditals = ref({ show: false, message: "" })
@@ -98,13 +121,29 @@ export default {
         password: passwd.value
       })
       router.push("/")
+    }
 
+    const sendLostPass = (email) => {
+      store.dispatch("auth/forgottenPasswd", email)
+    }
 
+    const newPassModal = ref();
+    console.log(props.token);
+
+    onMounted(() => {
+      newPassModal.value = !!props.token
+    })
+
+    const createNewPass = (newPass) => {
+      store.dispatch("auth/createNewPass", {
+        newPass,
+        token: props.token
+      })
     }
 
 
     return {
-      username, passwd, wrongCreditals, login, lostPassModal, sendNewPass, user
+      username, passwd, wrongCreditals, login, lostPassModal, sendNewPass, user, lostPassEmail: ref(), sendLostPass, newPass: ref(), createNewPass, newPassModal
     }
   }
 }

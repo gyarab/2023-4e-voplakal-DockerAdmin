@@ -97,7 +97,8 @@ module.exports = {
         });
         instance.validateSync();
 
-        await docker.init(instance);
+        let init = await docker.init(instance);
+        console.log(init);
         //spustit
         let container_id = await docker.run(instance);
         console.log("container id:", container_id);

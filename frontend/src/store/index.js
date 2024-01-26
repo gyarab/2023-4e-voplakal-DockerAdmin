@@ -52,7 +52,7 @@ export default createStore({
         const response = await REST.GET('session', { id: savedUser?.id })
         context.commit('setSession', response)
         let user = response.user
-        if (!user) return window.router.push('login')
+        if (!user);
         context.commit('auth/loginSuccess', user)
       } catch (error) {
         apiError(error)

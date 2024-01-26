@@ -111,7 +111,6 @@ async function run(instance) {
  * @returns last line from stdout
  */
 async function _runScript(instance, script) {
-    console.log("\n\n\n image id: ", instance.image_id, "\n\n\n");
     let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: instance.image_id }) + script;
     let /** @type {String} */ shout = await sh(command);
     return shout;
