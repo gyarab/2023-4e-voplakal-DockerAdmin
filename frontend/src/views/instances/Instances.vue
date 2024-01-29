@@ -151,7 +151,6 @@ export default {
           })
           break;
         case "delete":
-          console.log(deleteModal);
           deleteModal.show = true;
           deleteModal.onSubmit = () => {
             store.dispatch("instancesDelete", selected.map(s => s.id))

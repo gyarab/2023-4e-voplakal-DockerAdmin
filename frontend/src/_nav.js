@@ -28,6 +28,13 @@ export default [
     icon: 'cil-bolt',
     role: "ADMIN"
   },
+  {
+    component: 'CNavItem',
+    name: 'My Instances',
+    to: '/my-instances',
+    icon: 'cil-bolt',
+    // role: "ADMIN"
+  },
 
   {
     component: 'CNavTitle',

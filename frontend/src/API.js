@@ -16,7 +16,12 @@ export let REST = {
    * @returns true: behaves like ok response; false: throws error
    */
   codeOk: (code) => {
-    if (code === 401) return true
+    if (code === 401) {
+      //unauthorized
+      console.log('redirect 401')
+      router.push('/login')
+      return true
+    }
     return false
   },
 
@@ -29,12 +34,9 @@ export let REST = {
     const router = window.router
     if (status >= 500) {
       router.push('/500')
-      return false;
+      return false
     }
     if (status === 401) {
-      //unauthorized
-      console.log("redirect 401");
-      router.push('/login')
       return true
     }
     if (status === 469) {
@@ -65,7 +67,7 @@ export let REST = {
   },
   async request({ path, body, method, headers, nonJsonOk, signal }) {
     try {
-      working.value = true;
+      working.value = true
       let res = await fetch(REST.getURL(path), {
         method,
         mode: 'same-origin',
@@ -79,7 +81,7 @@ export let REST = {
         cache: 'default',
         signal,
       })
-      working.value = false;
+      working.value = false
 
       if (res.ok || this.codeOk(res.status)) {
         try {
@@ -162,8 +164,8 @@ export let REST = {
       ...opts,
     })
   },
-  
-  DELETE(path, body, opts,) {
+
+  DELETE(path, body, opts) {
     return REST.request({
       method: 'DELETE',
       path,

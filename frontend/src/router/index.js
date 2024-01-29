@@ -37,6 +37,11 @@ const routes = [
         component: () => import('@/views/instances/Instances.vue'),
       },
       {
+        path: 'my-instances',
+        name: 'MyInstances',
+        component: () => import('@/views/instances/MyInstances.vue'),
+      },
+      {
         path: 'instance-edit/:id',
         props: true,
         name: 'Edit Instance',
@@ -117,7 +122,7 @@ router.beforeEach((to, from, next) => {
   // console.log(router.currentRoute.value.name);
   // if (to.name === 'Login' && router.currentRoute.value.name === "Login") return console.log("ahoj");
 
-  const publicPages = ['/login', '/404','/500']
+  const publicPages = ['/login', '/404','/500', '/register']
   const authRequired = !publicPages.some((e) => to.path.startsWith(e))
   const auth = !!localStorage.getItem('user')
 

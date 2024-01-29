@@ -8,23 +8,33 @@ const email = require("../email");
 
 module.exports = {
     getAll: async (req, res) => {
-        let ins = await Instance.find().populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
-        if (!ins) ins = [];
-        let ps = await docker.ps();
-        let images = await docker.getImages();
-        // console.log("ps: ", ps);
-        // console.log("images: ", images);
-        for (const i of ins) {
-            let d = ps.find((c) => c.ID === i.container_id);
-            let f = images.find((im) => im.ID === i.image_id);
-            // if (!d || !f) {
-            //     if (process.env.NODE_ENV === "production") console.log("Not found matching image or container");
-            //     else throw "Not found matching image or container. Try to delete DB";
-            // }
-            i.container = d;
-            i.image = f;
+        if (req.user.roles.includes("ADMIN")) {
+            let ins = await Instance.find().populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
+            if (!ins) ins = [];
+            let ps = await docker.ps();
+            let images = await docker.getImages();
+            // console.log("ps: ", ps);
+            // console.log("images: ", images);
+            for (const i of ins) {
+                let d = ps.find((c) => c.ID === i.container_id);
+                let f = images.find((im) => im.ID === i.image_id);
+                // if (!d || !f) {
+                //     if (process.env.NODE_ENV === "production") console.log("Not found matching image or container");
+                //     else throw "Not found matching image or container. Try to delete DB";
+                // }
+                i.container = d;
+                i.image = f;
+            }
+            res.send(ins);
+        } else if (req.user.roles.includes("USER")) {
+            let ins = await Instance.find({client: req.user._id}).populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
+            if (!ins) ins = [];
+            // let ps = await docker.ps(); // todo cache
+            // let images = await docker.getImages(); // todo cache
+            res.send(ins);
+        } else {
+            res.status(401).send();
         }
-        res.send(ins);
     },
     delete: async (req, res) => {
         console.log("delete:", req.body.ids);

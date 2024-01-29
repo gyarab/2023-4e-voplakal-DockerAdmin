@@ -5,10 +5,10 @@
       value: event,
     })
     ">
-    <CSidebarHeader class="border-bottom">
+    <CSidebarHeader class="border-bottom" style="overflow: hidden;">
       <CSidebarBrand>
 
-        <img src="@/assets/images/blue.png" width="210px">
+        <img src="@/assets/images/blue.png" width="210px" class="brand-small">
         <!-- logo from https://www.brandcrowd.com/maker/logo/9ac932ad-44a7-4e65-9a35-1386fd1f048e/draft/66e15945-c95d-4844-a267-6acf0175c24c?savedDraft=True -->
 
       </CSidebarBrand>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
 export default {
@@ -32,8 +32,8 @@ export default {
   },
   setup() {
     const store = useStore()
-    return {
 
+    return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
       session: computed(() => store.state.session)
@@ -41,3 +41,10 @@ export default {
   },
 }
 </script>
+<style>
+.sidebar.sidebar-fixed:not(:hover) .brand-small {
+  position: relative;
+  left: 70px;
+  zoom: 0.7;
+}
+</style>

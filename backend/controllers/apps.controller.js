@@ -4,15 +4,25 @@ const RestError = require("./RestError");
 
 module.exports = {
     getAll: async (req, res) => {
-        let images = docker.getImages();
-        let apps = await App.find().lean({ virtuals: true });
-        images = await images;
-        if (!apps) apps = [];
-        for (const app of apps) {
-            app.images = images.filter((i) => i.Repository === app.repository) ?? [];
-            app.selected_image = app.images?.find((i) => i.ID === app.selected_image_id) ?? {};
+        console.log(req.user.roles);
+        if (req.user.roles.includes("ADMIN")) {
+            let images = docker.getImages();
+            let apps = await App.find().lean({ virtuals: true });
+            images = await images;
+            if (!apps) apps = [];
+            for (const app of apps) {
+                app.images = images.filter((i) => i.Repository === app.repository) ?? [];
+                app.selected_image = app.images?.find((i) => i.ID === app.selected_image_id) ?? {};
+            }
+            res.send(apps);
+        } else if (req.user.roles.includes("USER")) {
+            // let images = docker.getImages(); // todo cache
+            let apps = await App.find().lean({ virtuals: true });
+            if (!apps) apps = [];
+            res.send(apps);
+        } else {
+            res.status(401).send();
         }
-        res.send(apps);
     },
     create: async (req, res, next) => {
         const { repoImageName, newAppName } = req.body;

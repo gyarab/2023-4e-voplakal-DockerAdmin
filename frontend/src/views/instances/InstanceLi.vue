@@ -6,7 +6,7 @@
         </CTableDataCell>
         <CTableDataCell @click="bulk">{{ dataRow.name }}</CTableDataCell>
         <CTableDataCell @click="bulk">{{ dataRow.image?.Tag ?? "unknown" }}</CTableDataCell>
-        <CTableDataCell @click="bulk">{{ dataRow.client.email }}</CTableDataCell>
+        <CTableDataCell @click="bulk">{{ dataRow.client?.email ?? "NOT FOUND" }}</CTableDataCell>
         <CTableDataCell @click="bulk" :class="{ red: dataRow.container?.State === 'exited' }">{{ dataRow.container?.Status ?? "unknown!" }}</CTableDataCell>
         <CTableDataCell @click="bulk" :class="{ red: isExpired(dataRow.expiry_date) }">{{ dataRow.expiry_date }}</CTableDataCell>
         <CTableDataCell>

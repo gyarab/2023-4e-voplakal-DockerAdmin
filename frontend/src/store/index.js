@@ -51,8 +51,8 @@ export default createStore({
         let savedUser = context.state.auth.user
         const response = await REST.GET('session', { id: savedUser?.id })
         context.commit('setSession', response)
-        let user = response.user
-        if (!user);
+        let user = response?.user
+        if (!user) return;
         context.commit('auth/loginSuccess', user)
       } catch (error) {
         apiError(error)

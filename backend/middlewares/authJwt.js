@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const db = require("../models");
+const { getUser } = require("../controllers/auth.controller");
 const User = db.user;
 const Role = db.role;
 
-verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
 
     if (!token) {
@@ -21,9 +22,24 @@ verifyToken = (req, res, next) => {
     });
 };
 
-isAdmin = async (req, res, next) => {
+/**
+ * adds user to req.user
+ */
+const loadUser = async (req, res, next) => {
+    if (!req.userId) return next();
     try {
-        let user = await User.findById(req.userId);
+        let user = await getUser({_id: req.userId});
+        req.user = user;
+        return next();
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: err.name + ": " + err.message });
+    }
+};
+
+const isAdmin = async (req, res, next) => {
+    try {
+        let user = await User.findById(req.userId).lean();
 
         let roles = await Role.find({
             _id: { $in: user.roles },
@@ -46,5 +62,6 @@ isAdmin = async (req, res, next) => {
 const authJwt = {
     verifyToken,
     isAdmin,
+    loadUser,
 };
 module.exports = authJwt;
