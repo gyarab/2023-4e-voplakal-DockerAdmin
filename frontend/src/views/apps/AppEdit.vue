@@ -128,13 +128,27 @@
                     </CCardFooter>
                   </CCard>
                 </div>
+                <br>
+                <CCard><!-- Run script -->
+                  <CCardHeader>
+                    <h4 class="card-title">Price</h4>
+                    <!-- <div class="small text-body-secondary">Set price that wi</div> -->
+                  </CCardHeader>
+                  <CCardBody>
+                    <CFormInput type="number" min="0" v-model="data.price" label="Price per month" text="set 0 to make it free to use" required />
+                    <div style="margin-top: 15px;"></div>
+                    <CFormInput type="number" label="Number of try for free days" text="This is expiry period." v-model="data.free_days" min="0" required />
+                  </CCardBody>
+                  <!-- <CCardFooter>
+                    </CCardFooter> -->
+                </CCard>
               </CCol>
             </CRow>
           </CCardBody>
         </CCard>
       </CCol>
-    </CRow>
 
+    </CRow>
 
     <!-- MODALS -->
     <MyModal ref="deleteModal" :title="'Remove app ' + data.name + '?'" :on_submit="deleteApp">
@@ -188,7 +202,7 @@ export default {
     CIcon,
     MyModal,
     VAceEditor,
-    InitForm
+    InitForm,
   },
   props: {
     id: {

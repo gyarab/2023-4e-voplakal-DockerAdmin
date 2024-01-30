@@ -52,7 +52,7 @@ export default createStore({
         const response = await REST.GET('session', { id: savedUser?.id })
         context.commit('setSession', response)
         let user = response?.user
-        if (!user) return;
+        if (!user) return
         context.commit('auth/loginSuccess', user)
       } catch (error) {
         apiError(error)
@@ -191,6 +191,19 @@ export default createStore({
       try {
         console.log(id)
         return await REST.GET('instance/getStats', { id })
+      } catch (error) {
+        apiError(error)
+      }
+    },
+
+    /*
+     * STRIPE
+     */
+    async createCheckoutSession(ctx, { instance_id, months }) {
+      console.log(instance_id, months);
+      try {
+        let r = await REST.POST('stripe/create-checkout-session', { instance_id, months });
+        location.href = r.redirect_url;
       } catch (error) {
         apiError(error)
       }

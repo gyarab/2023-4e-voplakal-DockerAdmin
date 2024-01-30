@@ -1,5 +1,6 @@
 const docker = require("../docker/docker");
 const { App } = require("../models");
+const Instance = require("../models/instance.model");
 const RestError = require("./RestError");
 
 module.exports = {
@@ -48,7 +49,12 @@ module.exports = {
     },
     delete: async (req, res) => {
         console.log("delete:", req.params.id);
-        await App.deleteOne({ _id: req.params.id });
+        let a = await App.findOne({ _id: req.params.id });
+        let c = await Instance.countDocuments({ app_id: a.id });
+        if (c > 0) {
+            return res.status(400).send({ message: "Can not delete app of running instance" });
+        }
+        a.remove();
         res.send({});
     },
     save: async (req, res) => {

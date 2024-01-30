@@ -27,7 +27,7 @@ module.exports = {
             }
             res.send(ins);
         } else if (req.user.roles.includes("USER")) {
-            let ins = await Instance.find({client: req.user._id}).populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
+            let ins = await Instance.find({ client: req.user._id }).populate("client", "email").lean({ virtuals: true, getters: true, setters: true });
             if (!ins) ins = [];
             // let ps = await docker.ps(); // todo cache
             // let images = await docker.getImages(); // todo cache
@@ -100,6 +100,7 @@ module.exports = {
             name: instance_name,
             client: client._id,
             form_data,
+            expiry_date: Date.now() + app.free_days * 24 * 60 * 60 * 1000,
             mount_folder:
                 String(instance_name)
                     .toLowerCase()

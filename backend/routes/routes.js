@@ -38,4 +38,5 @@ module.exports = function (app) {
     app.post("/api/instance/stop", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.stop));
     app.post("/api/instance/create", [authJwt.verifyToken], wrap(Instances.create));
     app.get("/api/instance/getStats", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.getStats));
+
 };

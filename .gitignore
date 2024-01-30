@@ -51,3 +51,5 @@ Thumbs.db
 *~
 
 backend/.env.vault
+
+.env*

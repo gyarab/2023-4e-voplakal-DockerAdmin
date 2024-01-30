@@ -42,7 +42,7 @@ export default {
 }
 </script>
 <style>
-.sidebar.sidebar-fixed:not(:hover) .brand-small {
+.sidebar-narrow-unfoldable:not(:hover) .brand-small {
   position: relative;
   left: 70px;
   zoom: 0.7;

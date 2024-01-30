@@ -6,7 +6,7 @@
         <div class="small text-body-secondary" style="margin-top: 7px;">All your <b>Applications</b> managed by this administration system.</div>
         <br>
         <CSpinner v-if="!instances" />
-        <h4 v-else v-if="!instances[0]">You have no instance. Create one.</h4>
+        <h4 v-else v-if="!instances[0]">You have no instance.</h4>
         <CCard class="mb-4">
           <CCardBody>
             <CRow>
@@ -28,9 +28,8 @@
                         <CTableDataCell>{{ instance.expiry_date ?? "never" }}</CTableDataCell>
 
                         <CTableDataCell>
-                          <router-link :to="'/longer-subscription/' + instance._id">
-                            <CButton color="primary">Longer subscription</CButton>
-                          </router-link>&nbsp;
+                          <CButton color="primary" @click="() => longerInstance(instance._id)">Longer subscription</CButton>
+                          &nbsp;
                           <CButton color="primary" variant="outline" @click="() => deleteInstnace(instance._id)">Delete</CButton>
                         </CTableDataCell>
                       </CTableRow>
@@ -55,6 +54,16 @@
         Storno
       </CButton>
       <CButton color="danger" type="submit">Delete</CButton>
+    </template>
+  </MyModal>
+  <MyModal :data="longerInstanceModal" :title="'For how long?'">
+    Select for how long do you want to pay:
+    <CFormInput type="number" placeholder="6" text="months. (one month is considered as 30 days)" min="1" required v-model="months" />
+    <template #footer>
+      <CButton color="secondary" @click="() => longerInstanceModal.show = false">
+        Storno
+      </CButton>
+      <CButton color="success" type="submit">Pay</CButton>
     </template>
   </MyModal>
 </template>
@@ -93,8 +102,21 @@ export default {
     }
     const instances = computed(() => store.state.instances)
 
+    const longerInstanceModal = reactive({
+      show: false,
+      data: {},
+    });
+
+    const months = ref(6);
+    const longerInstance = (instId) => {
+      longerInstanceModal.show = true;
+      longerInstanceModal.onSubmit = () => {
+        store.dispatch("createCheckoutSession", { instance_id: instId, months: months.value })
+      }
+    }
+
     return {
-      icon, instances, deleteModal, deleteInstnace
+      icon, instances, deleteModal, deleteInstnace, longerInstance, months, longerInstanceModal
     }
   }
 }

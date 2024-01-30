@@ -1,17 +1,25 @@
+require("dotenv").config({ path: "./.env" });
 const express = require("express");
+const stripeController = require("./controllers/stripe.controller");
+const { authJwt } = require("./middlewares");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
-require("dotenv").config({ path: "./.env" });
 
-module.exports.wrap = function wrap(fn) {
+const wrap = function wrap(fn) {
     return (req, res, next) => {
-        fn(req, res).catch(next);
+        try {
+            fn(req, res);
+        } catch (error) {
+            next();
+        }
     };
 };
+module.exports.wrap = wrap;
 
 const app = express();
+app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), wrap(stripeController.webhook)); //must be before bodyparser.json()
 
 var corsOptions = {
     origin: "http://localhost:8081",
@@ -38,6 +46,7 @@ if (!PORT) {
 }
 
 // routes
+app.post("/api/stripe/create-checkout-session", [authJwt.verifyToken, authJwt.loadUser], wrap(stripeController.createCheckoutSession));
 require("./routes/auth.routes")(app);
 require("./routes/routes")(app);
 
