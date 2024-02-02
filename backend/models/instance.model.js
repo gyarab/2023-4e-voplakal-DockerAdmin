@@ -53,6 +53,7 @@ const InstanceSchema = new mongoose.Schema(
             swap: { type: Number, default: ld.swap },
             disk: { type: Number, default: ld.disk },
         },
+        port: { type: Number, required: true },
     },
     {
         virtuals: {

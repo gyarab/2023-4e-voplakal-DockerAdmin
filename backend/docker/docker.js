@@ -1,5 +1,7 @@
 const { exec, spawn } = require("node:child_process");
 const { App } = require("../models");
+const fp = require("find-free-port");
+
 
 /**
  * @typedef {Object} DockerContainerInfo
@@ -48,10 +50,10 @@ async function getImages() {
     return images;
 }
 
-function sh(command) {
+function sh(command, workdir = ".") {
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
-        const process = spawn(`bash`, []);
+        const process = spawn(`bash`, [], { cwd: "./mounts" });
 
         let stdout = [];
         let stderr = [];
@@ -68,7 +70,7 @@ function sh(command) {
             stderr.push(data.toString().trim());
         });
 
-        await new Promise((resolve) => process.stdin.write(command + " \n", `utf8`, () => resolve()));
+        await new Promise((resolve) => process.stdin.write(`mkdir -p ${workdir}; cd ${workdir};\n` + command + " \n", `utf8`, () => resolve()));
         process.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close
@@ -111,8 +113,16 @@ async function run(instance) {
  * @returns last line from stdout
  */
 async function _runScript(instance, script) {
-    let command = objectToBashVars(instance.form_data) + objectToBashVars({ image_id: instance.image_id }) + script;
-    let /** @type {String} */ shout = await sh(command);
+    let command =
+        objectToBashVars(instance.form_data) +
+        objectToBashVars({
+            image_id: instance.image_id,
+            PORT: instance.port,
+        }) +
+        script;
+    let workdir = instance.mount_folder;
+    console.log("workdir: " + workdir);
+    let /** @type {String} */ shout = await sh(command, workdir);
     return shout;
 }
 async function stop(...containerIds) {
@@ -149,6 +159,7 @@ function objectToBashVars(o) {
     return strings.join(" ");
 
     function escape(v) {
+        v = "" + v;
         v = v.replaceAll("'", "'\\''");
         return "'" + v + "'";
     }

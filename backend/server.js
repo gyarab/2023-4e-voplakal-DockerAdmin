@@ -7,15 +7,20 @@ const cors = require("cors");
 const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
 
-const wrap = function wrap(fn) {
+// const wrap = function wrap(fn) {
+//     return (req, res, next) => {
+//         try {
+//             fn(req, res);
+//         } catch (error) {
+//             next();
+//         }
+//     };
+// };
+function wrap(fn) {
     return (req, res, next) => {
-        try {
-            fn(req, res);
-        } catch (error) {
-            next();
-        }
+        fn(req, res).catch(next);
     };
-};
+}
 module.exports.wrap = wrap;
 
 const app = express();
@@ -135,3 +140,14 @@ async function checkExpiry() {
         }
     }
 }
+
+var fs = require("fs");
+var dir = "./mounts";
+
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
+
+let r = process.env.PORT_RANGE.split("-");
+global.instancesCountLimit = r[1] - r[0];
+global.PORT_RANGE = { start: +r[0], end: +r[1] };

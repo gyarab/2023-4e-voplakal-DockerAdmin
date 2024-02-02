@@ -129,15 +129,27 @@
                   </CCard>
                 </div>
                 <br>
-                <CCard><!-- Run script -->
+                <CCard><!-- PRICE -->
                   <CCardHeader>
                     <h4 class="card-title">Price</h4>
-                    <!-- <div class="small text-body-secondary">Set price that wi</div> -->
                   </CCardHeader>
                   <CCardBody>
                     <CFormInput type="number" min="0" v-model="data.price" label="Price per month" text="set 0 to make it free to use" required />
                     <div style="margin-top: 15px;"></div>
                     <CFormInput type="number" label="Number of try for free days" text="This is expiry period." v-model="data.free_days" min="0" required />
+                  </CCardBody>
+                  <!-- <CCardFooter>
+                    </CCardFooter> -->
+                </CCard>
+                <br>
+                <CCard><!-- Routes -->
+                  <CCardHeader>
+                    <h4 class="card-title">Domain</h4>
+                    <div class="small text-body-secondary">Every instance will be given a domain instance-name.your-domain.com</div>
+
+                  </CCardHeader>
+                  <CCardBody>
+                    <CFormInput type="text" label="" text="Leave empty to disable." v-model="data.domain" placeholder="example.com" />
                   </CCardBody>
                   <!-- <CCardFooter>
                     </CCardFooter> -->

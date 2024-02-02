@@ -1,3 +1,4 @@
+var net = require("net");
 const { appsData, instances } = require("../models/fixtures");
 const Instance = require("../models/instance.model");
 const docker = require("../docker/docker");
@@ -5,6 +6,7 @@ const User = require("../models/user.model");
 const { App } = require("../models");
 const assert = require("node:assert");
 const email = require("../email");
+const caddy = require("../caddy");
 
 module.exports = {
     getAll: async (req, res) => {
@@ -46,6 +48,9 @@ module.exports = {
         await Instance.deleteMany({
             _id: { $in: req.body.ids },
         });
+        for (const id of req.body.ids) {
+            await caddy.deleteRoute(id).catch();
+        }
         res.send({});
     },
 
@@ -87,26 +92,28 @@ module.exports = {
         res.send({});
     },
     create: async (req, res) => {
+        if ((await Instance.countDocuments({})) >= global.instancesCountLimit) return res.status(503).send({ message: "Server is currently out of instance limit. Please contact us on email: martin.air@seznam.cz and we will make this service available again." });
         let { app_id, client_email, instance_name, form_data } = req.body;
         // console.log("create:", app_id, client_email, instance_name, formData);
 
+        console.log("create");
         let client = await User.findOne({ email: client_email });
         if (!client) client = await User.create({ email: client_email });
         let app = await App.findById(app_id);
-
         let instance = new Instance({
             app_id,
             image_id: app.selected_image_id,
             name: instance_name,
             client: client._id,
             form_data,
+            port: await getFreePort(),
             expiry_date: Date.now() + app.free_days * 24 * 60 * 60 * 1000,
             mount_folder:
                 String(instance_name)
                     .toLowerCase()
                     .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount",
         });
-        instance.validateSync();
+        await instance.validateSync();
 
         let init = await docker.init(instance);
         console.log(init);
@@ -118,8 +125,15 @@ module.exports = {
         console.log("instance limits:", instance.limits);
         await docker.setLimits(container_id, instance.limits);
 
+        console.log(instance._id);
+
+        if (app.domain) await caddy.addRoute(instance._id, `${instance.name}.${app.domain}`, instance.port);
         //uložit pokud běží ok
         await instance.save();
+        console.log(instance._id);
+
+        // await caddy.addRoute(instance._id)
+
         if (process.env.EMAIL === "ON") {
             await email.send({
                 to: client_email,
@@ -148,3 +162,40 @@ module.exports = {
         // });
     },
 };
+
+async function getFreePort() {
+    console.log("get free port");
+    let instances = await Instance.find({}, "port");
+    for (let i = global.PORT_RANGE.start; i < global.PORT_RANGE.end; i++) {
+        if (instances.some((instance) => instance.port === i)) {
+            console.log("continue");
+            continue;
+        }
+        //check if is really free
+        let confirmed = false;
+        await new Promise(async (resolve, reject) => {
+            let server = net.createServer();
+            console.log("create server");
+            server.once("error", function (err) {
+                console.log("error");
+                if (err.code === "EADDRINUSE") {
+                    console.error("Unexpectedly address in use: " + i);
+                    return resolve();
+                }
+                throw "Unexpected error when findig free port: " + err;
+            });
+
+            server.once("listening", function () {
+                // close the server if listening doesn't fail
+                server.close();
+                confirmed = true;
+                resolve();
+            });
+            server.listen(i);
+        });
+
+        if (!confirmed) continue;
+        console.log("found " + i);
+        return i;
+    }
+}

@@ -20,6 +20,7 @@ const AppSchema = new mongoose.Schema(
         name: { type: String, required: true },
         repository: { type: String, required: true },
         folder: { type: String, required: true },
+        domain: String,
         //  images: computed later,
         //  selected_image: computed later,
         init_code: { type: String, required: true, default: fixtures.initCodeExample },

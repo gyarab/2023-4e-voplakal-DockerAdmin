@@ -54,7 +54,7 @@ module.exports = {
         if (c > 0) {
             return res.status(400).send({ message: "Can not delete app of running instance" });
         }
-        a.remove();
+        await App.findByIdAndDelete(req.params.id);
         res.send({});
     },
     save: async (req, res) => {
