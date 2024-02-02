@@ -49,7 +49,7 @@ async function getImages() {
 }
 
 function sh(command) {
-    // console.log(command);
+    // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
         const process = spawn(`bash`, []);
 
@@ -61,7 +61,7 @@ function sh(command) {
 
         // retrun output
         process.stdout.on(`data`, (data) => stdout.push(data.toString().trim()));
-        process.on("error", (err) => reject("Failed to start subprocess.\n", err));
+        process.on("error", (err) => reject(`Failed to start subprocess.\n Command: ${command}\n`, err));
 
         // log any stderr
         process.stderr.on(`data`, (data) => {
@@ -80,7 +80,7 @@ function sh(command) {
         }, 11000);
         await p;
 
-        if (stderr[0]) reject("STDERR:\n" + stderr.join("\n") + "\nSTDOUT:\n" + stdout.join("\n"));
+        if (stderr[0]) reject(`Command: ${command}\nSTDERR:\n ${stderr.join("\n")} \nSTDOUT:\n ${stdout.join("\n")}`);
         else resolve(stdout.join("\n"));
     });
 }

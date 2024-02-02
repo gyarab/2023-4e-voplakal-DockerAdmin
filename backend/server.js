@@ -113,7 +113,10 @@ checkExpiry();
 
 async function checkExpiry() {
     let instances = await Instance.find({ expiry_date: { $lte: new Date().toISOString().split("T")[0] } }); //should be all stopped
-    let ps = await docker.ps();
+    let ps = await docker.ps().catch((e) => {
+        console.error("Can not check expiry. Docker ps sh Error\n" + e);
+        process.exit(1);
+    });
     ps = ps.filter((c) => c.State === "running"); // running containers
 
     for (const instance of instances) {
