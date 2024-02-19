@@ -84,7 +84,7 @@
                       <!-- prop: wrap -->
                     </CCardBody>
                     <CCardFooter>
-                      script is located in ./Apps/{{ data.folder }}/init.sh
+                      <!-- script is located in ./Apps/{{ data.folder }}/init.sh -->
                     </CCardFooter>
                   </CCard>
                 </div>
@@ -99,7 +99,7 @@
                       <v-ace-editor v-model:value="data.run_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
                     </CCardBody>
                     <CCardFooter>
-                      script is located in ./Apps/{{ data.folder }}/run.sh
+                      last command have to be docker run<br>example: <code>docker run -dp $PORT:80 docker/getting-started</code>
                     </CCardFooter>
                   </CCard>
                 </div>

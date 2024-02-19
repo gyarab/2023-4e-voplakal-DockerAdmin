@@ -7,6 +7,8 @@ const { App } = require("../models");
 const assert = require("node:assert");
 const email = require("../email");
 const caddy = require("../caddy");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
     getAll: async (req, res) => {
@@ -48,8 +50,13 @@ module.exports = {
         await Instance.deleteMany({
             _id: { $in: req.body.ids },
         });
-        for (const id of req.body.ids) {
-            await caddy.deleteRoute(id).catch();
+        for (const id of containers) {
+            caddy.deleteRoute(id).catch(() => {});
+        }
+
+        for (const instance of instances) {
+            // let app = await App.findById(instance.app_id);
+            fs.rmSync(path.join(process.env.APPS_DATA, instance.mount_folder), { recursive: true, force: true });
         }
         res.send({});
     },
@@ -83,12 +90,18 @@ module.exports = {
         let containerId = req.body.id;
         console.log("start:", containerId);
         await docker.start([containerId]);
+        let instance = await Instance.findOne({ container_id: containerId });
+        let app = await App.findById(instance.app_id);
+        if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);
         res.send({});
     },
     stop: async (req, res) => {
         let containerIds = req.body.ids;
         console.log("stop:", containerIds);
         await docker.stop(...containerIds);
+        for (const id of containerIds) {
+            caddy.deleteRoute(id).catch(() => {});
+        }
         res.send({});
     },
     create: async (req, res) => {
@@ -108,12 +121,16 @@ module.exports = {
             form_data,
             port: await getFreePort(),
             expiry_date: Date.now() + app.free_days * 24 * 60 * 60 * 1000,
-            mount_folder:
+            mount_folder: path.join(
+                app.folder,
                 String(instance_name)
                     .toLowerCase()
-                    .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount",
+                    .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount"
+            ),
         });
         await instance.validateSync();
+        let dir = path.join(process.env.APPS_DATA, instance.mount_folder);
+        fs.cpSync(path.join(process.env.APPS_DATA, app.folder, "DEFAULT"), dir, { recursive: true });
 
         let init = await docker.init(instance);
         console.log(init);
@@ -127,7 +144,7 @@ module.exports = {
 
         console.log(instance._id);
 
-        if (app.domain) await caddy.addRoute(instance._id, `${instance.name}.${app.domain}`, instance.port);
+        if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);
         //uložit pokud běží ok
         await instance.save();
         console.log(instance._id);

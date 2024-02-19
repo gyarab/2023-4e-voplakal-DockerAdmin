@@ -2,6 +2,8 @@ const docker = require("../docker/docker");
 const { App } = require("../models");
 const Instance = require("../models/instance.model");
 const RestError = require("./RestError");
+const path = require("path");
+const fs = require("fs")
 
 module.exports = {
     getAll: async (req, res) => {
@@ -34,7 +36,11 @@ module.exports = {
         let folder =
             String(repoImageName)
                 .toLowerCase()
-                .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_scripts";
+                .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-");
+        let dir = path.join(process.env.APPS_DATA, folder, "DEFAULT");
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
         let selected_image_id = (await docker.getImages()).find((i) => i.Repository === repoImageName).ID;
         const { id } = await new App({ name: newAppName, repository: repoImageName, folder, selected_image_id }).save();
         res.send({ appID: id });

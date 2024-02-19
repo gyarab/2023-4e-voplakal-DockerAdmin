@@ -15,13 +15,13 @@ module.exports = {
                 (res) => {
                     let data = [];
                     console.log("Status Code:", res.statusCode);
-                    if (res.statusCode !== 200) reject(`Status code: ${res.statusCode}\nRes: ${res}`);
 
                     res.on("data", (chunk) => {
                         data.push(chunk);
                     });
 
                     res.on("end", () => {
+                        if (res.statusCode !== 200) return reject(`Status code: ${res.statusCode}\nBody:\n ${data.join("\n")}`);
                         resolve(data.join("\n"));
                     });
                 }
@@ -68,13 +68,13 @@ module.exports = {
                 },
                 (res) => {
                     let data = [];
-                    if (res.statusCode !== 200) reject(`Status code: ${res.statusCode}\nRes: ${res}`);
-
+                    
                     res.on("data", (chunk) => {
                         data.push(chunk);
                     });
-
+                    
                     res.on("end", () => {
+                        if (res.statusCode !== 200) return reject(`Status code: ${res.statusCode}\nBody:\n ${data.join("\n")}`);
                         resolve(data.join("\n"));
                     });
                 }

@@ -53,3 +53,4 @@ Thumbs.db
 backend/.env.vault
 
 .env*
+backend/mounts

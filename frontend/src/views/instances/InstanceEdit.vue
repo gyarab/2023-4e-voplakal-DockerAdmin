@@ -13,7 +13,8 @@
                 <CRow>
                   <CCol :sm="9">
                     <h4 class="card-title mb-0">{{ data.name }}</h4>
-                    <div class="small text-body-secondary" style="margin-top: 7px;">Editing app instance belonging to a client.</div>
+                    <div class="small text-body-secondary" style="margin-top: 7px;">Editing app instance belonging to a client.
+                    <br><a v-if="app.domain" target="_blank" :href="'https://' + data.name+ '.' + app.domain">{{ 'https://' + data.name+ '.' + app.domain }}</a></div>
                     <div class="small text-body-secondary">id: {{ data.id }}</div>
 
                   </CCol>

@@ -75,10 +75,9 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 </div>
 <button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
 
-let codeExample = `#!/bin/bash
-
-set -e
-docker run -dti $image_id
+let codeExample = `set -e
+echo Free port $PORT
+docker run -dp $PORT:80 docker/getting-started
 `;
 
 let initCodeExample = codeExample;

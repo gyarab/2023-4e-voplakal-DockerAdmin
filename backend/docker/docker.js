@@ -1,7 +1,7 @@
 const { exec, spawn } = require("node:child_process");
 const { App } = require("../models");
 const fp = require("find-free-port");
-
+const path = require("node:path");
 
 /**
  * @typedef {Object} DockerContainerInfo
@@ -50,10 +50,17 @@ async function getImages() {
     return images;
 }
 
-function sh(command, workdir = ".") {
+function sh(command, workdir = path.join(process.env.APPS_DATA)) {
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
-        const process = spawn(`bash`, [], { cwd: "./mounts" });
+        let process;
+        try {
+            process = spawn(`bash`, [], );
+        } catch (error) {
+            console.error("Can not spawn bash process. Check workdir env: " + workdir);
+            console.error(error);
+            return;
+        }
 
         let stdout = [];
         let stderr = [];
@@ -69,8 +76,8 @@ function sh(command, workdir = ".") {
         process.stderr.on(`data`, (data) => {
             stderr.push(data.toString().trim());
         });
-
-        await new Promise((resolve) => process.stdin.write(`mkdir -p ${workdir}; cd ${workdir};\n` + command + " \n", `utf8`, () => resolve()));
+        //mkdir -p ${workdir};
+        await new Promise((resolve) => process.stdin.write(command + " \n", `utf8`, () => resolve()));
         process.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close
@@ -120,9 +127,8 @@ async function _runScript(instance, script) {
             PORT: instance.port,
         }) +
         script;
-    let workdir = instance.mount_folder;
-    console.log("workdir: " + workdir);
-    let /** @type {String} */ shout = await sh(command, workdir);
+    let mount = path.join(process.env.APPS_DATA, instance.mount_folder);
+    let /** @type {String} */ shout = await sh(command, mount);
     return shout;
 }
 async function stop(...containerIds) {
