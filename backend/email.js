@@ -10,10 +10,11 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-module.exports.send = ({ to, subject, text }) => {
+module.exports.send = async ({ to, subject, text }) => {
+    if (process.env.EMAIL !== "ON") return console.log("Emailing disabled");
     // send email
-    transporter.sendMail({
-        from: "norepy-test@email.cz",
+    await transporter.sendMail({
+        from: process.env.EMAIL_ADDR,
         to,
         subject,
         text,

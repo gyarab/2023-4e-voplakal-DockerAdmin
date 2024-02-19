@@ -112,7 +112,7 @@ app.listen(PORT, () => {
 
 // EXPIRY INSTANCE
 
-// setInterval(checkExpiry, 30000);
+setInterval(checkExpiry, 3 * 60 * 60 * 1000);
 
 checkExpiry();
 
@@ -135,6 +135,10 @@ async function checkExpiry() {
                     to: user.email,
                     subject: "Vaše aplikace " + instance.name + " byla pozastavena",
                     text: "Vaše aplikace " + instance.name + " expirovala a byla proto pozastavena. Pokud máte zájem aplikaci " + app.name + " i nadále používat, kontaktujte nás prosím na email.",
+                });
+                email.send({
+                    to: process.env.ADMIN_EMAIL,
+                    subject: "DUCK aplikace " + instance.name + " uživatele " + user.email + " expirovala",
                 });
             }
         }

@@ -7,7 +7,9 @@
             <CCardBody class="p-4">
               <CForm :onsubmit="() => { register(); return false }">
                 <h1>Register</h1>
-                <p class="text-body-secondary">Create your account</p>
+                <p class="text-body-secondary">
+                    If you created some instance before use the same email to see them in dashboard.
+                  </p>
                 <!-- <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />

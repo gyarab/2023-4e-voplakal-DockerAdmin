@@ -10,11 +10,6 @@ export default [
     },
   },
   {
-    component: 'CNavTitle',
-    name: 'Theme',
-    role: "ADMIN"
-  },
-  {
     component: 'CNavItem',
     name: 'Apps',
     to: '/apps',
@@ -29,6 +24,10 @@ export default [
     role: "ADMIN"
   },
   {
+    component: 'CNavTitle',
+    name: 'Your account',
+  },
+  {
     component: 'CNavItem',
     name: 'My Instances',
     to: '/my-instances',
@@ -36,30 +35,30 @@ export default [
     // role: "ADMIN"
   },
 
-  {
-    component: 'CNavTitle',
-    name: 'Extras',
-  },
+  // {
+  //   component: 'CNavTitle',
+  //   name: 'Extras',
+  // },
 
-  {
-    component: 'CNavItem',
-    name: 'Login',
-    to: '/login',
-  },
-  {
-    component: 'CNavItem',
-    name: 'Register',
-    to: '/register',
-  },
-  {
-    component: 'CNavItem',
-    name: 'Error 404',
-    to: '/404',
-  },
-  {
-    component: 'CNavItem',
-    name: 'Error 500',
-    to: '/500',
-  },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Login',
+  //   to: '/login',
+  // },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Register',
+  //   to: '/register',
+  // },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Error 404',
+  //   to: '/404',
+  // },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Error 500',
+  //   to: '/500',
+  // },
 
 ]

@@ -7,6 +7,7 @@ var bcrypt = require("bcryptjs");
 const email = require("../email");
 
 exports.signup = async (req, res, next) => {
+    if (process.env.USER_REGISTER !== "ON") return res.status(404).send({ message: "User registration not allowed." });
     try {
         const user = new User({
             username: req.body.username,
@@ -136,7 +137,7 @@ exports.createPasswd = async (req, res) => {
 };
 
 exports.getUser = async (query) => {
-    if(!query) throw "No user query, inalid fucntion call"
+    if (!query) throw "No user query, inalid fucntion call";
     let user = await User.findOne(query).populate("roles", "-__v").lean();
     if (!user) return;
 

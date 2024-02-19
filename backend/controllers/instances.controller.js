@@ -151,13 +151,12 @@ module.exports = {
 
         // await caddy.addRoute(instance._id)
 
-        if (process.env.EMAIL === "ON") {
-            await email.send({
-                to: client_email,
-                subject: "Vaše instance aplikace " + app.name,
-                text: "Vaše instance " + instance_name + " aplikace " + app.name + " byla vytvořena. \n použili jste tyto init data:\n" + JSON.stringify(form_data, null, 2),
-            });
-        }
+        await email.send({
+            to: client_email,
+            subject: "Vaše instance aplikace " + app.name,
+            text: `Vaše instance ${instance_name} aplikace ${app.name} byla vytvořena. \n použili jste tyto init data:\n ${JSON.stringify(form_data, null, 2)} \n\n ${app.domain ? `Aplikace běží na https://${instance.name}.${app.domain}` : ""}`,
+        });
+
         res.send({});
     },
     getStats: async (req, res) => {

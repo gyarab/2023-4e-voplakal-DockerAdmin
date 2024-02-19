@@ -44,15 +44,7 @@
               </CCol>
             </CRow>
           </CCardBody>
-          <CCardFooter>
-            <CRow>
-              <CCol>
-                <div class="text-body-secondary">Test</div>
-                <div class="fw-semibold text-truncate">29.703 Users (40%)</div>
-                <CProgress class="mt-2" color="success" thin :precision="1" :value="40" />
-              </CCol>
-            </CRow>
-          </CCardFooter>
+
         </CCard>
       </CCol>
     </CRow>

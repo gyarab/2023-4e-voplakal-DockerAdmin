@@ -25,7 +25,7 @@
                       <CTableRow v-for="instance in instances" :key="instance.id">
                         <CTableDataCell>{{ instance.name }}</CTableDataCell>
                         <CTableDataCell>{{ instance.created_on }}</CTableDataCell>
-                        <CTableDataCell>{{ instance.expiry_date ?? "never" }}</CTableDataCell>
+                        <CTableDataCell :class="{ red: isExpired(instance.expiry_date) }">{{ instance.expiry_date ?? "never" }}</CTableDataCell>
 
                         <CTableDataCell>
                           <CButton color="primary" @click="() => longerInstance(instance._id)">Longer subscription</CButton>
@@ -47,8 +47,8 @@
     </CRow>
   </div>
   <!-- MODALS -->
-  <MyModal :data="deleteModal" :title="'Delete instance(s)?'">
-    All data belonging to this instance(s) will be deleted. Are you sure you want to delete it? It is not reversible.
+  <MyModal :data="deleteModal" :title="'Delete instance?'">
+    All data belonging to this instance will be deleted. Are you sure you want to delete it? It is not reversible.
     <template #footer>
       <CButton color="secondary" @click="() => deleteModal.show = false">
         Storno
@@ -116,7 +116,10 @@ export default {
     }
 
     return {
-      icon, instances, deleteModal, deleteInstnace, longerInstance, months, longerInstanceModal
+      icon, instances, deleteModal, deleteInstnace, longerInstance, months, longerInstanceModal, isExpired: (date) => {
+        let d = new Date(date);
+        return d.getTime() < new Date().getTime();
+      }
     }
   }
 }
@@ -127,5 +130,8 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+}
+.red {
+    color: red !important;
 }
 </style>
