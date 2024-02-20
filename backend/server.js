@@ -8,6 +8,7 @@ const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
 const path = require("path");
 const fs = require("fs");
+global.APPS_DATA_PATH = path.join(__dirname, "mounts")
 
 const STATIC_PUBLIC = path.join(__dirname, "vue_build");
 

@@ -3,7 +3,7 @@ const { App } = require("../models");
 const Instance = require("../models/instance.model");
 const RestError = require("./RestError");
 const path = require("path");
-const fs = require("fs")
+const fs = require("fs");
 
 module.exports = {
     getAll: async (req, res) => {
@@ -33,11 +33,10 @@ module.exports = {
         if (!newAppName || !repoImageName) throw new Error("missing body prop");
         if (await App.exists({ repository: repoImageName })) throw new RestError("app from this image already exists", 400);
 
-        let folder =
-            String(repoImageName)
-                .toLowerCase()
-                .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-");
-        let dir = path.join(process.env.APPS_DATA, folder, "DEFAULT");
+        let folder = String(repoImageName)
+            .toLowerCase()
+            .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-");
+        let dir = path.join(global.APPS_DATA_PATH, folder, "DEFAULT");
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -66,8 +65,8 @@ module.exports = {
     save: async (req, res) => {
         // console.log("save:", req.body);
         try {
-            req.body.init_code = req.body.init_code?.trim();
-            req.body.run_code = req.body.run_code?.trim();
+            req.body.init_code = req.body.init_code?.replaceAll("\r", "");
+            req.body.run_code = req.body.run_code?.replaceAll("\r", "");
             await App.checkScripts(req.body);
         } catch (error) {
             return res.status(469).send({

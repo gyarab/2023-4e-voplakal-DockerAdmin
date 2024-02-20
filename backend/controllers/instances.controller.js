@@ -56,7 +56,7 @@ module.exports = {
 
         for (const instance of instances) {
             // let app = await App.findById(instance.app_id);
-            fs.rmSync(path.join(process.env.APPS_DATA, instance.mount_folder), { recursive: true, force: true });
+            fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
         }
         res.send({});
     },
@@ -129,8 +129,8 @@ module.exports = {
             ),
         });
         await instance.validateSync();
-        let dir = path.join(process.env.APPS_DATA, instance.mount_folder);
-        fs.cpSync(path.join(process.env.APPS_DATA, app.folder, "DEFAULT"), dir, { recursive: true });
+        let dir = path.join(global.APPS_DATA_PATH, instance.mount_folder);
+        fs.cpSync(path.join(global.APPS_DATA_PATH, app.folder, "DEFAULT"), dir, { recursive: true });
 
         let init = await docker.init(instance);
         console.log(init);

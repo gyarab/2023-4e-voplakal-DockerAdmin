@@ -49,7 +49,7 @@ async function getImages() {
     return images;
 }
 
-function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
+function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
     if (process.env.USE_SUDO === 'true') {
         command = " sudo " + command;
     }
@@ -128,10 +128,10 @@ async function _runScript(instance, script) {
             image_id: instance.image_id,
             name: instance.name,
             port: instance.port,
-            mount_dir: path.join(process.env.APPS_DATA, instance.mount_folder)
+            mount_dir: path.join(global.APPS_DATA_PATH, instance.mount_folder)
         },
     };
-    let mount = path.join(process.env.APPS_DATA, instance.mount_folder);
+    let mount = path.join(global.APPS_DATA_PATH, instance.mount_folder);
     let /** @type {String} */ shout = await sh(script, mount, vars);
     return shout;
 }
