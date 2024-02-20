@@ -51,7 +51,7 @@ async function getImages() {
 }
 
 function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
-    if (process.env.USE_SUDO === 1) {
+    if (process.env.USE_SUDO === 'true') {
         command = "sudo " + command;
     }
     command = objectToBashVars(vars) + command;
