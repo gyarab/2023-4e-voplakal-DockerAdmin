@@ -50,12 +50,16 @@ async function getImages() {
     return images;
 }
 
-function sh(command, workdir = path.join(process.env.APPS_DATA)) {
+function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
+    if (process.env.USE_SUDO === 1) {
+        command = "sudo " + command;
+    }
+    command = objectToBashVars(vars) + command;
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
         let process;
         try {
-            process = spawn(`bash`, [], );
+            process = spawn(`bash`, []);
         } catch (error) {
             console.error("Can not spawn bash process. Check workdir env: " + workdir);
             console.error(error);
@@ -120,15 +124,15 @@ async function run(instance) {
  * @returns last line from stdout
  */
 async function _runScript(instance, script) {
-    let command =
-        objectToBashVars(instance.form_data) +
-        objectToBashVars({
+    let vars = {
+        ...instance.form_data,
+        ...{
             image_id: instance.image_id,
             PORT: instance.port,
-        }) +
-        script;
+        },
+    };
     let mount = path.join(process.env.APPS_DATA, instance.mount_folder);
-    let /** @type {String} */ shout = await sh(command, mount);
+    let /** @type {String} */ shout = await sh(script, mount, vars);
     return shout;
 }
 async function stop(...containerIds) {
