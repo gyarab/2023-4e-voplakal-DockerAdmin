@@ -53,7 +53,6 @@ function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
     if (process.env.USE_SUDO === 'true') {
         command = " sudo " + command;
     }
-    command = objectToBashVars(vars) + command;
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
         let process;
@@ -80,7 +79,7 @@ function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
             stderr.push(data.toString().trim());
         });
         //mkdir -p ${workdir};
-        await new Promise((resolve) => process.stdin.write(command + " \n", `utf8`, () => resolve()));
+        await new Promise((resolve) => process.stdin.write(objectToBashVars(vars) + command + " \n", `utf8`, () => resolve()));
         process.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close
@@ -127,7 +126,9 @@ async function _runScript(instance, script) {
         ...instance.form_data,
         ...{
             image_id: instance.image_id,
-            PORT: instance.port,
+            name: instance.name,
+            port: instance.port,
+            mount_dir: path.join(process.env.APPS_DATA, instance.mount_folder)
         },
     };
     let mount = path.join(process.env.APPS_DATA, instance.mount_folder);

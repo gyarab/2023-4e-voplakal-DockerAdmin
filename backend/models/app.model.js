@@ -69,7 +69,7 @@ App.checkScripts = async function (app) {
             out.push(data.toString().trim());
         });
 
-        await new Promise((resolve) => process.stdin.write(code + " \n", `utf8`, () => resolve()));
+        await new Promise((resolve) => process.stdin.write(code, `utf8`, () => resolve()));
         process.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close

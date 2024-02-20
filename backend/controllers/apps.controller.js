@@ -66,6 +66,8 @@ module.exports = {
     save: async (req, res) => {
         // console.log("save:", req.body);
         try {
+            req.body.init_code = req.body.init_code?.trim();
+            req.body.run_code = req.body.run_code?.trim();
             await App.checkScripts(req.body);
         } catch (error) {
             return res.status(469).send({
