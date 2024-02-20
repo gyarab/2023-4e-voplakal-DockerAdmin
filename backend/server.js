@@ -6,6 +6,10 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
+const path = require("path");
+const fs = require("fs");
+
+const STATIC_PUBLIC = path.join(__dirname, "vue_build");
 
 // const wrap = function wrap(fn) {
 //     return (req, res, next) => {
@@ -38,11 +42,6 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to bezkoder application." });
-});
-
 // set port, listen for requests
 const PORT = process.env.PORT;
 if (!PORT) {
@@ -54,6 +53,10 @@ if (!PORT) {
 app.post("/api/stripe/create-checkout-session", [authJwt.verifyToken, authJwt.loadUser], wrap(stripeController.createCheckoutSession));
 require("./routes/auth.routes")(app);
 require("./routes/routes")(app);
+app.use(express.static(STATIC_PUBLIC));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(STATIC_PUBLIC, "index.html"));
+});
 
 const db = require("./models");
 const Instance = require("./models/instance.model");
@@ -114,7 +117,7 @@ app.listen(PORT, () => {
 
 setInterval(checkExpiry, 3 * 60 * 60 * 1000);
 
-checkExpiry();
+// checkExpiry();
 
 async function checkExpiry() {
     let instances = await Instance.find({ expiry_date: { $lte: new Date().toISOString().split("T")[0] } }); //should be all stopped
@@ -145,7 +148,6 @@ async function checkExpiry() {
     }
 }
 
-var fs = require("fs");
 var dir = "./mounts";
 
 if (!fs.existsSync(dir)) {

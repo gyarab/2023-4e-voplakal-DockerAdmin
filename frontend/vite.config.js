@@ -10,6 +10,17 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [vue()],
+    build: {
+      outDir: "../backend/vue_build",
+      // assetsDir: "./assets",
+      // rollupOptions: {
+      //     output: {
+      //         entryFileNames: "assets/[name].js",
+      //         chunkFileNames: "assets/[name].js",
+      //         assetFileNames: "assets/[name].[ext]",
+      //     },
+      // },
+  },
     base: './',
     css: {
       postcss: {

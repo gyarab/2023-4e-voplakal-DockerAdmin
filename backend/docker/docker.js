@@ -1,6 +1,5 @@
 const { exec, spawn } = require("node:child_process");
 const { App } = require("../models");
-const fp = require("find-free-port");
 const path = require("node:path");
 
 /**
@@ -52,7 +51,7 @@ async function getImages() {
 
 function sh(command, workdir = path.join(process.env.APPS_DATA), vars = {}) {
     if (process.env.USE_SUDO === 'true') {
-        command = "sudo " + command;
+        command = " sudo " + command;
     }
     command = objectToBashVars(vars) + command;
     // console.log(command, "\n\n");
