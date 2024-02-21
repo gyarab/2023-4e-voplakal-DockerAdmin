@@ -52,10 +52,10 @@ async function getImages() {
 function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
-        let process;
+        let ps;
         try {
-            if (process.env.USE_SUDO === "true") process = spawn(`sudo`, ["bash"], { cwd: workdir });
-            else process = spawn(`bash`, [], { cwd: workdir });
+            if (process.env.USE_SUDO === "true") ps = spawn(`sudo`, ["bash"], { cwd: workdir });
+            else ps = spawn(`bash`, [], { cwd: workdir });
         } catch (error) {
             console.error("Can not spawn bash process. Check workdir env: " + workdir);
             console.error(error);
@@ -66,25 +66,25 @@ function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
         let stderr = [];
 
         // wait for the process to spawn
-        await new Promise((resolve) => process.once(`spawn`, resolve));
+        await new Promise((resolve) => ps.once(`spawn`, resolve));
 
         // retrun output
-        process.stdout.on(`data`, (data) => stdout.push(data.toString().trim()));
-        process.on("error", (err) => reject(`Failed to start subprocess.\n Command: ${command}\n`, err));
+        ps.stdout.on(`data`, (data) => stdout.push(data.toString().trim()));
+        ps.on("error", (err) => reject(`Failed to start subprocess.\n Command: ${command}\n`, err));
 
         // log any stderr
-        process.stderr.on(`data`, (data) => {
+        ps.stderr.on(`data`, (data) => {
             stderr.push(data.toString().trim());
         });
         //mkdir -p ${workdir};
-        await new Promise((resolve) => process.stdin.write(objectToBashVars(vars) + command + " \n", `utf8`, () => resolve()));
-        process.stdin.end();
+        await new Promise((resolve) => ps.stdin.write(objectToBashVars(vars) + command + " \n", `utf8`, () => resolve()));
+        ps.stdin.end();
 
         // wait for stdout and stderr stream to end, and process to close
-        let p = Promise.all([new Promise((resolve) => process.stdout.on("end", resolve)), new Promise((resolve) => process.stderr.on("end", resolve)), new Promise((resolve) => process.once(`close`, resolve))]);
+        let p = Promise.all([new Promise((resolve) => ps.stdout.on("end", resolve)), new Promise((resolve) => ps.stderr.on("end", resolve)), new Promise((resolve) => ps.once(`close`, resolve))]);
 
         setTimeout(() => {
-            process.kill();
+            ps.kill();
             stderr.unshift("Timeout");
         }, 11000);
         await p;
