@@ -51,13 +51,13 @@ async function getImages() {
 
 function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
     if (process.env.USE_SUDO === 'true') {
-        command = " sudo " + command;
+  //      command = " sudo " + command;
     }
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
         let process;
         try {
-            process = spawn(`bash`, []);
+            process = spawn(`sudo`, ["bash"], {cwd: workdir});
         } catch (error) {
             console.error("Can not spawn bash process. Check workdir env: " + workdir);
             console.error(error);
@@ -133,6 +133,7 @@ async function _runScript(instance, script) {
     };
     let mount = path.join(global.APPS_DATA_PATH, instance.mount_folder);
     let /** @type {String} */ shout = await sh(script, mount, vars);
+    console.log(shout);
     return shout;
 }
 async function stop(...containerIds) {
