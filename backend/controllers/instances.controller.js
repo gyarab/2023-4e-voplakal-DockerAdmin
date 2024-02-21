@@ -110,8 +110,8 @@ module.exports = {
         client_email = ss(client_email);
         instance_name = ss(instance_name);
         for (const key in form_data) {
-            if (Object.hasOwnProperty.call(o, key)) {
-                o[key] = ss(o[key]);
+            if (Object.hasOwnProperty.call(form_data, key)) {
+                form_data[key] = ss(form_data[key]);
             }
         }
 
