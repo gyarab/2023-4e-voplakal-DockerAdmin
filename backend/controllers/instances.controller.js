@@ -107,6 +107,14 @@ module.exports = {
     create: async (req, res) => {
         if ((await Instance.countDocuments({})) >= global.instancesCountLimit) return res.status(503).send({ message: "Server is currently out of instance limit. Please contact us on email: martin.air@seznam.cz and we will make this service available again." });
         let { app_id, client_email, instance_name, form_data } = req.body;
+        client_email = ss(client_email);
+        instance_name = ss(instance_name);
+        for (const key in form_data) {
+            if (Object.hasOwnProperty.call(o, key)) {
+                o[key] = ss(o[key]);
+            }
+        }
+
         // console.log("create:", app_id, client_email, instance_name, formData);
 
         console.log("create");
@@ -214,4 +222,12 @@ async function getFreePort() {
         console.log("found " + i);
         return i;
     }
+}
+/**
+ * Secure Sctring
+ * replace all characters except numbers, letters, @-_with _
+ * @param {String} string
+ */
+function ss(string) {
+    return string.replace(/[^0-9a-zA-Z,.@-_]+/g, "-");
 }

@@ -27,7 +27,7 @@ const InstanceSchema = new mongoose.Schema(
             },
         },
         created_on: { type: String, default: () => new Date().toISOString().split("T")[0] },
-        name: { type: String, required: true },
+        name: { type: String, unique: true, required: true },
         mount_folder: { type: String, required: true },
         form_data: {
             type: Object,

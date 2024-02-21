@@ -50,14 +50,12 @@ async function getImages() {
 }
 
 function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
-    if (process.env.USE_SUDO === 'true') {
-  //      command = " sudo " + command;
-    }
     // console.log(command, "\n\n");
     return new Promise(async (resolve, reject) => {
         let process;
         try {
-            process = spawn(`sudo`, ["bash"], {cwd: workdir});
+            if (process.env.USE_SUDO === "true") process = spawn(`sudo`, ["bash"], { cwd: workdir });
+            else process = spawn(`bash`, [], { cwd: workdir });
         } catch (error) {
             console.error("Can not spawn bash process. Check workdir env: " + workdir);
             console.error(error);
@@ -128,7 +126,7 @@ async function _runScript(instance, script) {
             image_id: instance.image_id,
             name: instance.name,
             port: instance.port,
-            mount_dir: path.join(global.APPS_DATA_PATH, instance.mount_folder)
+            mount_dir: path.join(global.APPS_DATA_PATH, instance.mount_folder),
         },
     };
     let mount = path.join(global.APPS_DATA_PATH, instance.mount_folder);
