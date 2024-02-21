@@ -106,9 +106,11 @@ module.exports = {
     },
     create: async (req, res) => {
         if ((await Instance.countDocuments({})) >= global.instancesCountLimit) return res.status(503).send({ message: "Server is currently out of instance limit. Please contact us on email: martin.air@seznam.cz and we will make this service available again." });
-        let { app_id, client_email, instance_name, form_data } = req.body;
+        let { app_id, client_email="", instance_name="", form_data={} } = req.body;
         client_email = ss(client_email);
         instance_name = ss(instance_name);
+        let forbidenNames = process.env.FORBIDEN_INSTANCE_NAMES.split(";")
+        if(forbidenNames.some(n => instance_name.includes(n))) return res.status(400).send({message: "Try another instance name"});
         for (const key in form_data) {
             if (Object.hasOwnProperty.call(form_data, key)) {
                 form_data[key] = ss(form_data[key]);
@@ -137,6 +139,7 @@ module.exports = {
             ),
         });
         await instance.validateSync();
+        await instance.save();
         let dir = path.join(global.APPS_DATA_PATH, instance.mount_folder);
         fs.cpSync(path.join(global.APPS_DATA_PATH, app.folder, "DEFAULT"), dir, { recursive: true });
 
@@ -153,8 +156,6 @@ module.exports = {
         console.log(instance._id);
 
         if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);
-        //uložit pokud běží ok
-        await instance.save();
         console.log(instance._id);
 
         // await caddy.addRoute(instance._id)
