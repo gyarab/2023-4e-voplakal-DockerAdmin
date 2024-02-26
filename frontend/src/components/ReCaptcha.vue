@@ -1,9 +1,5 @@
 <template>
-    <form :action="sendForm">
         <div id="recaptcha_div"></div>
-        <br>
-        <input type="submit" value="getResponse">
-    </form>
 </template>
 
 <script setup>
