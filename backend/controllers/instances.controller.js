@@ -165,7 +165,7 @@ module.exports = {
         await email.send({
             to: client_email,
             subject: "Vaše instance aplikace " + app.name,
-            text: `Vaše instance ${instance_name} aplikace ${app.name} byla vytvořena. \n použili jste tyto init data:\n ${JSON.stringify(form_data, null, 2)} \n\n ${app.domain ? `Aplikace běží na https://${instance.name}.${app.domain}` : ""}`,
+            text: `Vaše instance ${instance_name} aplikace ${app.name} byla vytvořena. \n ${app.domain ? `Je dostupná na https://${instance.name}.${app.domain}` : ""}`,
         });
 
         res.send({});
