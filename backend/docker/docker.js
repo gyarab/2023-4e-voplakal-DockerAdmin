@@ -105,21 +105,21 @@ function parseJS(string) {
  * @returns stdout */
 async function init(instance) {
     let app = await App.findById(instance.app_id);
-    return _runScript(instance, app.init_code);
+    return runScript(instance, app.init_code);
 }
 /**
  * @param {Object} instance
  * @returns last line of stdout */
 async function run(instance) {
     let app = await App.findById(instance.app_id);
-    return (await _runScript(instance, app.run_code)).split("\n").pop();
+    return (await runScript(instance, app.run_code)).split("\n").pop();
 }
 /**
  * @param {Object} instance
  * @param {String} script to run
  * @returns last line from stdout
  */
-async function _runScript(instance, script) {
+async function runScript(instance, script) {
     let vars = {
         ...instance.form_data,
         ...{
@@ -174,4 +174,4 @@ function objectToBashVars(o) {
     }
 }
 
-module.exports = { getImages, ps, sh, run, init, setLimits, stop, rm, start };
+module.exports = { getImages, runScript, ps, sh, run, init, setLimits, stop, rm, start };

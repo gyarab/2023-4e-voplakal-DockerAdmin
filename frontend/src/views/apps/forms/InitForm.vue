@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- render for admin -->
         <CContainer v-if="!inUse">
             <CRow class="align-items-start" style="height: 100%;">
                 <CCol v-if="edit" :xs="8">
@@ -37,8 +38,10 @@
                 </CCol>
             </CRow>
         </CContainer>
+        <!-- render for user -->
         <CContainer v-if="inUse">
             <form :onsubmit="(e) => { e.preventDefault(); formSubmit() }" ref="form" @change="loadData" v-html="data.htmlForm"> </form>
+            <ReCaptcha ref="captcha"></ReCaptcha>
         </CContainer>
     </div>
 </template>
@@ -46,6 +49,7 @@
 <script>
 import { ref, onUpdated, onMounted, reactive, computed, watch } from 'vue'
 import { VAceEditor } from "vue3-ace-editor";
+import ReCaptcha from "../../../components/ReCaptcha.vue"
 // import 'ace-builds/src-noconflict/mode-sh';
 // import 'ace-builds/src-noconflict/theme-chrome';
 import ace from 'ace-builds';
@@ -59,6 +63,7 @@ export default {
     name: "InitForm",
     components: {
         VAceEditor,
+        ReCaptcha
     },
     emits: ['createInstance'],
     props: {
@@ -106,7 +111,12 @@ export default {
         // onUpdated(() => loadData())
         onMounted(() => loadData())
 
+        const captcha = ref();
         const formSubmit = () => {
+            console.log(captcha.value);
+            let captchaToken = captcha.value.getToken();
+            if (!captchaToken) return alert("Solve the ReCaptcha please.")
+            formFilledValues.value.captcha = captchaToken;
             emit('createInstance', formFilledValues.value)
         }
         const htmlFormValid = computed(() =>
@@ -114,7 +124,7 @@ export default {
             &&
             (data.htmlForm?.includes('name="instanceName"') || data.htmlForm?.includes("name='instanceName'")))
         return {
-            form, loadData, formFilledValuesString, data, formSubmit, htmlFormValid
+            form, loadData, formFilledValuesString, data, formSubmit, htmlFormValid, captcha
         }
     }
 }

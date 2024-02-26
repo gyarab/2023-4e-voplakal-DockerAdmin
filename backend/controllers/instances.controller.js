@@ -9,6 +9,7 @@ const email = require("../email");
 const caddy = require("../caddy");
 const fs = require("fs");
 const path = require("path");
+const { verifyRecaptcha } = require("../captcha");
 
 module.exports = {
     getAll: async (req, res) => {
@@ -45,18 +46,13 @@ module.exports = {
         let instances = await Instance.find({
             _id: { $in: req.body.ids },
         });
-        let containers = instances.map((i) => i.container_id);
-        await docker.rm(...containers);
-        await Instance.deleteMany({
-            _id: { $in: req.body.ids },
-        });
-        for (const id of containers) {
-            caddy.deleteRoute(id).catch(() => {});
-        }
-
         for (const instance of instances) {
-            // let app = await App.findById(instance.app_id);
+            let app = await App.findById(instance.app_id);
+            await docker.rm(instance.container_id);
+            await docker.runScript(instance, app.remove_code);
             fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
+            caddy.deleteRoute(instance.container_id).catch(() => {});
+            await Instance.findByIdAndDelete(instance._id);
         }
         res.send({});
     },
@@ -72,6 +68,12 @@ module.exports = {
             console.log("před: ", instance.image_id);
             instance.image_id = req.body.imageId;
             console.log("po: ", instance.image_id);
+
+            // let dir = path.join(global.APPS_DATA_PATH, instanceMount);
+            // fs.copyFileSync(path.join(global.APPS_DATA_PATH, appMount, "DEFAULT", ".env"), dir);
+
+            // fs.cpSync(path.join(global.APPS_DATA_PATH, appMount, "DEFAULT"), dir, { recursive: true });
+
             let newContainerID = await docker.run(instance);
             if (!newContainerID) throw "No new container ID provided";
             instance.container_id = newContainerID;
@@ -105,12 +107,13 @@ module.exports = {
         res.send({});
     },
     create: async (req, res) => {
+        let { app_id, client_email = "", instance_name = "", form_data = {} } = req.body;
+        await verifyRecaptcha(form_data.captcha);
         if ((await Instance.countDocuments({})) >= global.instancesCountLimit) return res.status(503).send({ message: "Server is currently out of instance limit. Please contact us on email: martin.air@seznam.cz and we will make this service available again." });
-        let { app_id, client_email="", instance_name="", form_data={} } = req.body;
         client_email = ss(client_email);
         instance_name = ss(instance_name);
-        let forbidenNames = process.env.FORBIDEN_INSTANCE_NAMES.split(";")
-        if(forbidenNames.some(n => instance_name.includes(n))) return res.status(400).send({message: "Try another instance name"});
+        let forbidenNames = process.env.FORBIDEN_INSTANCE_NAMES.split(";");
+        if (forbidenNames.some((n) => instance_name.includes(n))) return res.status(400).send({ message: "Try another instance name" });
         for (const key in form_data) {
             if (Object.hasOwnProperty.call(form_data, key)) {
                 form_data[key] = ss(form_data[key]);
@@ -138,27 +141,26 @@ module.exports = {
                     .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount"
             ),
         });
+        instance.container_id = "placeholder"
         await instance.validateSync();
         await instance.save();
-        let dir = path.join(global.APPS_DATA_PATH, instance.mount_folder);
-        fs.cpSync(path.join(global.APPS_DATA_PATH, app.folder, "DEFAULT"), dir, { recursive: true });
-
+        copyDefaultFolder(app.folder, instance.mount_folder);
         let init = await docker.init(instance);
         console.log(init);
         //spustit
         let container_id = await docker.run(instance);
         console.log("container id:", container_id);
         instance.container_id = container_id;
-
+        
         console.log("instance limits:", instance.limits);
         await docker.setLimits(container_id, instance.limits);
-
+        
         console.log(instance._id);
-
+        
         if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);
         console.log(instance._id);
-
-        // await caddy.addRoute(instance._id)
+        
+        await instance.save();
 
         await email.send({
             to: client_email,
@@ -231,4 +233,9 @@ async function getFreePort() {
  */
 function ss(string) {
     return string.replace(/[^0-9a-zA-Z,.@-_]+/g, "-");
+}
+
+function copyDefaultFolder(appMount, instanceMount) {
+    let dir = path.join(global.APPS_DATA_PATH, instanceMount);
+    fs.cpSync(path.join(global.APPS_DATA_PATH, appMount, "DEFAULT"), dir, { recursive: true });
 }
