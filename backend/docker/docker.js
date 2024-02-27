@@ -86,7 +86,7 @@ function sh(command, workdir = path.join(global.APPS_DATA_PATH), vars = {}) {
         setTimeout(() => {
             ps.kill();
             stderr.unshift("Timeout");
-        }, 11000);
+        }, 15000);
         await p;
 
         if (stderr[0]) reject(`Command: ${command}\nSTDERR:\n ${stderr.join("\n")} \nSTDOUT:\n ${stdout.join("\n")}`);

@@ -48,7 +48,7 @@ module.exports = {
         });
         for (const instance of instances) {
             let app = await App.findById(instance.app_id);
-            await docker.rm(instance.container_id);
+            await docker.rm(instance.container_id).catch(() => {});
             await docker.runScript(instance, app.remove_code);
             fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
             caddy.deleteRoute(instance.container_id).catch(() => {});
