@@ -68,6 +68,11 @@
                     </CNavLink>
                   </CNavItem>
                   <CNavItem>
+                    <CNavLink :active="nav === 'del' ? '' : null" @click="nav = 'del'">
+                      Delete script
+                    </CNavLink>
+                  </CNavItem>
+                  <CNavItem>
                     <CNavLink :active="nav === 'form' ? '' : null" @click="nav = 'form'">
                       User init form
                     </CNavLink>
@@ -103,6 +108,20 @@
                     </CCardFooter>
                   </CCard>
                 </div>
+                <div v-show="nav === 'del'">
+                  <CCard><!-- Run script -->
+                    <CCardHeader>
+                      <h4 class="card-title">Delete script</h4>
+                      <div class="small text-body-secondary">This script run when the containeris about to remove. In $variables you get all props from init form. Script usually includes commands to remove remote database. There is no need to delete its mount folder which is removed automaticaly.</div>
+                    </CCardHeader>
+                    <CCardBody>
+                      <v-ace-editor v-model:value="data.remove_code" lang="sh" theme="chrome" style="height: 600px; resize: vertical; font-size: medium;" />
+                    </CCardBody>
+                    <CCardFooter>
+                    </CCardFooter>
+                  </CCard>
+                </div>
+
                 <div v-show="nav === 'form'">
                   <CCard><!-- Init form -->
                     <CCardHeader>
@@ -129,6 +148,8 @@
                   </CCard>
                 </div>
                 <br>
+
+
                 <CCard><!-- PRICE -->
                   <CCardHeader>
                     <h4 class="card-title">Price</h4>
@@ -149,7 +170,7 @@
 
                   </CCardHeader>
                   <CCardBody>
-                    <CFormInput type="text" label="" text="Leave empty to disable." v-model="data.domain" placeholder="example.com" />
+                    <CFormInput type="text" label="" text="Leave empty to disable public acess on subdomain on https." v-model="data.domain" placeholder="example.com" />
                   </CCardBody>
                   <!-- <CCardFooter>
                     </CCardFooter> -->

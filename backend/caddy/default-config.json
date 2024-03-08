@@ -1,0 +1,59 @@
+{
+    "listen": [":6969"],
+    "routes": [
+        {
+            "handle": [
+                {
+                    "handler": "subroute",
+                    "routes": [
+                        {
+                            "handle": [
+                                {
+                                    "handler": "reverse_proxy",
+                                    "upstreams": [
+                                        {
+                                            "dial": ":6968"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "match": [
+                {
+                    "host": ["ekdyson.site"]
+                }
+            ],
+            "terminal": true
+        },
+        {
+            "handle": [
+                {
+                    "handler": "subroute",
+                    "routes": [
+                        {
+                            "handle": [
+                                {
+                                    "handler": "reverse_proxy",
+                                    "upstreams": [
+                                        {
+                                            "dial": ":3001"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "match": [
+                {
+                    "host": ["login.ekdyson.site"]
+                }
+            ],
+            "terminal": true
+        }
+    ]
+}

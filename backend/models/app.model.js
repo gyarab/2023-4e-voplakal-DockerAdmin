@@ -12,7 +12,7 @@ const AppSchema = new mongoose.Schema(
         init_code: { type: String, required: true, default: fixtures.initCodeExample },
         selected_image_id: { type: String },
         run_code: { type: String, required: true, default: fixtures.runCodeExample },
-        remove_code: { type: String, required: true, default: fixtures.runCodeExample },
+        remove_code: { type: String, required: true, default: "# optionaly write a delete script" },
         htmlForm: { type: String, required: true, default: fixtures.formHtmlPlaceholderData },
         price: { type: Number, required: true, default: 0 },
         free_days: { type: Number, required: true, default: 0 },

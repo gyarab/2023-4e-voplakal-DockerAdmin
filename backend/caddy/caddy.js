@@ -85,4 +85,40 @@ module.exports = {
             req.end();
         });
     },
+    
+    setDefault() {
+        return new Promise(async (resolve, reject) => {
+            const caddyAPIURL = "http://localhost:2019/config/apps/http/servers/srv0/";
+            const req = http.request(
+                caddyAPIURL,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+                (res) => {
+                    let data = [];
+                    console.log("Status Code:", res.statusCode);
+
+                    res.on("data", (chunk) => {
+                        data.push(chunk);
+                    });
+
+                    res.on("end", () => {
+                        if (res.statusCode !== 200) return reject(`Status code: ${res.statusCode}\nBody:\n ${data.join("\n")}`);
+                        resolve(data.join("\n"));
+                    });
+                }
+            );
+
+            req.on("error", function (err) {
+                reject("An error ocurred: \n" + err);
+            });
+            req.write(
+                JSON.stringify(require("./default-config.json"))
+            );
+            req.end();
+        });
+    },
 };
