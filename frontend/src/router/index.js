@@ -124,7 +124,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.handleUnauthorized = function () {
-  if (publicPages.some((e) => router.currentRoute.value.path.startsWith(e))) return
+  if (publicPages.some((e) => router.currentRoute.value.path.startsWith(e) || window.location.hash.startsWith(`#${e}`))) return
   else router.push('/login')
 }
 
