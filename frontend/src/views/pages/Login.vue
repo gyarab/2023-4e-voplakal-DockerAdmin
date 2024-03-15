@@ -39,7 +39,7 @@
                 <div>
                   <h2>Sign up</h2>
                   <p>
-                    Create account with the same email that you used when creatin app instances to see them.
+                    Create account with the same email that you used when creating app instances to see them.
                   </p>
                   <RouterLink to="/register">
                     <CButton color="light" variant="outline" class="mt-3">

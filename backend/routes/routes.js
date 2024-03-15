@@ -31,12 +31,11 @@ module.exports = function (app) {
 
     // INSTANCES
     app.get("/api/instance/getAll", [authJwt.verifyToken, authJwt.loadUser], wrap(Instances.getAll));
-    app.delete("/api/instances", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.delete));
     app.post("/api/instances/upgrade", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.upgrade));
     app.post("/api/instance/save", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.save));
     app.post("/api/instance/start", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.start));
     app.post("/api/instance/stop", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.stop));
-    app.post("/api/instance/create", [authJwt.verifyToken], wrap(Instances.create));
     app.get("/api/instance/getStats", [authJwt.verifyToken, authJwt.isAdmin], wrap(Instances.getStats));
-
+    app.delete("/api/instances", [authJwt.verifyToken, authJwt.loadUser], wrap(Instances.delete));
+    app.post("/api/instance/create", [authJwt.verifyToken], wrap(Instances.create));
 };

@@ -109,28 +109,23 @@ const router = createRouter({
   },
 })
 
+const publicPages = ['/login', '/404', '/500', '/register', '/public/instance-create']
+
 router.beforeEach((to, from, next) => {
-  // const user = JSON.parse(localStorage.getItem('user'))
-  // const notYourPages = _nav
-  //   .filter((i) => i.role && user?.roles.some((r) => r !== i.role) && i.to)
-  //   .map((item) => item.to)
-
-  // if (notYourPages.includes(to.path)) {
-  // redirect to login page if not logged in and trying to access a restricted page
-
-  // console.log(to.name)
-  // console.log(router.currentRoute.value.name);
-  // if (to.name === 'Login' && router.currentRoute.value.name === "Login") return console.log("ahoj");
-
-  const publicPages = ['/login', '/404','/500', '/register']
   const authRequired = !publicPages.some((e) => to.path.startsWith(e))
   const auth = !!localStorage.getItem('user')
 
   if (authRequired && !auth) {
-    console.log("Auth error and redirect");
+    console.log('Auth error and redirect')
     next({ name: 'Login' })
   } else {
     next()
   }
 })
+
+router.handleUnauthorized = function () {
+  if (publicPages.some((e) => router.currentRoute.value.path.startsWith(e))) return
+  else router.push('/login')
+}
+
 export default router

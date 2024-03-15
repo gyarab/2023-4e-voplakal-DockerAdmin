@@ -19,7 +19,7 @@ export let REST = {
     if (code === 401) {
       //unauthorized
       console.log('redirect 401')
-      router.push('/login')
+      router.handleUnauthorized()
       return true
     }
     return false

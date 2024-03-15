@@ -1,5 +1,4 @@
 var net = require("net");
-const { appsData, instances } = require("../models/fixtures");
 const Instance = require("../models/instance.model");
 const docker = require("../docker/docker");
 const User = require("../models/user.model");
@@ -46,13 +45,18 @@ module.exports = {
         let instances = await Instance.find({
             _id: { $in: req.body.ids },
         });
+        let isAdmin = req.user.roles.includes("ADMIN");
         for (const instance of instances) {
-            let app = await App.findById(instance.app_id);
-            await docker.rm(instance.container_id).catch(() => {});
-            await docker.runScript(instance, app.remove_code);
-            fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
-            caddy.deleteRoute(instance.container_id).catch(() => {});
-            await Instance.findByIdAndDelete(instance._id);
+            if (isAdmin || req.user._id.equals(instance.client)) {
+                let app = await App.findById(instance.app_id);
+                await docker.rm(instance.container_id).catch(() => {});
+                await docker.runScript(instance, app.remove_code);
+                fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
+                caddy.deleteRoute(instance.container_id).catch(() => {});
+                await Instance.findByIdAndDelete(instance._id);
+            } else return res.status(401).send({
+                message: "Trying to delete instance of another user",
+            });
         }
         res.send({});
     },
@@ -141,7 +145,7 @@ module.exports = {
                     .replace(/\\|:|\/|"|\*|\s|\||\?/g, "-") + "_mount"
             ),
         });
-        instance.container_id = "placeholder"
+        instance.container_id = "placeholder";
         await instance.validateSync();
         await instance.save();
         copyDefaultFolder(app.folder, instance.mount_folder);
@@ -151,15 +155,15 @@ module.exports = {
         let container_id = await docker.run(instance);
         console.log("container id:", container_id);
         instance.container_id = container_id;
-        
+
         console.log("instance limits:", instance.limits);
         await docker.setLimits(container_id, instance.limits);
-        
+
         console.log(instance._id);
-        
+
         if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);
         console.log(instance._id);
-        
+
         await instance.save();
 
         await email.send({

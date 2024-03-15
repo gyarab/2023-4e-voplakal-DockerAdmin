@@ -110,7 +110,7 @@ exports.forgottenPasswd = async (req, res) => {
     console.log("token: " + token);
 
     res.status(200).send({
-        message: "Email with instructions have been sent.",
+        message: "Email with instructions has been sent.",
     });
 };
 exports.createPasswd = async (req, res) => {

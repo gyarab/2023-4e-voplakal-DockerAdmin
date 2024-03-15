@@ -75,52 +75,14 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 </div>
 <button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
 
-let codeExample = `set -e
-echo Free port $PORT
-docker run -dp $PORT:80 docker/getting-started
+let initCodeExample = `echo "MongoDB_URI=\"mongodb://..." >> .env
+echo email: $adminEmail
+echo "load fixtures and init DB ..."
+`;
+let runCodeExample = `set -e
+docker run -dp $port:3000 --name $name -v "$mount_dir:/app/data" --restart always $image_id
 `;
 
-let initCodeExample = codeExample;
-let runCodeExample = codeExample;
-let appsData = [
-    {
-        name: "Moje prvni pojmenovaní",
-        _id: "65a1585d99bb46177b19e518",
-        repository: "biobrejn-1",
-        folder: "moje-pojmenovani",
-        images: [
-            {
-                tag: "latest",
-                image_id: "86552cbc4151",
-                created: "7 weeks ago",
-                size: "340 MB",
-            },
-            {
-                tag: "recent",
-                image_id: "23452345",
-                created: "8 weeks ago",
-                size: "540 MB",
-            },
-            {
-                tag: "1.3",
-                image_id: "88af2227f359",
-                created: "8 weeks ago",
-                size: "540 MB",
-            },
-        ],
-        selected_image: 0,
-        // //computed on mongo
-        // image_selected: {
-        //   tag: 'latest',
-        //   image_id: '08af2227f359',
-        //   created: '7 weeks ago',
-        //   size: '340 MB',
-        // },
-        init_code: codeExample,
-        run_code: codeExample,
-        htmlForm: formHtmlPlaceholderData,
-    },
-];
 
 
 let instances = [
@@ -141,4 +103,4 @@ let instances = [
     },
 ];
 
-module.exports = {instances, appsData, codeExample, formHtmlPlaceholderData, initCodeExample, runCodeExample}
+module.exports = {instances, formHtmlPlaceholderData, initCodeExample, runCodeExample}
