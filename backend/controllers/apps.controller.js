@@ -7,8 +7,7 @@ const fs = require("fs");
 
 module.exports = {
     getAll: async (req, res) => {
-        console.log(req.user.roles);
-        if (req.user.roles.includes("ADMIN")) {
+        if (req.user?.roles.includes("ADMIN")) {
             let images = docker.getImages();
             let apps = await App.find().lean({ virtuals: true });
             images = await images;
@@ -18,13 +17,11 @@ module.exports = {
                 app.selected_image = app.images?.find((i) => i.ID === app.selected_image_id) ?? {};
             }
             res.send(apps);
-        } else if (req.user.roles.includes("USER")) {
+        } else {
             // let images = docker.getImages(); // todo cache
             let apps = await App.find().lean({ virtuals: true });
             if (!apps) apps = [];
             res.send(apps);
-        } else {
-            res.status(401).send();
         }
     },
     create: async (req, res, next) => {
