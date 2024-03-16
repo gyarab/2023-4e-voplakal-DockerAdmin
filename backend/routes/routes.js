@@ -23,7 +23,8 @@ module.exports = function (app) {
     });
 
     // APPS
-    app.get("/api/app/getAll", [], wrap(Apps.getAll)); //authJwt.verifyToken, authJwt.loadUser
+    app.get("/api/app/public/getAll", [], wrap(Apps.getAll)); 
+    app.get("/api/app/getAll", [authJwt.verifyToken, authJwt.loadUser], wrap(Apps.getAll)); //authJwt.verifyToken, authJwt.loadUser
     app.post("/api/app/create", [authJwt.verifyToken, authJwt.isAdmin], wrap(Apps.create));
     app.get("/api/app/availableRepos", [authJwt.verifyToken, authJwt.isAdmin], wrap(Apps.getRepos));
     app.delete("/api/app/:id", [authJwt.verifyToken, authJwt.isAdmin], wrap(Apps.delete));

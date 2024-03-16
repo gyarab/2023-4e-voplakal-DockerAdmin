@@ -46,7 +46,7 @@ export default {
     setup(props) {
         console.log(props.appId);
         const store = useStore()
-        store.dispatch("getApps");
+        store.dispatch("getPublicApps");
         const app = computed(() => store.state.apps?.find(app => app.id === props.appId));
         const status = ref(false)
 

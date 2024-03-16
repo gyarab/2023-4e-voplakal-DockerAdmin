@@ -71,6 +71,14 @@ export default createStore({
         apiError(error)
       }
     },
+    async getPublicApps(context) {
+      try {
+        const response = await REST.GET(`app/public/getAll`)
+        context.commit('updateApps', response)
+      } catch (error) {
+        apiError(error)
+      }
+    },
     async createApp(context, data) {
       try {
         const res = await REST.POST(`app/create`, data)

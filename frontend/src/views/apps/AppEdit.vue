@@ -25,6 +25,7 @@
             <br>
             <CRow>
               <CCol :sm="12" :lg="5" :xl="4" :xxl="4">
+                <h3 v-if="!data.images?.length">No conatainer found on the machine!</h3>
                 <CCard v-for="(image, index) in  data.images " :key="image.image_id" style="margin-bottom: 25px;">
                   <CCardBody>
 

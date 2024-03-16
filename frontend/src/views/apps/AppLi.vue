@@ -1,7 +1,7 @@
 <template>
     <CTableHeaderCell scope="row">{{ rowData.name }}</CTableHeaderCell>
     <CTableDataCell>{{ rowData.repository }}</CTableDataCell>
-    <CTableDataCell>{{ rowData.images.length }}</CTableDataCell>
+    <CTableDataCell>{{ rowData.images?.length }}</CTableDataCell>
     <CTableDataCell>
         <h5>
             <CBadge v-if="!rowData.selected_image_id" color="danger">Default image is not selected</CBadge>
