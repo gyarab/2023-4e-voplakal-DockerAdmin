@@ -32,10 +32,10 @@
       </div>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" type="submit" @click="reload">Reload</CButton>
-      <CButton color="primary" @click="() => { apiErrors.length = 0 }">
+      <CButton color="primary" type="submit" @click="reload">Reload</CButton>
+      <!-- <CButton color="primary" @click="() => { apiErrors.length = 0 }">
         Close
-      </CButton>
+      </CButton> -->
     </CModalFooter>
   </CModal>
 </template>
@@ -81,7 +81,10 @@ export default {
 
       setColorMode(store.state.theme)
     })
-    return { toasts, apiErrors, reload: () => location.reload(), error, session }
+    return {
+      toasts, apiErrors, reload: () => location.replace("")
+      , error, session
+    }
   },
 }
 window.showToast = (p) => {

@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 
+/**
+ * this module is not being use at the moment, If there isa need to accept regualrpayments, it will be useful in the future.
+ */
+
 const Order = mongoose.model(
     "Order",
     new mongoose.Schema(

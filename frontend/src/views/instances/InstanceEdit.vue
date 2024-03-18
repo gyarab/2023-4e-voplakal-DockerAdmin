@@ -139,7 +139,7 @@
                               <CTableHeaderCell scope="row">Disk</CTableHeaderCell>
                               <CTableDataCell class="flex-container">
                                 <CFormInput type="number" v-model="data.limits.disk" style="width: fit-content;"></CFormInput>
-                                <div style="margin-top: 4px; margin-left: 3px; font-size: large;">(priority) default 500<code>--blkio-weight</code></div>
+                                <div style="margin-top: 4px; margin-left: 3px; font-size: large;">(priority) default 500<code>--blkio-weight</code>value from 10 to 1000</div>
                               </CTableDataCell>
                             </CTableRow>
                           </CTableBody>

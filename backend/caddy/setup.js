@@ -4,7 +4,8 @@ const caddy = require("./caddy");
 
 module.exports = {
     async resetSetup() {
-        caddy.setDefault();
+        await caddy.setDefault();
+        console.log("defaults set");
         for await (const instance of Instance.find()) {
             let app = await App.findById(instance.app_id, "domain").lean();
             if (app.domain) await caddy.addRoute(instance.container_id, `${instance.name}.${app.domain}`, instance.port);

@@ -75,7 +75,7 @@ let formHtmlPlaceholderData = `<div class="mb-3">
 </div>
 <button type="submit" id="submiter" class="btn btn-primary">Submit</button>`;
 
-let initCodeExample = `echo "MongoDB_URI=\"mongodb://..." >> .env
+let initCodeExample = `echo MongoDB_URI=\"mongodb://..." >> .env
 echo email: $adminEmail
 echo "load fixtures and init DB ..."
 `;

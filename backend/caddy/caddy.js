@@ -3,7 +3,7 @@ const http = require("http");
 module.exports = {
     addRoute(instance_id, domain, port) {
         return new Promise(async (resolve, reject) => {
-            const caddyAPIURL = "http://localhost:2019/config/apps/http/servers/srv0/routes/";
+            const caddyAPIURL = "http://localhost:2019/config/apps/http/servers/duck/routes/";
             const req = http.request(
                 caddyAPIURL,
                 {
@@ -28,7 +28,8 @@ module.exports = {
             );
 
             req.on("error", function (err) {
-                reject("An error ocurred: \n" + err);
+                reject("An Caddy api error ocurred: \n" + err);
+                console.log(err);
             });
             req.write(
                 JSON.stringify({
@@ -68,11 +69,11 @@ module.exports = {
                 },
                 (res) => {
                     let data = [];
-                    
+
                     res.on("data", (chunk) => {
                         data.push(chunk);
                     });
-                    
+
                     res.on("end", () => {
                         if (res.statusCode !== 200) return reject(`Status code: ${res.statusCode}\nBody:\n ${data.join("\n")}`);
                         resolve(data.join("\n"));
@@ -80,15 +81,15 @@ module.exports = {
                 }
             );
             req.on("error", function (err) {
-                reject("An error ocurred: \n" + err);
+                reject("An Caddy api error ocurred: \n" + err);
             });
             req.end();
         });
     },
-    
-    setDefault() {
-        return new Promise(async (resolve, reject) => {
-            const caddyAPIURL = "http://localhost:2019/config/apps/http/servers/srv0/";
+
+    async setDefault() {
+        await new Promise(async (resolve, reject) => {
+            const caddyAPIURL = "http://localhost:2019/config/apps/http/servers/";
             const req = http.request(
                 caddyAPIURL,
                 {
@@ -99,7 +100,7 @@ module.exports = {
                 },
                 (res) => {
                     let data = [];
-                    console.log("Status Code:", res.statusCode);
+                    console.log("Status Code set defaults:", res.statusCode);
 
                     res.on("data", (chunk) => {
                         data.push(chunk);
@@ -113,11 +114,9 @@ module.exports = {
             );
 
             req.on("error", function (err) {
-                reject("An error ocurred: \n" + err);
+                reject("An error in Caddy ocurred: \n" + err);
             });
-            req.write(
-                JSON.stringify(require("./default-config.json"))
-            );
+            req.write(JSON.stringify(require("./default-config.json")));
             req.end();
         });
     },

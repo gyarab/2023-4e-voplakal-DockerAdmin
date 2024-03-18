@@ -188,9 +188,10 @@ export default createStore({
     async instanceCreate(ctx, instance) {
       try {
         console.log('create instance', instance)
-        await REST.POST('instance/create', instance)
+        let r = await REST.POST('instance/create', instance)
         window.showToast('Created')
-        await ctx.dispatch('getInstances')
+        return r
+        // await ctx.dispatch('getInstances')
       } catch (error) {
         apiError(error)
       }
@@ -208,10 +209,10 @@ export default createStore({
      * STRIPE
      */
     async createCheckoutSession(ctx, { instance_id, months }) {
-      console.log(instance_id, months);
+      console.log(instance_id, months)
       try {
-        let r = await REST.POST('stripe/create-checkout-session', { instance_id, months });
-        location.href = r.redirect_url;
+        let r = await REST.POST('stripe/create-checkout-session', { instance_id, months })
+        location.href = r.redirect_url
       } catch (error) {
         apiError(error)
       }

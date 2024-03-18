@@ -22,7 +22,11 @@
 </template>
 
 <script>
+
 export default {
   name: 'Page500',
+  setup() {
+
+  }
 }
 </script>

@@ -54,9 +54,10 @@ module.exports = {
                 fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
                 caddy.deleteRoute(instance.container_id).catch(() => {});
                 await Instance.findByIdAndDelete(instance._id);
-            } else return res.status(401).send({
-                message: "Trying to delete instance of another user",
-            });
+            } else
+                return res.status(401).send({
+                    message: "Trying to delete instance of another user",
+                });
         }
         res.send({});
     },
@@ -146,8 +147,14 @@ module.exports = {
             ),
         });
         instance.container_id = "placeholder";
-        await instance.validateSync();
-        await instance.save();
+        try {
+            await instance.validateSync();
+            await instance.save();
+        } catch (error) {
+            if (error.code === 11000) {
+                return res.status(400).send({ message: "This instance name is already in user. Please try again with another." });
+            }
+        }
         copyDefaultFolder(app.folder, instance.mount_folder);
         let init = await docker.init(instance);
         console.log(init);
@@ -172,7 +179,8 @@ module.exports = {
             text: `Vaše instance ${instance_name} aplikace ${app.name} byla vytvořena. \n ${app.domain ? `Je dostupná na https://${instance.name}.${app.domain}` : ""}`,
         });
 
-        res.send({});
+        let message = `Vaše instance ${instance_name} aplikace ${app.name} byla vytvořena. \n ${app.domain ? `Je dostupná na <a href="https://${instance.name}.${app.domain}" target="_blank">https://${instance.name}.${app.domain}</a>` : ""}`;
+        res.send({ message });
     },
     getStats: async (req, res) => {
         let id = req.query.id;
@@ -231,7 +239,7 @@ async function getFreePort() {
     }
 }
 /**
- * Secure Sctring
+ * Secure String
  * replace all characters except numbers, letters, @-_with _
  * @param {String} string
  */

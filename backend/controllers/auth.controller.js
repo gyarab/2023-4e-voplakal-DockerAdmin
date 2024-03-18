@@ -9,12 +9,26 @@ const email = require("../email");
 exports.signup = async (req, res, next) => {
     if (process.env.USER_REGISTER !== "ON") return res.status(404).send({ message: "User registration not allowed." });
     try {
-        const user = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: bcrypt.hashSync(validatePasswd(req.body.password), 8),
-        });
-        await user.save();
+        console.log(req.body.email);
+        let user = await User.findOne({ email: req.body.email });
+        if (user)
+            user = await User.findOneAndUpdate(
+                {
+                    email: req.body.email,
+                },
+                {
+                    password: bcrypt.hashSync(validatePasswd(req.body.password), 8),
+                },
+                { new: true }
+            );
+        else {
+            user = new User({
+                email: req.body.email,
+                password: bcrypt.hashSync(validatePasswd(req.body.password), 8),
+            });
+            await user.save();
+        }
+        user = await User.findById(user._id);
 
         if (req.body.roles) {
             let roles = await Role.find({
@@ -40,7 +54,7 @@ exports.signup = async (req, res, next) => {
 
 exports.signin = async (req, res, next) => {
     try {
-        let user = await this.getUser({ username: req.body.username });
+        let user = await this.getUser({ email: req.body.username });
 
         if (!user) {
             return res.status(404).send({ message: "User Not found." });

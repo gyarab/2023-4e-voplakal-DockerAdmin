@@ -17,7 +17,9 @@
             </CRow>
             <br>
             <CRow>
-              <CCol><p>ahhoj</p></CCol>
+              <CCol>
+                <p>ahhoj</p>
+              </CCol>
             </CRow>
           </CCardBody>
           <CCardFooter>
@@ -46,13 +48,17 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'Dashboard',
   components: {
   },
   setup() {
-    
+    const router = useRouter();
+    router.push("/apps")
+
+
     return {
     }
   },

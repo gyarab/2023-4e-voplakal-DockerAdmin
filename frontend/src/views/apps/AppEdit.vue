@@ -24,8 +24,9 @@
             </CRow>
             <br>
             <CRow>
+              <h3 v-if="!data.images?.length">No conatainer found on the machine!</h3>
+              <h5 v-else class="small text-body-secondary">Images</h5>
               <CCol :sm="12" :lg="5" :xl="4" :xxl="4">
-                <h3 v-if="!data.images?.length">No conatainer found on the machine!</h3>
                 <CCard v-for="(image, index) in  data.images " :key="image.image_id" style="margin-bottom: 25px;">
                   <CCardBody>
 
@@ -130,6 +131,7 @@
                         <CCol :sm="8">
                           <h4 class="card-title">User init form</h4>
                           <div class="small text-body-secondary">This form is to be filled by user when inicializing this App.</div>
+                          <div class="small text-body-secondary">You can insert this link to iframe on your website. (<a :href=" origin + '/#/public/instance-create/' + data._id" target="_blank">{{ origin + '/#/public/instance-create/'  + data._id}}</a>).</div>
                         </CCol>
                         <CCol :sm="4" class="d-md-block">
                           <CButton color="primary" class="float-end" @click="() => editFormModal.show = true">
@@ -278,7 +280,7 @@ export default {
       show: false
     })
     return {
-      data, deleteApp, saveChanges, nav, editFormModal
+      data, deleteApp, saveChanges, nav, editFormModal, origin: window.location.origin
     }
   },
 

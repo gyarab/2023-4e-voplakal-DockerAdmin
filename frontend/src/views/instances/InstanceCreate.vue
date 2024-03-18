@@ -6,7 +6,7 @@
                     <div v-if="status === 'in progress'">working...</div>
                     <CCardBody v-else-if="status === 'done'">
                         <CRow class="justify-content-center">
-                            <h3>Email with acces instruction has been send.</h3>
+                            <h3 v-html="message"></h3>
                         </CRow>
                     </CCardBody>
                     <CCardBody v-else>
@@ -49,22 +49,25 @@ export default {
         store.dispatch("getPublicApps");
         const app = computed(() => store.state.apps?.find(app => app.id === props.appId));
         const status = ref(false)
+        const message = ref("")
 
         const createInstance = async (formData) => {
             if (!props.appId || !formData.inputEmail || !formData.instanceName) return window.apiErrors.value.push(new Error("in the form you are missing: email or instanceName"));
 
 
             status.value = "in progress";
-            await store.dispatch("instanceCreate", {
+            let res = await store.dispatch("instanceCreate", {
                 app_id: props.appId,
                 client_email: formData.inputEmail,
                 instance_name: formData.instanceName,
                 form_data: formData
             },)
             status.value = "done";
+            console.log(res);
+            message.value = res.message;
         }
 
-        return { app, createInstance, status }
+        return { app, createInstance, status, message }
     },
 }
 </script>

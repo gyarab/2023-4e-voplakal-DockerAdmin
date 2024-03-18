@@ -8,7 +8,7 @@ const docker = require("./docker/docker");
 const fixtures = require("./models/fixtures");
 const path = require("path");
 const fs = require("fs");
-global.APPS_DATA_PATH = path.join(__dirname, "mounts")
+global.APPS_DATA_PATH = path.join(__dirname, "mounts");
 
 const STATIC_PUBLIC = path.join(__dirname, "vue_build");
 
@@ -21,6 +21,21 @@ const STATIC_PUBLIC = path.join(__dirname, "vue_build");
 //         }
 //     };
 // };
+
+
+// RESET CADDY server
+
+// (async () => {
+//     try {
+//         const { resetSetup } = require("./caddy/setup");
+//         await resetSetup();
+//         console.log("done");
+//         process.exit();
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })();
+
 function wrap(fn) {
     return (req, res, next) => {
         fn(req, res).catch(next);
@@ -63,6 +78,7 @@ const db = require("./models");
 const Instance = require("./models/instance.model");
 const email = require("./email");
 const User = require("./models/user.model");
+const { resetSetup } = require("./caddy/setup");
 
 db.mongoose
     .connect(process.env.MongoDB_URI, {})

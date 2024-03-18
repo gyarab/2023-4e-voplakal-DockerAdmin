@@ -3,13 +3,14 @@ const ROLES = db.ROLES;
 const User = db.user;
 
 checkDuplicateUsernameOrEmail = async (req, res, next) => {
+    //if do not have passwd it is shadow account created on insctance create
     try {
         // Username
         let user = await User.findOne({
             username: req.body.username,
         });
 
-        if (user) {
+        if (user && user.password) {
             res.status(400).send({ message: "Failed! Username is already in use!" });
             return;
         }
@@ -19,7 +20,7 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
             email: req.body.email,
         });
 
-        if (user) {
+        if (user && user.password) {
             res.status(400).send({ message: "Failed! Email is already in use!" });
             return;
         }
