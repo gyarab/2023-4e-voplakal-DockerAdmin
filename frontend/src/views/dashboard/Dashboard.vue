@@ -57,8 +57,6 @@ export default {
   setup() {
     const router = useRouter();
     router.push("/apps")
-
-
     return {
     }
   },
