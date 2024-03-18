@@ -244,7 +244,8 @@ async function getFreePort() {
  * @param {String} string
  */
 function ss(string) {
-    return string.replace(/[^0-9a-zA-Z,.@-_]+/g, "-");
+    string = string.replace(/[^0-9a-zA-Z,.@-_]+/g, "-");
+    while (string.charAt(string.length - 1) === "-") string = string.slice(0, -1);
 }
 
 function copyDefaultFolder(appMount, instanceMount) {
