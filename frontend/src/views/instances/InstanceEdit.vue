@@ -129,7 +129,7 @@
                               </CTableDataCell>
                             </CTableRow>
                             <CTableRow>
-                              <CTableHeaderCell scope="row">SWAP</CTableHeaderCell>
+                              <CTableHeaderCell scope="row">Total memory (RAM + SWAP)</CTableHeaderCell>
                               <CTableDataCell class="flex-container">
                                 <CFormInput type="number" v-model="data.limits.swap" style="width: fit-content;"></CFormInput>
                                 <div style="margin-top: 4px; margin-left: 3px; font-size: large;">MB <code>--memory-swap</code></div>

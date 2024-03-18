@@ -170,10 +170,11 @@
                   <CCardHeader>
                     <h4 class="card-title">Domain</h4>
                     <div class="small text-body-secondary">Every instance will be given a domain instance-name.your-domain.com</div>
+                    <div class="small text-body-secondary">This domain must have a properly configured DNS record pointing to this server.</div>
 
                   </CCardHeader>
                   <CCardBody>
-                    <CFormInput type="text" label="" text="Leave empty to disable public acess on subdomain on https." v-model="data.domain" placeholder="example.com" />
+                    <CFormInput type="text" label="" text="Leave empty to disable public acess on subdomain with TSL." v-model="data.domain" placeholder="example.com" />
                   </CCardBody>
                   <!-- <CCardFooter>
                     </CCardFooter> -->

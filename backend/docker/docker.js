@@ -147,7 +147,7 @@ async function setLimits(containerId, { cpu, ram, swap, disk }) {
     let c = "";
     if (cpu > -1) c += ` --cpu-shares="${cpu}"`;
     if (ram > -1) c += ` --memory-reservation ${ram}M`; //soft limit = pokud není málo paměti, mohou i více
-    // if (swap > -1) c += ` --memory-swap ${swap + (ram == -1 ? 0 : ram)}M`;
+    if (swap > -1) c += ` --memory-swap ${swap + (ram > -1 ? ram : 0)}M --memory ${swap + (ram > -1 ? ram : 0)}M`;
     if (disk > -1) c += ` --blkio-weight ${disk}`;
 
     if (c.length === 0) return;
