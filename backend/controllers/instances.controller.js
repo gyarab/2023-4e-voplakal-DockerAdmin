@@ -118,8 +118,8 @@ module.exports = {
         let { app_id, client_email = "", instance_name = "", form_data = {} } = req.body;
         await verifyRecaptcha(form_data.captcha);
         if ((await Instance.countDocuments({})) >= global.instancesCountLimit) return res.status(503).send({ message: "Server is currently out of instance limit. Please contact us on email: martin.air@seznam.cz and we will make this service available again." });
-        client_email = ss(client_email);
-        instance_name = ss(instance_name);
+        client_email = ss(client_email, /[^0-9a-zA-Z-._@]+/g);
+        instance_name = ss(instance_name, /[^0-9a-zA-Z-]+/g);
         let forbidenNames = process.env.FORBIDEN_INSTANCE_NAMES.split(";");
         if (forbidenNames.some((n) => instance_name.includes(n))) return res.status(400).send({ message: "Try another instance name" });
         for (const key in form_data) {
@@ -247,8 +247,8 @@ async function getFreePort() {
  * replace all characters except numbers, letters, @-_with _
  * @param {String} string
  */
-function ss(string) {
-    string = string.replace(/[^0-9a-zA-Z-]+/g, "-");
+function ss(string, reg) {
+    string = string.replace(reg, "-");
     while (string.charAt(string.length - 1) === "-") string = string.slice(0, -1);
     return string;
 }
