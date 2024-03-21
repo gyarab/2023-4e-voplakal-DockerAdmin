@@ -124,7 +124,7 @@ module.exports = {
         if (forbidenNames.some((n) => instance_name.includes(n))) return res.status(400).send({ message: "Try another instance name" });
         for (const key in form_data) {
             if (Object.hasOwnProperty.call(form_data, key)) {
-                form_data[key] = ss(form_data[key]);
+                form_data[key] = ss(form_data[key], /[^0-9a-zA-Z-._@]+/g);
             }
         }
 
