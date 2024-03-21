@@ -60,6 +60,34 @@
     },
     "duck": {
         "listen": [":443"],
-        "routes": []
+        "routes": [
+            {
+                "handle": [
+                    {
+                        "handler": "subroute",
+                        "routes": [
+                            {
+                                "handle": [
+                                    {
+                                        "handler": "reverse_proxy",
+                                        "upstreams": [
+                                            {
+                                                "dial": ":5001"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "match": [
+                    {
+                        "host": ["biobrejn.cz"]
+                    }
+                ],
+                "terminal": true
+            }
+        ]
     }
 }
