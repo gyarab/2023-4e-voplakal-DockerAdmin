@@ -50,8 +50,11 @@ module.exports = {
             if (isAdmin || req.user._id.equals(instance.client)) {
                 let app = await App.findById(instance.app_id);
                 caddy.deleteRoute(instance.container_id).catch(() => {});
+                console.log("route removed");
                 await docker.rm(instance.container_id).catch(() => {});
+                console.log("container removed");
                 await docker.runScript(instance, app.remove_code);
+                console.log("delete script finished");
                 fs.rmSync(path.join(global.APPS_DATA_PATH, instance.mount_folder), { recursive: true, force: true });
                 await Instance.findByIdAndDelete(instance._id);
             } else
@@ -156,6 +159,7 @@ module.exports = {
             }
         }
         copyDefaultFolder(app.folder, instance.mount_folder);
+        console.log("init instance script");
         let init = await docker.init(instance);
         console.log(init);
         //spustit
@@ -244,7 +248,7 @@ async function getFreePort() {
  * @param {String} string
  */
 function ss(string) {
-    string = string.replace(/[^0-9a-zA-Z,.@-_]+/g, "-");
+    string = string.replace(/[^0-9a-zA-Z-]+/g, "-");
     while (string.charAt(string.length - 1) === "-") string = string.slice(0, -1);
     return string;
 }
