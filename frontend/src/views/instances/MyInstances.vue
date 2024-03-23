@@ -7,6 +7,18 @@
         <br>
         <CSpinner v-if="!instances" />
         <h4 v-else v-if="!instances[0]">You have no instance.</h4>
+
+        <CRow class="justify-content-start">
+          <CCol v-for="app in apps" xs="4">
+            <router-link :to="'/instance-create/' + app._id">
+              <CButton size="lg" color="primary" class="float-start">
+                <CIcon size="xl" :icon="icon.cilPlus" />
+                Add {{ app.name }}
+              </CButton>
+            </router-link>
+          </CCol>
+        </CRow>
+        <br>
         <CCard class="mb-4">
           <CCardBody>
             <CRow>
@@ -88,6 +100,7 @@ export default {
   setup() {
     const store = useStore();
     store.dispatch("getInstances");
+    store.dispatch("getApps");
 
     const deleteModal = reactive({
       show: false,
@@ -101,6 +114,7 @@ export default {
       }
     }
     const instances = computed(() => store.state.instances)
+    const apps = computed(() => store.state.apps);
 
     const longerInstanceModal = reactive({
       show: false,
@@ -116,7 +130,7 @@ export default {
     }
 
     return {
-      icon, instances, deleteModal, deleteInstnace, longerInstance, months, longerInstanceModal, isExpired: (date) => {
+      icon, instances, apps, deleteModal, deleteInstnace, longerInstance, months, longerInstanceModal, isExpired: (date) => {
         let d = new Date(date);
         return d.getTime() < new Date().getTime();
       }
@@ -131,7 +145,8 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
 }
+
 .red {
-    color: red !important;
+  color: red !important;
 }
 </style>
