@@ -14,6 +14,9 @@ This is an administration system for web applications. The system allows custome
 - Initialization scripts to customize the application launch process
 - Possibility to limit hardware resources for each container (CPU, RAM, SWAP, disk)
 
+## Full documentation
+[EN - Documentation \(Graduation thesis\).pdf](https://github.com/gyarab/2023-4e-voplakal-DockerAdmin/blob/dbb3ebfd64d36850e93583b4a7a7549cd4c08c77/Documentation%20en.pdf)    
+[CS - Dokumentace \(Maturitní práce\).pdf](https://github.com/gyarab/2023-4e-voplakal-DockerAdmin/blob/dbb3ebfd64d36850e93583b4a7a7549cd4c08c77/Dokumentace.pdf)
 
 ## Quick Start
 
