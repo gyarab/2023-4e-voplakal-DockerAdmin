@@ -82,7 +82,7 @@ export default {
       setColorMode(store.state.theme)
     })
     return {
-      toasts, apiErrors, reload: () => location.replace("")
+      toasts, apiErrors, reload: () => location.reload()
       , error, session
     }
   },
