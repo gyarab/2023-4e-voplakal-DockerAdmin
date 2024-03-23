@@ -1,3 +1,20 @@
+# Docker Ultimate Container Keeper
+Administration system for web application instances.
+
+This is an administration system for web applications. The system allows customers to autmatically run their own application instances as Docker containers.
+
+## Features
+
+- Web based interface
+- Start and stop application instances
+- Manage subscription payments
+- Automatically start application instances without the need for administrator intervention
+- Ability to set a monthly fee for running each application
+- Payment gateway for subscription payments
+- Initialization scripts to customize the application launch process
+- Possibility to limit hardware resources for each container (CPU, RAM, SWAP, disk)
+
+
 ## Quick Start
 
 - Clone the repo
@@ -7,14 +24,16 @@
 ``` bash
 $ cd frontend
 $ npm install
+$ npm run build
 ```
 ``` bash
 $ cd backend
 $ npm install
+$ node server.js
 ```
 
 
-### Basic usage
+### Dev usage
 
 ``` bash
 # backend API
@@ -26,21 +45,10 @@ $ npm run dev
 $ cd frontend
 $ npm run dev
 ```
-
-
 Navigate to [http://localhost:3000](http://localhost:3000). The app will automatically reload if you change any of the source files.
 
-#### Build
 
-Run `build` to build the project. The build artifacts will be stored in the `build/` directory.
-
-```bash
-# build for production with minification
-$ npm run build
-```
-
-## Frontend structure
-
+### Frontend structure
 
 
 ```
@@ -63,14 +71,3 @@ frontend
 └── vite.config.js
 ```
 
-## Dependencies
-
-### Core-UI Vue.js
-
-The documentation for the CoreUI Admin Template is hosted at our website [CoreUI for Vue](https://coreui.io/vue/docs/getting-started/introduction.html)
-
-### Node.js
-
-### Vue.js
-
-### Docker
