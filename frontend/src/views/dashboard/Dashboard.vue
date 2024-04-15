@@ -56,7 +56,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-    router.push("/apps")
+    router.push("/my-instances")
     return {
     }
   },
